@@ -97,41 +97,18 @@
         .terminal-bar {
             position: fixed;
             top: 0; left: 0; right: 0;
-            height: 32px;
+            height: 40px;
             background: rgba(5,5,8,0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
+            padding: 0 20px;
             z-index: 100;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
         }
         .terminal-bar .left { display: flex; align-items: center; gap: 12px; }
-        .terminal-bar .title { color: var(--text-secondary); letter-spacing: 1px; font-size: 12px; }
-
-        /* Terminal bar — DEV TRACKER link */
-        .terminal-bar .dev-link {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--cyan);
-            text-decoration: none;
-            margin-right: 1rem;
-            padding: 4px 14px;
-            border: 1px solid rgba(0,255,242,0.25);
-            border-radius: 6px;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            background: rgba(0,255,242,0.06);
-        }
-        .terminal-bar .dev-link:hover {
-            background: rgba(0,255,242,0.15);
-            border-color: var(--cyan);
-            box-shadow: 0 0 20px rgba(0,255,242,0.15);
-        }
+        .terminal-bar .right { display: flex; align-items: center; }
 
         /* ========== SIDEBAR TOGGLE ========== */
         .sidebar-toggle {
@@ -156,6 +133,48 @@
         .sidebar-toggle.active {
             border-color: var(--cyan);
             background: rgba(0,255,242,0.15);
+        }
+
+        /* ========== CLOCK WIDGET ========== */
+        .clock-widget {
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(0, 255, 242, 0.04);
+            border: 1px solid rgba(0, 255, 242, 0.1);
+            border-radius: 8px;
+            padding: 5px 16px 5px 20px;
+            height: 28px;
+            transition: all 0.3s ease;
+        }
+        .clock-widget:hover {
+            border-color: rgba(0, 255, 242, 0.25);
+            background: rgba(0, 255, 242, 0.07);
+        }
+        .clock-widget .cw-time {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--cyan);
+            letter-spacing: 2px;
+        }
+        .clock-widget .cw-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--cyan);
+            opacity: 0.6;
+            animation: cw-pulse 1.2s ease-in-out infinite;
+        }
+        .clock-widget .cw-label {
+            font-size: 9px;
+            color: rgba(0, 255, 242, 0.35);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        @keyframes cw-pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.3); }
         }
 
         /* ========== SIDEBAR ========== */
@@ -241,6 +260,27 @@
         .sidebar .sb-filter button.active .sb-badge {
             background: rgba(0,255,242,0.15);
         }
+        .sidebar .sb-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--cyan);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+        .sidebar .sb-nav-link:hover {
+            background: rgba(0,255,242,0.08);
+            border-color: rgba(0,255,242,0.25);
+            box-shadow: 0 0 15px rgba(0,255,242,0.08);
+        }
         .sidebar .sb-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -277,10 +317,6 @@
             opacity: 1;
             pointer-events: auto;
         }
-
-        .terminal-bar .title span { color: var(--cyan); }
-        .terminal-bar .right { color: var(--text-muted); font-size: 10px; }
-        .terminal-bar .right .blink { animation: blink 1s step-end infinite; }
 
         @keyframes blink { 50% { opacity: 0; } }
 
@@ -752,11 +788,13 @@
 <div class="terminal-bar">
     <div class="left">
         <button class="sidebar-toggle" id="sb-toggle" onclick="toggleSidebar()">☰</button>
-        <div class="title"><span>niu</span>@dash:~$</div>
     </div>
     <div class="right">
-        <a href="development.html" class="dev-link">▶ DEV TRACKER</a>
-        <span id="clock">--:--:--</span> <span class="blink">▌</span>
+        <div class="clock-widget">
+            <span class="cw-label">wib</span>
+            <span class="cw-dot"></span>
+            <span class="cw-time" id="clock">--:--:--</span>
+        </div>
     </div>
 </div>
 
@@ -764,7 +802,8 @@
 <div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
 <nav class="sidebar" id="sidebar">
     <div class="sb-logo">NIU<span>⚡</span>DASH</div>
-    <div class="sb-sub">dark nexus v1.0 // filter panel</div>
+    <div class="sb-sub">dark nexus v1.0 // control panel</div>
+    <a href="development.html" class="sb-nav-link">▶ Dev Tracker</a>
     <div class="sb-section">⌕ Filter Projek</div>
     <div class="sb-filter" id="sb-filter">
         <button class="active" data-filter="all" onclick="setFilter('all')">
