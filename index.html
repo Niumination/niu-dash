@@ -132,6 +132,152 @@
             border-color: var(--cyan);
             box-shadow: 0 0 20px rgba(0,255,242,0.15);
         }
+
+        /* ========== SIDEBAR TOGGLE ========== */
+        .sidebar-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--cyan);
+            width: 28px;
+            height: 22px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            line-height: 1;
+        }
+        .sidebar-toggle:hover {
+            border-color: var(--cyan);
+            background: rgba(0,255,242,0.1);
+        }
+        .sidebar-toggle.active {
+            border-color: var(--cyan);
+            background: rgba(0,255,242,0.15);
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            top: 32px;
+            left: -280px;
+            width: 260px;
+            bottom: 0;
+            background: rgba(8, 8, 20, 0.97);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            z-index: 99;
+            transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px 16px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .sidebar.open { left: 0; }
+        .sidebar .sb-logo {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--cyan);
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+        .sidebar .sb-logo span { color: var(--red); }
+        .sidebar .sb-sub {
+            font-size: 9px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+        }
+        .sidebar .sb-section {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .sidebar .sb-filter {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 24px;
+        }
+        .sidebar .sb-filter button {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .sb-filter button:hover {
+            background: rgba(0,255,242,0.06);
+            border-color: rgba(0,255,242,0.2);
+            color: var(--cyan);
+        }
+        .sidebar .sb-filter button.active {
+            background: rgba(0,255,242,0.1);
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+        .sidebar .sb-filter button .sb-badge {
+            margin-left: auto;
+            font-size: 10px;
+            padding: 1px 8px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+        }
+        .sidebar .sb-filter button.active .sb-badge {
+            background: rgba(0,255,242,0.15);
+        }
+        .sidebar .sb-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .sidebar .sb-stat {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+            text-align: center;
+        }
+        .sidebar .sb-stat .num {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .sidebar .sb-stat .lbl {
+            font-size: 8px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        .sb-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 98;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .sb-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .terminal-bar .title span { color: var(--cyan); }
         .terminal-bar .right { color: var(--text-muted); font-size: 10px; }
         .terminal-bar .right .blink { animation: blink 1s step-end infinite; }
@@ -226,60 +372,6 @@
         }
 
         /* ========== STATUS BAR ========== */
-        .status-bar {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin: 32px 0;
-        }
-        .stat-card {
-            background: rgba(13,13,26,0.8);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px 28px;
-            text-align: center;
-            min-width: 120px;
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card:hover {
-            border-color: var(--cyan-dim);
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(0,255,242,0.1);
-        }
-        .stat-card .number {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 32px;
-            font-weight: 700;
-            line-height: 1;
-        }
-        .stat-card .label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-        .stat-card .number.green { color: var(--green); }
-        .stat-card .number.cyan { color: var(--cyan); }
-        .stat-card .number.amber { color: var(--amber); }
-        .stat-card .number.red { color: var(--red); }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            opacity: 0.6;
-        }
-        .stat-card:nth-child(1)::before { background: var(--green); }
-        .stat-card:nth-child(2)::before { background: var(--cyan); }
-        .stat-card:nth-child(3)::before { background: var(--amber); }
-        .stat-card:nth-child(4)::before { background: var(--red); }
-
         /* ========== SEARCH BAR ========== */
         .search-bar {
             position: relative;
@@ -362,13 +454,13 @@
         .project-grid.ideas .project-card { border-left: 3px solid var(--amber); }
         .project-grid.ideas .project-card:hover { border-color: var(--amber); box-shadow: 0 0 25px rgba(255,170,0,0.1); }
         .project-grid.ideas .status-tag { background: rgba(255,170,0,0.15); color: var(--amber); border: 1px solid rgba(255,170,0,0.3); }
-
+        /* ========== PROJECT CARDS ========== */
         .project-card {
-            background: rgba(16, 16, 32, 0.85);
+            background: linear-gradient(145deg, rgba(18, 18, 38, 0.92) 0%, rgba(12, 12, 28, 0.85) 100%);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 28px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0...[truncated]
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(6px);
@@ -427,26 +519,26 @@
 
         .card-body { position: relative; z-index: 1; }
         .card-body h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 6px;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 8px;
             color: #f0f0f8;
         }
         .card-body .path {
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             color: rgba(150,150,200,0.5);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .card-body .desc {
             font-size: 14px;
-            color: #c0c0d8;
-            line-height: 1.6;
+            color: #c8c8e0;
+            line-height: 1.65;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -461,20 +553,20 @@
         }
         .card-tags .tag {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            padding: 4px 10px;
-            border-radius: 5px;
-            background: rgba(100,100,150,0.12);
-            color: #9999bb;
-            border: 1px solid rgba(100,100,150,0.15);
+            font-size: 11px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            background: rgba(80, 80, 160, 0.15);
+            color: #b0b0d8;
+            border: 1px solid rgba(80, 80, 160, 0.2);
             transition: all 0.2s ease;
         }
-        .card-tags .tag:hover { color: #bbbbdd; background: rgba(100,100,150,0.18); }
+        .card-tags .tag:hover { color: #d0d0f0; background: rgba(80, 80, 160, 0.25); }
 
         .card-footer {
-            margin-top: 18px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(26,26,58,0.5);
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(26,26,58,0.6);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -483,27 +575,32 @@
         }
         .card-footer .date {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: rgba(150,150,200,0.45);
+            font-size: 12px;
+            color: rgba(150,150,200,0.5);
             font-weight: 500;
         }
         .card-footer .open-btn {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 22px;
             border-radius: 6px;
-            border: 1px solid var(--border);
-            background: rgba(20,20,42,0.6);
-            color: #a0a0cc;
+            border: 1px solid rgba(0, 255, 242, 0.25);
+            background: rgba(0, 255, 242, 0.08);
+            color: var(--cyan);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .card-footer .open-btn:hover {
-            border-color: var(--cyan-dim);
+            border-color: var(--cyan);
             color: var(--cyan);
-            background: rgba(0,255,242,0.1);
+            background: rgba(0,255,242,0.18);
+            box-shadow: 0 0 20px rgba(0,255,242,0.15);
+            transform: translateY(-1px);
         }
 
         /* ========== GLITCH DIVIDER ========== */
@@ -565,10 +662,7 @@
         /* ========== RESPONSIVE ========== */
         @media (max-width: 600px) {
             .logo { font-size: 40px; }
-            .terminal-bar .right { display: none; }
-            .stat-card { min-width: 80px; padding: 12px 16px; }
-            .stat-card .number { font-size: 24px; }
-            .container { padding: 0 12px; }
+            .card-footer .date { font-size: 10px; }
         }
 
         /* ========== LOADING SCREEN ========== */
@@ -657,6 +751,7 @@
 <!-- TERMINAL BAR -->
 <div class="terminal-bar">
     <div class="left">
+        <button class="sidebar-toggle" id="sb-toggle" onclick="toggleSidebar()">☰</button>
         <div class="title"><span>niu</span>@dash:~$</div>
     </div>
     <div class="right">
@@ -664,6 +759,35 @@
         <span id="clock">--:--:--</span> <span class="blink">▌</span>
     </div>
 </div>
+
+<!-- SIDEBAR -->
+<div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
+<nav class="sidebar" id="sidebar">
+    <div class="sb-logo">NIU<span>⚡</span>DASH</div>
+    <div class="sb-sub">dark nexus v1.0 // filter panel</div>
+    <div class="sb-section">⌕ Filter Projek</div>
+    <div class="sb-filter" id="sb-filter">
+        <button class="active" data-filter="all" onclick="setFilter('all')">
+            <span>◈</span> All Projects <span class="sb-badge" id="sb-total">0</span>
+        </button>
+        <button data-filter="ready" onclick="setFilter('ready')">
+            <span>⚡</span> Ready <span class="sb-badge green" id="sb-ready">0</span>
+        </button>
+        <button data-filter="dev" onclick="setFilter('dev')">
+            <span>⟐</span> Development <span class="sb-badge cyan" id="sb-dev">0</span>
+        </button>
+        <button data-filter="ideas" onclick="setFilter('ideas')">
+            <span>◇</span> Ideas <span class="sb-badge amber" id="sb-ideas">0</span>
+        </button>
+    </div>
+    <div class="sb-section" style="margin-top:24px">◆ Statistik</div>
+    <div class="sb-stats">
+        <div class="sb-stat"><div class="num" style="color:var(--green)" id="sb-st-ready">0</div><div class="lbl">Ready</div></div>
+        <div class="sb-stat"><div class="num" style="color:var(--cyan)" id="sb-st-dev">0</div><div class="lbl">Dev</div></div>
+        <div class="sb-stat"><div class="num" style="color:var(--amber)" id="sb-st-ideas">0</div><div class="lbl">Ideas</div></div>
+        <div class="sb-stat"><div class="num" style="color:var(--red)" id="sb-st-total">0</div><div class="lbl">Total</div></div>
+    </div>
+</nav>
 
 <!-- HEADER -->
 <div class="container">
@@ -678,26 +802,6 @@
         </p>
         <div class="divider-line"></div>
     </header>
-
-    <!-- STATS -->
-    <div class="status-bar" id="stats-bar">
-        <div class="stat-card">
-            <div class="number green" id="total-ready">0</div>
-            <div class="label">Ready</div>
-        </div>
-        <div class="stat-card">
-            <div class="number cyan" id="total-dev">0</div>
-            <div class="label">Development</div>
-        </div>
-        <div class="stat-card">
-            <div class="number amber" id="total-ideas">0</div>
-            <div class="label">Ideas</div>
-        </div>
-        <div class="stat-card">
-            <div class="number red" id="total-all">0</div>
-            <div class="label">Total Projects</div>
-        </div>
-    </div>
 
     <!-- SEARCH -->
     <div class="search-bar">
@@ -870,7 +974,7 @@
                         </div>
                         <div class="card-footer">
                             <span class="date">${p.date}</span>
-                            <a class="open-btn" href="file://${p.path}" target="_blank">▸ open</a>
+                            <a class="open-btn" href="${p.path.startsWith('http') ? p.path : 'file://' + p.path}" target="_blank">▸ buka</a>
                         </div>
                     </div>
                 `;
@@ -880,14 +984,57 @@
         });
 
         // Update stats
-        document.getElementById('total-ready').textContent = PROJECTS.ready.length;
-        document.getElementById('total-dev').textContent = PROJECTS.dev.length;
-        document.getElementById('total-ideas').textContent = PROJECTS.ideas.length;
-        total = PROJECTS.ready.length + PROJECTS.dev.length + PROJECTS.ideas.length;
-        document.getElementById('total-all').textContent = total;
+        const total = PROJECTS.ready.length + PROJECTS.dev.length + PROJECTS.ideas.length;
+        // Sidebar stats
+        document.getElementById('sb-ready').textContent = PROJECTS.ready.length;
+        document.getElementById('sb-dev').textContent = PROJECTS.dev.length;
+        document.getElementById('sb-ideas').textContent = PROJECTS.ideas.length;
+        document.getElementById('sb-total').textContent = total;
+        document.getElementById('sb-st-ready').textContent = PROJECTS.ready.length;
+        document.getElementById('sb-st-dev').textContent = PROJECTS.dev.length;
+        document.getElementById('sb-st-ideas').textContent = PROJECTS.ideas.length;
+        document.getElementById('sb-st-total').textContent = total;
     }
 
-    /* ========== FILTER ========== */
+    /* ========== SIDEBAR TOGGLE ========== */
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const overlay = document.getElementById('sb-overlay');
+        const btn = document.getElementById('sb-toggle');
+        sb.classList.toggle('open');
+        overlay.classList.toggle('show');
+        btn.classList.toggle('active');
+    }
+
+    /* ========== SIDEBAR FILTER ========== */
+    let currentFilter = 'all';
+    function setFilter(filter) {
+        currentFilter = filter;
+        // Update button states
+        document.querySelectorAll('#sb-filter button').forEach(b => b.classList.remove('active'));
+        document.querySelector(`#sb-filter button[data-filter="${filter}"]`).classList.add('active');
+        // Close sidebar
+        toggleSidebar();
+        // Apply filter
+        applyFilter(filter);
+    }
+    function applyFilter(filter) {
+        const grids = ['ready', 'dev', 'ideas'];
+        let visible = 0;
+        grids.forEach(cat => {
+            const grid = document.getElementById(cat + '-grid');
+            const cards = grid.querySelectorAll('.project-card');
+            const showSection = (filter === 'all' || filter === cat);
+            cards.forEach(card => {
+                const match = showSection;
+                card.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+        });
+        document.getElementById('no-results').style.display = visible ? 'none' : 'block';
+    }
+
+    /* ========== SEARCH FILTER ========== */
     function filterProjects() {
         const q = document.getElementById('search-input').value.toLowerCase().trim();
         let visible = 0;
