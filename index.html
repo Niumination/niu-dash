@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIU-DASH // DARK NEXUS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* ========== RESET & BASE ========== */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,6 +29,139 @@
             --text-secondary: #8888aa;
             --text-muted: #55557a;
             --glitch-blue: #0066ff;
+        }
+
+        /* ========== GAMING HUD UTILITIES ========== */
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Neon Glow */
+        .glow-cyan { text-shadow: 0 0 7px rgba(0,255,242,0.6), 0 0 20px rgba(0,255,242,0.3); }
+        .glow-red { text-shadow: 0 0 7px rgba(255,0,64,0.6), 0 0 20px rgba(255,0,64,0.3); }
+        .glow-purple { text-shadow: 0 0 7px rgba(176,0,255,0.6), 0 0 20px rgba(176,0,255,0.3); }
+        .glow-green { text-shadow: 0 0 7px rgba(0,255,136,0.6), 0 0 20px rgba(0,255,136,0.3); }
+        .glow-box-cyan { box-shadow: 0 0 10px rgba(0,255,242,0.15), 0 0 30px rgba(0,255,242,0.05); }
+        .glow-box-purple { box-shadow: 0 0 10px rgba(176,0,255,0.15), 0 0 30px rgba(176,0,255,0.05); }
+        .glow-box-green { box-shadow: 0 0 10px rgba(0,255,136,0.15), 0 0 30px rgba(0,255,136,0.05); }
+        .glow-box-red { box-shadow: 0 0 10px rgba(255,0,64,0.15), 0 0 30px rgba(255,0,64,0.05); }
+
+        /* ========== BOOT OVERLAY ========== */
+        .boot-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', monospace;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .boot-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .boot-overlay .boot-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--cyan);
+            letter-spacing: 6px;
+            margin-bottom: 30px;
+            animation: boot-pulse 1.2s ease-in-out infinite;
+        }
+        .boot-overlay .boot-progress-wrap {
+            width: 320px;
+            height: 3px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        .boot-overlay .boot-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--cyan), var(--magenta));
+            border-radius: 2px;
+            transition: width 0.15s linear;
+        }
+        .boot-overlay .boot-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            min-height: 20px;
+        }
+        @keyframes boot-pulse {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ========== STAGGERED ENTRANCE ========== */
+        .stagger-in {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4,0,0.2,1);
+        }
+        .stagger-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .stagger-in[data-delay="1"] { transition-delay: 0.1s; }
+        .stagger-in[data-delay="2"] { transition-delay: 0.2s; }
+        .stagger-in[data-delay="3"] { transition-delay: 0.3s; }
+        .stagger-in[data-delay="4"] { transition-delay: 0.4s; }
+        .stagger-in[data-delay="5"] { transition-delay: 0.5s; }
+        .stagger-in[data-delay="6"] { transition-delay: 0.6s; }
+        .stagger-in[data-delay="7"] { transition-delay: 0.7s; }
+
+        /* ========== SPRING BUTTON ========== */
+        .spring-btn {
+            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            will-change: transform;
+        }
+        .spring-btn:hover { transform: scale(1.05) !important; }
+        .spring-btn:active { transform: scale(0.95) !important; }
+
+        /* ========== TILT PERSPECTIVE ========== */
+        .tilt-card {
+            transform-style: preserve-3d;
+            perspective: 800px;
+            will-change: transform;
+        }
+
+        /* ========== SIDEBAR FLASH ========== */
+        .sidebar-flash {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(0,255,242,0.15), transparent 60%);
+            opacity: 0;
+            pointer-events: none;
+            border-radius: inherit;
+            transition: opacity 0.15s ease;
+        }
+        .sidebar-flash.flash {
+            opacity: 1;
+            transition: none;
+        }
+
+        /* ========== ANIMATED GRID BG ========== */
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0,255,242,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,242,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+            animation: grid-scroll 8s linear infinite;
+        }
+        @keyframes grid-scroll {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
         }
 
         body {
@@ -64,18 +197,6 @@
             height: 100%;
             z-index: 0;
             opacity: 0.6;
-        }
-
-        /* ========== GRID OVERLAY ========== */
-        .grid-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                linear-gradient(rgba(0,255,242,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,255,242,0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 1;
         }
 
         /* ========== SCROLLBAR ========== */
@@ -333,15 +454,15 @@
         }
 
         .logo {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Orbitron', sans-serif;
             font-weight: 900;
             font-size: 72px;
             letter-spacing: -3px;
             text-transform: uppercase;
             position: relative;
             display: inline-block;
-            color: var(--text-primary);
-            text-shadow: 0 0 30px rgba(0,255,242,0.3);
+            color: var(--cyan);
+            text-shadow: 0 0 20px rgba(0,255,242,0.4), 0 0 60px rgba(0,255,242,0.15), 0 0 120px rgba(0,255,242,0.05);
         }
         .logo .accent { color: var(--cyan); }
         .logo .slash { color: var(--red); margin: 0 4px; }
@@ -384,12 +505,12 @@
         }
 
         .tagline {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
+            font-family: 'Rajdhani', 'JetBrains Mono', monospace;
+            text-align: center;
             color: var(--text-muted);
-            margin-top: 12px;
+            font-size: 18px;
             letter-spacing: 3px;
-            text-transform: uppercase;
+            margin-top: 12px;
         }
         .tagline .highlight {
             color: var(--cyan);
@@ -445,24 +566,26 @@
 
         /* ========== SECTION TITLE ========== */
         .section-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--text-muted);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
             margin-bottom: 20px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
         .section-title .badge {
-            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 4px;
-            padding: 2px 8px;
+            padding: 2px 10px;
         }
         .section-title .badge.green { color: var(--green); border-color: rgba(0,255,136,0.3); }
         .section-title .badge.cyan { color: var(--cyan); border-color: rgba(0,255,242,0.3); }
@@ -701,44 +824,6 @@
             .card-footer .date { font-size: 10px; }
         }
 
-        /* ========== LOADING SCREEN ========== */
-        #loading-screen {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--bg-primary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-            transition: opacity 0.6s ease;
-        }
-        #loading-screen.hidden { opacity: 0; pointer-events: none; }
-        .loader-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            color: var(--cyan);
-            margin-bottom: 16px;
-            animation: pulse-text 1.5s ease-in-out infinite;
-        }
-        .loader-bar {
-            width: 200px;
-            height: 2px;
-            background: var(--border);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .loader-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--cyan), var(--magenta));
-            animation: load-fill 1.2s ease forwards;
-        }
-        @keyframes load-fill {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
         /* ========== GLITCH OVERLAY ========== */
         .glitch-overlay {
             position: fixed;
@@ -769,10 +854,13 @@
 </head>
 <body>
 
-<!-- LOADING SCREEN -->
-<div id="loading-screen">
-    <div class="loader-text">⟐ INITIALIZING DARK NEXUS ⟐</div>
-    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+<!-- BOOT OVERLAY -->
+<div class="boot-overlay" id="boot-overlay">
+    <div class="boot-title">⟐ SYSTEM INITIALIZING ⟐</div>
+    <div class="boot-progress-wrap">
+        <div class="boot-progress-bar" id="boot-bar"></div>
+    </div>
+    <div class="boot-status" id="boot-status">loading modules...</div>
 </div>
 
 <!-- GLITCH OVERLAY -->
@@ -831,44 +919,44 @@
 <!-- HEADER -->
 <div class="container">
     <header>
-        <div class="glitch-wrapper">
+        <div class="glitch-wrapper stagger-in" data-delay="1">
             <h1 class="logo glitch" data-text="NIU-DASH">
                 NIU<span class="slash">⚡</span>DASH
             </h1>
         </div>
-        <p class="tagline">
+        <p class="tagline stagger-in" data-delay="2">
             // <span class="highlight">teknologi tidak pernah berhenti</span> — semakin cepat, semakin dalam //
         </p>
-        <div class="divider-line"></div>
+        <div class="divider-line stagger-in" data-delay="2"></div>
     </header>
 
     <!-- SEARCH -->
-    <div class="search-bar">
+    <div class="search-bar stagger-in" data-delay="3">
         <span class="icon">⌕</span>
         <input type="text" id="search-input" placeholder="Cari proyek..." oninput="filterProjects()">
     </div>
 
     <!-- READY SECTION -->
-    <div class="section-title">
+    <div class="section-title stagger-in" data-delay="4">
         ⚡ READY <span class="badge green" id="ready-count">0</span>
     </div>
-    <div class="project-grid ready" id="ready-grid"></div>
+    <div class="project-grid ready stagger-in" data-delay="4" id="ready-grid"></div>
 
     <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
 
     <!-- DEV SECTION -->
-    <div class="section-title">
+    <div class="section-title stagger-in" data-delay="5">
         ⟐ DEVELOPMENT <span class="badge cyan" id="dev-count">0</span>
     </div>
-    <div class="project-grid dev" id="dev-grid"></div>
+    <div class="project-grid dev stagger-in" data-delay="5" id="dev-grid"></div>
 
     <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
 
     <!-- IDEAS SECTION -->
-    <div class="section-title">
+    <div class="section-title stagger-in" data-delay="6">
         ◇ IDEAS / PLANNING <span class="badge amber" id="ideas-count">0</span>
     </div>
-    <div class="project-grid ideas" id="ideas-grid"></div>
+    <div class="project-grid ideas stagger-in" data-delay="6" id="ideas-grid"></div>
 
     <div class="no-results" id="no-results">
         <div class="emoji">⚡</div>
@@ -1184,14 +1272,152 @@
     /* ========== FOOTER YEAR ========== */
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
-    /* ========== INIT ========== */
+    /* ========== GAMING HUD — INIT ========== */
     window.addEventListener('DOMContentLoaded', () => {
         renderProjects();
         initParticles();
-        // Hide loading screen
-        setTimeout(() => {
-            document.getElementById('loading-screen').classList.add('hidden');
-        }, 1400);
+
+        // ===== BOOT SEQUENCE =====
+        const bootMsgs = [
+            ['mounting volumes...', 10],
+            ['loading database...', 28],
+            ['scanning nodes...', 45],
+            ['linking subsystems...', 62],
+            ['calibrating nexus...', 78],
+            ['initializing HUD...', 90],
+            ['system online.', 100]
+        ];
+        const bootOverlay = document.getElementById('boot-overlay');
+        const bootBar = document.getElementById('boot-bar');
+        const bootStatus = document.getElementById('boot-status');
+        let step = 0;
+        const bootInterval = setInterval(() => {
+            if (step < bootMsgs.length) {
+                const [msg, pct] = bootMsgs[step];
+                bootBar.style.width = pct + '%';
+                bootStatus.textContent = '[' + String(pct).padStart(3) + '%] ' + msg;
+                step++;
+            } else {
+                clearInterval(bootInterval);
+                setTimeout(() => {
+                    bootOverlay.classList.add('hidden');
+                    // Start staggered entrance
+                    document.querySelectorAll('.stagger-in').forEach(el => {
+                        el.classList.add('visible');
+                    });
+                    // Start count-up after stagger
+                    setTimeout(startCountUp, 300);
+                }, 400);
+            }
+        }, 180);
+
+        // ===== STAGGERED ENTRANCE =====
+        document.querySelectorAll('.project-card, .logo-section, .search-bar').forEach(el => {
+            if (!el.classList.contains('stagger-in')) el.classList.add('stagger-in');
+        });
+
+        // ===== COUNT-UP ANIMATION =====
+        function startCountUp() {
+            document.querySelectorAll('.count-up').forEach(el => {
+                const target = parseInt(el.dataset.target) || 0;
+                const duration = 1200;
+                const start = performance.now();
+                function tick(now) {
+                    const t = Math.min((now - start) / duration, 1);
+                    const eased = 1 - Math.pow(1 - t, 3);
+                    el.textContent = Math.floor(eased * target);
+                    if (t < 1) requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+            });
+        }
+
+        // ===== 3D TILT ON CARDS =====
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+                const rx = ((y - cy) / cy) * -8;
+                const ry = ((x - cx) / cx) * 8;
+                card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02,1.02,1.02)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+            });
+        });
+
+        // ===== SIDEBAR CLICK FLASH =====
+        document.querySelectorAll('.sb-filter button, .sb-nav-link').forEach(el => {
+            el.addEventListener('click', function() {
+                const flash = document.createElement('div');
+                flash.className = 'sidebar-flash flash';
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(flash);
+                setTimeout(() => flash.remove(), 200);
+            });
+        });
+
+        // ===== WEB AUDIO API =====
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        function playClick() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = 800;
+                osc.type = 'square';
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.06);
+            } catch(_) {}
+        }
+        function playHover() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = 1200;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.04);
+            } catch(_) {}
+        }
+        document.querySelectorAll('button, .sb-nav-link, .open-btn, .dev-link').forEach(el => {
+            el.addEventListener('click', () => playClick());
+            el.addEventListener('mouseenter', () => playHover());
+        });
+        // Init audio on first user interaction
+        document.addEventListener('click', () => initAudio(), { once: true });
+
+        // ===== SPRING BUTTON CLASSES =====
+        document.querySelectorAll('.open-btn, .sidebar-toggle, .sb-filter button, .sb-nav-link').forEach(el => {
+            el.classList.add('spring-btn');
+        });
+
+        // ===== COUNT-UP ATTRIBUTES =====
+        document.querySelectorAll('.stat-card .number, #sidebar .num').forEach(el => {
+            const txt = el.textContent.trim();
+            const num = parseInt(txt);
+            if (!isNaN(num)) {
+                el.dataset.target = num;
+                el.textContent = '0';
+                el.classList.add('count-up');
+            }
+        });
     });
 </script>
 
