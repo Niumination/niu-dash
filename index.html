@@ -180,22 +180,22 @@
         /* ========== SIDEBAR ========== */
         .sidebar {
             position: fixed;
-            top: 32px;
-            left: -280px;
-            width: 260px;
+            top: 40px;
+            left: -360px;
+            width: 340px;
             bottom: 0;
             background: rgba(8, 8, 20, 0.97);
             backdrop-filter: blur(20px);
             border-right: 1px solid var(--border);
             z-index: 99;
             transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 20px 16px;
+            padding: 24px 20px;
             overflow-y: auto;
             font-family: 'JetBrains Mono', monospace;
         }
         .sidebar.open { left: 0; }
         .sidebar .sb-logo {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 800;
             color: var(--cyan);
             letter-spacing: -0.5px;
@@ -203,7 +203,7 @@
         }
         .sidebar .sb-logo span { color: var(--red); }
         .sidebar .sb-sub {
-            font-size: 9px;
+            font-size: 10px;
             color: var(--text-muted);
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -212,7 +212,7 @@
             padding-bottom: 16px;
         }
         .sidebar .sb-section {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -221,17 +221,17 @@
         .sidebar .sb-filter {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
             margin-bottom: 24px;
         }
         .sidebar .sb-filter button {
             background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
             color: var(--text-secondary);
-            padding: 10px 14px;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border-radius: 8px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -252,8 +252,8 @@
         }
         .sidebar .sb-filter button .sb-badge {
             margin-left: auto;
-            font-size: 10px;
-            padding: 1px 8px;
+            font-size: 11px;
+            padding: 2px 10px;
             border-radius: 10px;
             background: rgba(255,255,255,0.05);
         }
@@ -264,17 +264,17 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 14px;
+            padding: 12px 16px;
             background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             color: var(--cyan);
             font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.2s;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         .sidebar .sb-nav-link:hover {
             background: rgba(0,255,242,0.08);
@@ -284,25 +284,25 @@
         .sidebar .sb-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 10px;
         }
         .sidebar .sb-stat {
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 10px 12px;
+            border-radius: 8px;
+            padding: 14px 12px;
             text-align: center;
         }
         .sidebar .sb-stat .num {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
         }
         .sidebar .sb-stat .lbl {
-            font-size: 8px;
+            font-size: 9px;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 2px;
+            margin-top: 3px;
         }
         .sb-overlay {
             position: fixed;
@@ -472,7 +472,7 @@
         .project-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 24px;
+            gap: 28px;
             margin-bottom: 48px;
         }
         @media (min-width: 768px) { .project-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -494,9 +494,9 @@
         .project-card {
             background: linear-gradient(145deg, rgba(18, 18, 38, 0.92) 0%, rgba(12, 12, 28, 0.85) 100%);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 28px;
-            transition: all 0...[truncated]
+            border-radius: 14px;
+            padding: 32px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(6px);
@@ -524,18 +524,18 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 14px;
             position: relative;
             z-index: 1;
         }
         .card-header .icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 24px;
             flex-shrink: 0;
         }
         .project-card.ready .card-header .icon { background: rgba(0,255,136,0.15); }
@@ -544,35 +544,35 @@
 
         .status-tag {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1.2px;
-            padding: 4px 12px;
-            border-radius: 5px;
+            padding: 5px 14px;
+            border-radius: 6px;
             white-space: nowrap;
             font-weight: 600;
         }
 
         .card-body { position: relative; z-index: 1; }
         .card-body h3 {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 700;
             margin-bottom: 8px;
             color: #f0f0f8;
         }
         .card-body .path {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            font-size: 12px;
             color: rgba(150,150,200,0.5);
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .card-body .desc {
-            font-size: 14px;
+            font-size: 15px;
             color: #c8c8e0;
-            line-height: 1.65;
+            line-height: 1.7;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
@@ -582,15 +582,15 @@
         .card-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 12px;
+            gap: 8px;
+            margin-top: 14px;
             position: relative;
             z-index: 1;
         }
         .card-tags .tag {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            padding: 5px 12px;
+            font-size: 12px;
+            padding: 5px 14px;
             border-radius: 6px;
             background: rgba(80, 80, 160, 0.15);
             color: #b0b0d8;
@@ -600,8 +600,8 @@
         .card-tags .tag:hover { color: #d0d0f0; background: rgba(80, 80, 160, 0.25); }
 
         .card-footer {
-            margin-top: 20px;
-            padding-top: 16px;
+            margin-top: 22px;
+            padding-top: 18px;
             border-top: 1px solid rgba(26,26,58,0.6);
             display: flex;
             justify-content: space-between;
@@ -611,16 +611,16 @@
         }
         .card-footer .date {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
+            font-size: 13px;
             color: rgba(150,150,200,0.5);
             font-weight: 500;
         }
         .card-footer .open-btn {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
-            padding: 8px 22px;
-            border-radius: 6px;
+            padding: 9px 26px;
+            border-radius: 7px;
             border: 1px solid rgba(0, 255, 242, 0.25);
             background: rgba(0, 255, 242, 0.08);
             color: var(--cyan);
