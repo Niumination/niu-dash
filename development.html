@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIU-DASH // DEV TRACKER</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{
+            --bg:#050508;--bg2:#0a0a14;--bg3:#12121f;
+            --cyan:#00fff2;--red:#ff0040;--magenta:#ff00aa;--green:#00ff88;
+            --dim:#2a2a3a;--text:#c0c0d0;--text-dim:#606080;
+            --glow-cyan:0 0 20px rgba(0,255,242,.15);
+            --glow-red:0 0 20px rgba(255,0,64,.12);
+            --rad:8px;
+        }
+        html{scroll-behavior:smooth}
+        body{
+            background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;
+            min-height:100vh;overflow-x:hidden;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(0,255,242,.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(255,0,64,.03) 0%, transparent 50%);
+        }
+        body::before{
+            content:'';position:fixed;inset:0;
+            background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,242,.008) 2px, rgba(0,255,242,.008) 4px);
+            pointer-events:none;z-index:9999;
+        }
+
+        /* NAV */
+        .topbar{
+            position:fixed;top:0;left:0;right:0;z-index:100;
+            background:rgba(5,5,8,.85);backdrop-filter:blur(20px) saturate(1.2);
+            border-bottom:1px solid rgba(255,255,255,.04);padding:0 2rem;
+            display:flex;align-items:center;height:56px;
+        }
+        .topbar .logo{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:1.1rem;color:var(--cyan);letter-spacing:-.5px}
+        .topbar .logo span{color:var(--red)}
+        .topbar .nav-links{margin-left:auto;display:flex;gap:.25rem}
+        .topbar .nav-links a{
+            color:var(--text-dim);text-decoration:none;padding:.5rem 1rem;
+            font-size:.8rem;font-weight:500;border-radius:var(--rad);
+            transition:all .2s;letter-spacing:.3px;
+        }
+        .topbar .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.04)}
+        .topbar .nav-links a.active{color:var(--cyan);background:rgba(0,255,242,.08)}
+
+        .container{max-width:1400px;margin:0 auto;padding:80px 2rem 4rem}
+
+        /* HEADER */
+        .page-header{margin-bottom:3rem;padding-top:1.5rem}
+        .page-header h1{
+            font-family:'JetBrains Mono',monospace;font-size:2.8rem;font-weight:800;
+            color:var(--cyan);letter-spacing:-2px;line-height:1.1;
+            text-shadow:0 0 40px rgba(0,255,242,.12);
+        }
+        .page-header h1::before{content:'▶ ';color:var(--red)}
+        .page-header .sub{
+            color:var(--text-dim);font-size:.95rem;margin-top:.5rem;
+            font-family:'JetBrains Mono',monospace;
+        }
+        .page-header .sub span{color:var(--cyan);background:rgba(0,255,242,.08);padding:.15rem .6rem;border-radius:4px}
+
+        /* STAT BAR */
+        .statbar{
+            display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
+            margin-bottom:3rem;
+        }
+        .stat-card{
+            background:var(--bg2);border:1px solid rgba(255,255,255,.04);
+            border-radius:var(--rad);padding:1.2rem 1.5rem;
+            transition:border-color .3s;
+        }
+        .stat-card:hover{border-color:rgba(0,255,242,.15)}
+        .stat-card .num{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700}
+        .stat-card .lbl{font-size:.75rem;color:var(--text-dim);margin-top:.15rem;text-transform:uppercase;letter-spacing:1px}
+        .stat-card:nth-child(1) .num{color:var(--red)}
+        .stat-card:nth-child(2) .num{color:var(--cyan)}
+        .stat-card:nth-child(3) .num{color:var(--green)}
+        .stat-card:nth-child(4) .num{color:var(--magenta)}
+
+        /* PROJECT CARD */
+        .proj-card{
+            background:var(--bg2);border:1px solid rgba(255,255,255,.04);
+            border-radius:12px;margin-bottom:2rem;overflow:hidden;
+            transition:border-color .3s,box-shadow .3s;
+        }
+        .proj-card:hover{
+            border-color:rgba(0,255,242,.1);
+            box-shadow:0 0 30px rgba(0,255,242,.04);
+        }
+        .proj-card .card-header{
+            padding:1.5rem 2rem;
+            display:flex;align-items:center;gap:1rem;
+            cursor:pointer;user-select:none;
+            border-bottom:1px solid rgba(255,255,255,.03);
+        }
+        .proj-card .card-header:hover{background:rgba(255,255,255,.01)}
+        .proj-card .card-header .icon{
+            width:40px;height:40px;border-radius:var(--rad);
+            display:flex;align-items:center;justify-content:center;
+            font-size:1.2rem;flex-shrink:0;
+            background:rgba(0,255,242,.06);color:var(--cyan);
+        }
+        .proj-card .card-header .info{flex:1;min-width:0}
+        .proj-card .card-header .info h2{
+            font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:600;
+            color:var(--text);letter-spacing:-.3px;
+        }
+        .proj-card .card-header .info .tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.35rem}
+        .proj-card .card-header .info .tags span{
+            font-size:.65rem;padding:.15rem .55rem;border-radius:4px;
+            background:rgba(255,255,255,.04);color:var(--text-dim);
+            font-family:'JetBrains Mono',monospace;letter-spacing:.3px;
+        }
+        .proj-card .card-header .status{
+            font-size:.7rem;padding:.35rem .9rem;border-radius:20px;
+            font-weight:600;font-family:'JetBrains Mono',monospace;
+            flex-shrink:0;
+        }
+        .status-active{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.2)}
+        .status-paused{background:rgba(255,255,0,.08);color:#ffd000;border:1px solid rgba(255,255,0,.15)}
+        .status-staging{background:rgba(0,255,242,.1);color:var(--cyan);border:1px solid rgba(0,255,242,.2)}
+
+        .proj-card .card-body{padding:0 2rem 2rem;display:none}
+        .proj-card.expanded .card-body{display:block}
+        .proj-card .card-body .section{margin-top:1.8rem}
+        .proj-card .card-body .section:first-child{margin-top:1.5rem}
+        .proj-card .card-body .section h3{
+            font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:600;
+            color:var(--text-dim);text-transform:uppercase;letter-spacing:1.2px;
+            margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;
+        }
+        .proj-card .card-body .section h3 .hl{width:20px;height:2px;border-radius:2px}
+        .hl-cyan{background:var(--cyan)}
+        .hl-red{background:var(--red)}
+        .hl-green{background:var(--green)}
+        .hl-magenta{background:var(--magenta)}
+
+        .proj-card .card-body .section p,.proj-card .card-body .section li{
+            font-size:.88rem;line-height:1.7;color:var(--text);
+        }
+        .proj-card .card-body .section ul{list-style:none;padding:0}
+        .proj-card .card-body .section ul li{
+            padding:.3rem 0 .3rem 1.2rem;position:relative;
+        }
+        .proj-card .card-body .section ul li::before{
+            content:'›';position:absolute;left:0;color:var(--cyan);font-weight:700;
+        }
+
+        /* TIMELINE */
+        .timeline{position:relative;padding-left:1.5rem}
+        .timeline::before{
+            content:'';position:absolute;left:6px;top:4px;bottom:4px;
+            width:1px;background:linear-gradient(180deg,var(--cyan),transparent);
+        }
+        .tl-item{position:relative;padding:.6rem 0 .6rem 1.2rem}
+        .tl-item::before{
+            content:'';position:absolute;left:-1.35rem;top:.85rem;
+            width:8px;height:8px;border-radius:50%;
+            background:var(--bg2);border:2px solid var(--cyan);
+        }
+        .tl-item .tl-date{font-size:.7rem;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:600}
+        .tl-item .tl-text{font-size:.85rem;color:var(--text-dim);margin-top:.1rem;line-height:1.5}
+        .tl-item.future{opacity:.5}
+        .tl-item.future::before{border-color:var(--dim)}
+
+        /* RECOMMENDATION TAGS */
+        .rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+        .rec-item{
+            background:var(--bg3);border:1px solid rgba(255,255,255,.04);
+            border-radius:var(--rad);padding:1rem 1.2rem;
+            border-left:3px solid var(--cyan);
+            font-size:.82rem;line-height:1.6;
+        }
+        .rec-item.prio-high{border-left-color:var(--red)}
+        .rec-item.prio-mid{border-left-color:var(--magenta)}
+        .rec-item .rec-prio{
+            font-size:.6rem;text-transform:uppercase;letter-spacing:1px;
+            font-weight:700;margin-bottom:.3rem;font-family:'JetBrains Mono',monospace;
+        }
+        .prio-high .rec-prio{color:var(--red)}
+        .prio-mid .rec-prio{color:var(--magenta)}
+        .prio-low .rec-prio{color:var(--cyan)}
+
+        /* EXPAND ALL */
+        .toolbar{
+            display:flex;gap:.75rem;margin-bottom:2rem;
+            flex-wrap:wrap;
+        }
+        .toolbar button{
+            background:var(--bg2);border:1px solid rgba(255,255,255,.06);
+            color:var(--text-dim);padding:.6rem 1.2rem;border-radius:var(--rad);
+            font-size:.78rem;cursor:pointer;transition:all .2s;
+            font-family:'JetBrains Mono',monospace;
+        }
+        .toolbar button:hover{
+            border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,242,.06);
+        }
+
+        /* EXPAND ICON */
+        .expand-icon{
+            font-size:1rem;color:var(--text-dim);transition:transform .3s;
+            flex-shrink:0;
+        }
+        .proj-card.expanded .expand-icon{transform:rotate(90deg);color:var(--cyan)}
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+            .container{padding:70px 1rem 2rem}
+            .page-header h1{font-size:1.8rem}
+            .statbar{grid-template-columns:repeat(2,1fr)}
+            .proj-card .card-header{padding:1rem 1.2rem;flex-wrap:wrap}
+            .proj-card .card-body{padding:0 1.2rem 1.2rem}
+            .topbar{padding:0 1rem}
+            .rec-grid{grid-template-columns:1fr}
+        }
+
+        /* LOADING ANIM */
+        .scanline{
+            position:fixed;top:0;left:0;right:0;height:2px;
+            background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+            z-index:99999;opacity:.4;
+            animation:scan 4s ease-in-out infinite;
+        }
+        @keyframes scan{
+            0%{top:0;opacity:.3}
+            50%{opacity:.6}
+            100%{top:100%;opacity:.1}
+        }
+        /* GLITCH OVERLAY */
+        .glitch-overlay{position:fixed;inset:0;pointer-events:none;z-index:9998}
+        .glitch-overlay::after{
+            content:'';position:absolute;inset:0;
+            background:linear-gradient(0deg,transparent 48%,rgba(0,255,242,.008) 50%,transparent 52%);
+            background-size:100% 4px;
+            animation:glitchLine .4s linear infinite;
+        }
+        @keyframes glitchLine{0%{transform:translateY(0)}100%{transform:translateY(4px)}}
+        @keyframes glitch{0%{transform:translate(0)}20%{transform:translate(-1px,1px)}40%{transform:translate(1px,-1px)}60%{transform:translate(-1px)}80%{transform:translate(1px,1px)}100%{transform:translate(0)}}
+        .glitch-text{animation:glitch .3s infinite}
+    </style>
+</head>
+<body>
+<div class="scanline"></div>
+<div class="glitch-overlay"></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <div class="logo">NIU<span>//</span>DEV</div>
+    <div class="nav-links">
+        <a href="index.html">⟐ DASHBOARD</a>
+        <a href="#" class="active">▶ DEV TRACKER</a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- HEADER -->
+    <div class="page-header">
+        <h1>DEV TRACKER</h1>
+        <div class="sub">Prioritas · History · Plan · Rekomendasi — <span id="dev-count">25</span> project dalam pengembangan</div>
+    </div>
+
+    <!-- STAT BAR -->
+    <div class="statbar">
+        <div class="stat-card"><div class="num" id="s-active">0</div><div class="lbl">Aktif</div></div>
+        <div class="stat-card"><div class="num" id="s-staging">0</div><div class="lbl">Staging</div></div>
+        <div class="stat-card"><div class="num" id="s-paused">0</div><div class="lbl">Paused</div></div>
+        <div class="stat-card"><div class="num" id="s-total">0</div><div class="lbl">Total Dev</div></div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <button onclick="toggleAll()">[ ⋮ ] Expand All</button>
+        <button onclick="collapseAll()">[ △ ] Collapse All</button>
+        <button onclick="filterActive()">[ ▶ ] Active Only</button>
+        <button onclick="filterAll()">[ ⊞ ] Show All</button>
+    </div>
+
+    <!-- PROJECTS -->
+    <div id="project-list"></div>
+</div>
+
+<script>
+    // ============================================================
+    // DATA — 25 Development Projects with History, Plan, Recommendations
+    // ============================================================
+    const DEV_PROJECTS = [
+        // ===== 1. AI & DEVELOPER TOOLING =====
+        {
+            icon:'△', name:'Flame-ADE', status:'active',
+            tags:['Rust','Tauri','React','Terminal','AI'],
+            repo:'https://github.com/Niumination/Flame-ADE',
+            history:[
+                {date:'2026 — Q1',text:'Konsep awal: AI-native terminal emulator sub-10MB. Ide dari frustrasi dengan bloat IDE modern.'},
+                {date:'2026 — Q2',text:'Prototype Tauri 2 + Rust + React 19. BYOK AI, OS keychain, zero telemetry. Target macOS Tahoe 26.5.'},
+                {date:'2026 — Current',text:'Pengembangan core terminal emulator. Integrasi multi-provider LLM (OpenAI, Anthropic, OpenRouter).'},
+            ],
+            plan:[
+                'Selesaikan core terminal rendering (Rust + webview)',
+                'Plugin system untuk ekstensi AI custom',
+                'Multi-session tabs + session persistence',
+                'Package manager built-in (niupkg?)',
+                'Rilis alpha — public beta di GitHub Releases'
+            ],
+            recommendations:[
+                {text:'Fokus konsolidasi: Flame-ADE dan terax-ai punya overlap ~70%. Gabung atau bedakan use case secara tegas.',priority:'high'},
+                {text:'Gunakan GitHub Projects / Milestones untuk tracking progress publik — biar kontributor tertarik.',priority:'high'},
+                {text:'Siapkan documentation-first approach: ARCHITECTURE.md + CONTRIBUTING.md sebelum rilis publik.',priority:'mid'},
+                {text:'Benchmark performa vs Warp, Hyper, iTerm2 — publikasikan hasilnya sebagai blog post / dev.to.',priority:'low'},
+                {text:'Integrasi dengan Niumination Portal sebagai dashboard monitoring ADE instances.',priority:'low'}
+            ]
+        },
+        {
+            icon:'△', name:'terax-ai', status:'paused',
+            tags:['Rust','Tauri','React','Terminal','AI'],
+            repo:'https://github.com/Niumination/terax-ai',
+            history:[
+                {date:'2026 — Q1',text:'Terinspirasi dari proyek ADE open-source. Mulai sebagai eksperimen lightweight terminal.'},
+                {date:'2026 — Q2',text:'Berhasil mencapai ~7MB binary size. Stack Rust + Tauri + React. Fitur dasar typing + output rendering.'},
+                {date:'2026 — Current',text:'Ditunda — fokus dialihkan ke Flame-ADE yang lebih mature secara arsitektur.'},
+            ],
+            plan:[
+                'Keputusan: merge ke Flame-ADE atau jalan sendiri sebagai "minimal edition"',
+                'Jika jalan sendiri: fokus sebagai lightweight demo / POC untuk ADE concept',
+                'Jika merge: port fitur unik (jika ada) ke Flame-ADE'
+            ],
+            recommendations:[
+                {text:'Evaluasi make-or-break: 2 proyek ADE parallel menghabiskan energi. Dokumentasi perbedaan teknis, lalu ambil keputusan.',priority:'high'},
+                {text:'Jika dipertahankan, positioning sebagai "ADE lite" untuk resource-constrained environment (VPS, Raspberry Pi).',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'flame-code', status:'active',
+            tags:['AI','Code','Experiment','TypeScript'],
+            repo:'https://github.com/Niumination/flame-code',
+            history:[
+                {date:'2026 — Q1',text:'"My First Build, Using AI" — proyek pertama yang fully dibangun dengan bantuan AI coding agent.'},
+                {date:'2026 — Q2',text:'Eksperimen dengan Cursor, Claude Code, dan ContinueDev. Belajar pattern AI-assisted development.'},
+                {date:'2026 — Current',text:'Iterasi cepat: terus bereksperimen dengan berbagai pendekatan AI coding.'},
+            ],
+            plan:[
+                'Dokumentasi perjalanan: write-up tentang apa yang berhasil vs tidak dalam AI-assisted coding',
+                'Template boilerplate untuk rapid prototyping dengan AI',
+                'Benchmark berbagai AI coding tools (Cursor, Claude Code, Copilot, Continue)'
+            ],
+            recommendations:[
+                {text:'Transformasi menjadi blog/series: "My First Build" punya nilai storytelling tinggi. Publikasikan sebagai artikel dev.to, Twitter thread.',priority:'high'},
+                {text:'Buat repo template dari hasil eksperimen — biar orang lain bisa reproduce learning path yang sama.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'jcode', status:'active',
+            tags:['AI','Agent','Framework'],
+            repo:'https://github.com/Niumination/jcode',
+            history:[
+                {date:'2026 — Q1',text:'Ide Coding Agent Harness — framework untuk orchestrasi AI coding agents.'},
+                {date:'2026 — Q2',text:'Prototyping multi-agent workflow. Integrasi dengan local LLM + cloud API.'},
+            ],
+            plan:[
+                'Definisi API: agent input/output protocol',
+                'Plugin system untuk custom tools & MCP server integration',
+                'Integrasi langsung dengan Flame-ADE sebagai agent engine'
+            ],
+            recommendations:[
+                {text:'Aliansi dengan ClaudeCode/claw-code — jangan buat ulang yang sudah ada. Fork dan extend.',priority:'high'},
+                {text:'Gunakan MCP (Model Context Protocol) sebagai standard agent-tool communication.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'skills', status:'active',
+            tags:['Skills','Claude','AI','Config'],
+            repo:'https://github.com/Niumination/skills',
+            history:[
+                {date:'2026 — Q2',text:'Direktori skills Claude Code dari .claude — dibagikan sebagai open-source. Skills for Real Engineers.'},
+            ],
+            plan:[
+                'Kurasi skills yang benar-benar reusable',
+                'Dokumentasi cara pakai setiap skill',
+                'Integrasi dengan jcode sebagai skill registry default',
+                'Community contributions via PR'
+            ],
+            recommendations:[
+                {text:'Buat skill template + validator agar kontribusi community terstandarisasi.',priority:'high'},
+                {text:'Host GitHub Pages sebagai skill marketplace / searchable registry.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'ClaudeCode / claw-code', status:'staging',
+            tags:['Python','Rust','CLI','AI','LLM'],
+            path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ClaudeLeak/claudecode/',
+            history:[
+                {date:'26 Apr 2026',text:'Fork pertama dari claudecode (soongenwong) — eksplorasi multi-agent system.'},
+                {date:'2026 — Mei',text:'Clone kedua dari ultraworkers/claw-code — pendekatan berbeda, Rust-based.'},
+                {date:'2026 — Current',text:'Dua fork berbeda sumber. Eksplorasi multi-provider LLM, multi-agent Python.'},
+            ],
+            plan:[
+                'Pilih satu fork sebagai base code — atau merge feature dari keduanya',
+                'Dockerize untuk portabilitas lintas OS',
+                'Integrasi dengan disunday (Discord controller) untuk remote agent management'
+            ],
+            recommendations:[
+                {text:'Konsolidasi: dua fork claudecode/claw-code membingungkan. Pilih satu primary, archive yang lain.',priority:'high'},
+                {text:'Containerize + publish ke Docker Hub — biar bisa run di VPS / server manapun.',priority:'high'},
+                {text:'Integrasi dengan Niumination Portal sebagai backend agent manager.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'disunday', status:'active',
+            tags:['Discord','AI','Bot','opencode'],
+            repo:'https://github.com/Niumination/disunday',
+            history:[
+                {date:'2026 — Q2',text:'Fork dari disunday — Discord bridge untuk opencode. Kontrol AI coding via Discord.'},
+            ],
+            plan:[
+                'Bridge ke semua AI coding tool yang dipakai (Claude Code, Codex, OpenCode)',
+                'Multi-channel support untuk multi-project',
+                'Persistent session management'
+            ],
+            recommendations:[
+                {text:'Killer feature: jadwalkan AI task via Discord command + cron. "disunday run task-123 at 9am"',priority:'high'},
+                {text:'Integrasi dengan cron/automation sistem Hermes Agent untuk scheduled AI tasks.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'G0DM0D3', status:'active',
+            tags:['AI','Chat','Uncensored'],
+            repo:'https://github.com/Niumination/G0DM0D3',
+            history:[
+                {date:'2026',text:'Fork project — "LIBERATED AI CHAT". Eksperimen dengan mode AI chat unrestricted.'},
+            ],
+            plan:[
+                'Self-host option dengan local LLM (llama.cpp, Ollama)',
+                'Multi-model routing: uncensored local + censored cloud'
+            ],
+            recommendations:[
+                {text:'Bedakan positioning dari AI chat mainstream — fokus ke developer use case (code generation tanpa filter).',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'free-vps', status:'active',
+            tags:['VPS','Cloud','DevOps'],
+            repo:'https://github.com/Niumination/free-vps',
+            history:[
+                {date:'2026',text:'Project setup VPS menggunakan free tier cloud providers.'},
+            ],
+            plan:[
+                'Dokumentasi lengkap free tier: Oracle, GCP, AWS, Azure',
+                'Automation script provisioning (Terraform/Ansible)',
+                'Use case: hosting AI agents, Discord bots, portal apps'
+            ],
+            recommendations:[
+                {text:'Buat satu-click deployment script — siapa pun bisa deploy AI stack di free VPS dalam 5 menit.',priority:'high'},
+                {text:'Integrasi dengan jcode/ClaudeCode untuk remote agent hosting.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'Free-Claude-Opus', status:'paused',
+            tags:['AI','Claude','Free'],
+            repo:'https://github.com/Niumination/Free-Claude-Opus',
+            history:[
+                {date:'2026',text:'Fork — eksperimen akses gratis ke Claude Opus. Metode bypass / free tier.'},
+            ],
+            plan:[
+                'Evaluasi legalitas & sustainability metode',
+                'Alternatif: gunakan OpenRouter / API proxy yang legitimate'
+            ],
+            recommendations:[
+                {text:'Risiko tinggi — metode bypass API rentan terminator akun. Migrasi ke solusi legitimate (OpenRouter, self-host).',priority:'high'},
+                {text:'Dokumentasi sebagai "AI cost optimization guide" daripada "free hack".',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'Continue-Agent', status:'paused',
+            tags:['AI','Continue','Agent'],
+            repo:'https://github.com/Niumination/Continue-Agent',
+            history:[
+                {date:'2026',text:'Project kosong (0KB) — ide awal untuk integrasi Continue agent.'},
+            ],
+            plan:[
+                'Definisi use case: Continue sebagai local AI coding assistant',
+                'Integrasi dengan custom MCP servers'
+            ],
+            recommendations:[
+                {text:'Butuh kickstart — define satu use case konkret dulu sebelum scale.',priority:'high'}
+            ]
+        },
+        {
+            icon:'△', name:'cursor-free-vip', status:'active',
+            tags:['Cursor','AI','VIP','Tool'],
+            repo:'https://github.com/Niumination/cursor-free-vip',
+            history:[
+                {date:'2026',text:'Fork — tool reset MachineID Cursor AI. Bypass trial limit. Based on open-source bypass methods.'},
+            ],
+            plan:[
+                'Auto-update untuk mendeteksi versi Cursor terbaru',
+                'GUI wrapper (opsional) untuk non-tech users'
+            ],
+            recommendations:[
+                {text:'High risk — melanggar ToS Cursor. Dokumentasi sebagai "educational purposes only" jelas.',priority:'high'},
+                {text:'Buat alternatif legitimate: gunakan VSCode + Continue plugin sebagai free alternative.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'unlimited-claude-AI', status:'active',
+            tags:['AI','Claude','Free','Unlimited'],
+            repo:'https://github.com/Niumination/unlimited-claude-AI',
+            history:[
+                {date:'2026',text:'Fork — "Claude AI unlimited, no backend, no server costs, 100% free".'},
+            ],
+            plan:[
+                'Evaluasi metode yang digunakan (frontend-only bypass?)',
+                'Dokumentasi limitations & risks'
+            ],
+            recommendations:[
+                {text:'Sama dengan Free-Claude-Opus — risiko terminator akun. Dokumentasi transparan.',priority:'high'}
+            ]
+        },
+        {
+            icon:'△', name:'Activate-Office-365', status:'active',
+            tags:['Office','Windows','Tool'],
+            repo:'https://github.com/Niumination/Activate-Office-365-on-Windows-10-11',
+            history:[
+                {date:'2026',text:'Fork — aktivasi Office 365 di Windows. Tool utility.'},
+            ],
+            plan:[
+                'Update untuk Office 2026 compatibility',
+                'Auto-detection Office version + recommended activation method'
+            ],
+            recommendations:[
+                {text:'Untuk penggunaan personal saja — tidak direkomendasikan untuk production/enterprise.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'△', name:'docker-mcp-tutorial', status:'active',
+            tags:['Docker','MCP','Tutorial'],
+            repo:'https://github.com/Niumination/docker-mcp-tutorial',
+            history:[
+                {date:'2026',text:'Fork tutorial membangun MCP server dengan Docker — dari NetworkChuck.'},
+            ],
+            plan:[
+                'Translate/Praktik langsung semua contoh',
+                'Buat versi yang sudah teruji + catatan pribadi',
+                'Kustomisasi: MCP server untuk Niumination stack'
+            ],
+            recommendations:[
+                {text:'Dokumentasi pengalaman belajar MCP — "My MCP Journey" jadi konten bagus untuk dev.to.',priority:'mid'},
+                {text:'Implementasi MCP nyata untuk project lain (jcode, Flame-ADE) sebagai use case konkret.',priority:'high'}
+            ]
+        },
+        {
+            icon:'△', name:'mcp-for-beginners', status:'active',
+            tags:['MCP','Microsoft','Curriculum','AI'],
+            repo:'https://github.com/Niumination/mcp-for-beginners-Microsoft',
+            history:[
+                {date:'2026',text:'Fork — open-source curriculum MCP fundamentals dari Microsoft. ~2GB full materials.'},
+            ],
+            plan:[
+                'Studi kurikulum secara sistematis — module per module',
+                'Implementasi output: MCP server untuk tools lokal',
+                'Integrasi dengan Hermes Agent MCP client'
+            ],
+            recommendations:[
+                {text:'Prioritas tinggi: MCP adalah standard masa depan AI-tool integration. Kuasai ini dan implementasi di project lain.',priority:'high'},
+                {text:'Buat ringkasan eksekutif dari kurikulum ini — biar bisa dipahami tanpa baca semua 2GB.',priority:'mid'}
+            ]
+        },
+
+        // ===== 2. GOVERNMENT TECH (SPBE) =====
+        {
+            icon:'☪', name:'Gayo Mengaji', status:'active',
+            tags:['Flutter','Node.js','PostgreSQL','Mobile'],
+            path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/Aplikasi Gayo Mengaji/',
+            history:[
+                {date:'5 Apr 2026',text:'Project dimulai. Dokumentasi resmi sistem dibuat (dokumentasi-resmi-sistem.md).'},
+                {date:'14 Apr 2026',text:'Roadmap lengkap: Gayo Mengaji Roadmap — 4 Section.'},
+                {date:'20 Apr 2026',text:'Implementation plan selesai. Design screens di Figma (stitch_login_screen.zip).'},
+                {date:'Apr 2026',text:'Section 1 selesai: landing page, login, dan fitur dasar. Hosting dan CI/CD di Vercel + Railway.'},
+                {date:'Mei 2026',text:'Workflow tracking aktif — development berjalan. Target: ASN Aceh Tengah sebagai user base.'},
+            ],
+            plan:[
+                'Section 2: Dashboard utama + tilawah harian + setoran hafalan',
+                'Section 3: Fitur peringkat, laporan, notifikasi',
+                'Section 4: Admin dashboard, monitoring, ekspor data',
+                'Integrasi dengan SPBE Aceh Tengah (SSO, data ASN)',
+                'Deploy ke Play Store + App Store untuk ASN',
+                'Mode offline untuk daerah tanpa sinyal'
+            ],
+            recommendations:[
+                {text:'Prioritas #1: ini project paling konkret dengan user real (ASN Aceh Tengah). Alokasi waktu terbanyak.',priority:'high'},
+                {text:'Integrasi SPBE SSO harus dari awal — jangan retrofit. Biar terintegrasi dengan ekosistem Diskominfo.',priority:'high'},
+                {text:'Flutter untuk cross-platform (Android+iOS) — pastikan build untuk dua platform sekaligus.',priority:'high'},
+                {text:'Gamification: leaderboard ASN, badge tilawah, streak — boost engagement.',priority:'mid'},
+                {text:'Backup data offline dengan SQLite sync ke PostgreSQL saat online — untuk daerah pelosok Aceh Tengah.',priority:'high'},
+                {text:'Kolaborasi dengan Diskominfo untuk sosialisasi ke OPD lain.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'⊚', name:'Niumination Portal (Fullstack)', status:'active',
+            tags:['React','Express','Vite','Fullstack'],
+            path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/niumination-portal/',
+            history:[
+                {date:'28 Apr 2026',text:'Project dimulai. Frontend React+Vite, backend Node.js/Express.'},
+                {date:'Apr-Mei 2026',text:'Dashboard IPD, task tracker, SPBE module. NiuDesign system (DESIGN-linear.app.md).'},
+                {date:'Current',text:'Lanjut development — perlu penyelesaian fitur core.'},
+            ],
+            plan:[
+                'Complete dashboard IPD dengan real data',
+                'User management + role-based access control (RBAC)',
+                'Task management dengan assignee + deadline',
+                'SPBE module: evaluasi, rekap, laporan',
+                'Arsip dokumen + search',
+                'Responsive untuk mobile'
+            ],
+            recommendations:[
+                {text:'Prioritas #2: portal ini jadi wajah digital Diskominfo. Selesaikan fitur inti sebelum tambah fitur baru.',priority:'high'},
+                {text:'Gunakan React Query / TanStack Query untuk state management — kurangi boilerplate.',priority:'mid'},
+                {text:'Implementasi role-based access (Admin, OPD, ASN) dari awal — retrofit RBAC itu sakit.',priority:'high'},
+                {text:'Integrasi real-time WebSocket untuk notifikasi dan update dashboard langsung.',priority:'mid'},
+                {text:'Dockerize untuk deployment mudah ke VPS / server Diskominfo.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'⎔', name:'kms-spbe', status:'active',
+            tags:['KMS','SPBE','GovTech'],
+            repo:'https://github.com/Niumination/kms-spbe',
+            history:[
+                {date:'2026',text:'Knowledge Management System untuk SPBE. TypeScript + React.'},
+            ],
+            plan:[
+                'Knowledge base artikel & dokumentasi SPBE',
+                'Search full-text dengan tagging system',
+                'Version control untuk dokumen kebijakan',
+                'Integrasi dengan portal Niumination Portal'
+            ],
+            recommendations:[
+                {text:'Gunakan dokumentasi dari ASN Workspace Knowledge Base.xlsx sebagai seed data.',priority:'high'},
+                {text:'Integrasi SSO dengan portal utama — satu login untuk semua.',priority:'high'}
+            ]
+        },
+        {
+            icon:'⎔', name:'SPBE-DevOps-Academy', status:'paused',
+            tags:['DevOps','SPBE','Academy'],
+            repo:'https://github.com/Niumination/SPBE-DevOps-Academy',
+            history:[
+                {date:'2026',text:'Akademi DevOps untuk implementasi SPBE. Materi pembelajaran.'},
+            ],
+            plan:[
+                'Kurikulum DevOps untuk instansi pemerintah',
+                'Panduan praktis: Git, CI/CD, Docker, monitoring',
+                'Integrasi dengan kms-spbe sebagai LMS'
+            ],
+            recommendations:[
+                {text:'Konten bagus untuk capacity building ASN. Kolaborasi dengan Diskominfo untuk internal training.',priority:'mid'},
+                {text:'Buat module singkat (30 menit per module) — ASN sibuk, waktu belajar terbatas.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'⎔', name:'Diskominfo-Web', status:'paused',
+            tags:['Web','Kominfo','GovTech'],
+            repo:'https://github.com/Niumination/Diskominfo-Web',
+            history:[
+                {date:'2026',text:'Alternatif website Diskominfo Aceh Tengah. HTML + CSS.'},
+            ],
+            plan:[
+                'Keputusan: lanjut sebagai redesign atau merge ke Niumination Portal',
+                'Jika lanjut: modern UI, informasi publik, berita, layanan'
+            ],
+            recommendations:[
+                {text:'Konsolidasi dengan Niumination Portal — jangan duplikasi effort. Portal bisa serve sebagai dashboard internal sekaligus public website.',priority:'high'}
+            ]
+        },
+        {
+            icon:'⎔', name:'Devs-Niu', status:'active',
+            tags:['Dev','Portfolio','Hub'],
+            repo:'https://github.com/Niumination/Devs-Niu',
+            history:[
+                {date:'2026',text:'Developer portfolio hub untuk semua project Niumination. Mulai dari 0KB.'},
+            ],
+            plan:[
+                'Landing page untuk portfolio developer',
+                'Showcase semua project dari dashboard Niu-Dash',
+                'Integrasi GitHub API untuk live stats'
+            ],
+            recommendations:[
+                {text:'Ini bisa jadi "front door" untuk semua project — yang nge-link ke Niu-Dash, Portal, Gayo Mengaji, dll.',priority:'high'},
+                {text:'Gunakan data dari Niu-Dash sebagai CMS — jangan duplikasi data manual.',priority:'mid'}
+            ]
+        },
+        {
+            icon:'⎔', name:'Automata', status:'active',
+            tags:['Web','ASN','Talenta','Otomasi'],
+            repo:'https://github.com/Niumination/Automata',
+            history:[
+                {date:'2026',text:'Website Otomisasi Manajemen Talenta — Pranata Komputer Terampil Diskominfo.'},
+            ],
+            plan:[
+                'Sistem manajemen talenta ASN Pranata Komputer',
+                'Tracking kompetensi, sertifikasi, dan pengembangan karir',
+                'Integrasi dengan portal SPBE'
+            ],
+            recommendations:[
+                {text:'Beda dari Niu-LKH: ini untuk talent management, bukan daily report. Jelas bedakan scope.',priority:'high'},
+                {text:'Kolaborasi dengan BKPSDM Aceh Tengah untuk data riil kebutuhan ASN.',priority:'high'}
+            ]
+        },
+        // === SELF-HOSTED PROJECT TRACKER ===
+        {
+            icon:'⚡', name:'Niu-Dash', status:'active',
+            tags:['HTML','CSS','JS','Dashboard','Tracker'],
+            path:'/Users/zaryu/Documents/Niu-Dash/',
+            history:[
+                {date:'3 Jun 2026',text:'Proyek dimulai: dashboard dark web glitch theme untuk inventarisasi 75+ project Niumination.'},
+                {date:'3 Jun 2026',text:'DEV TRACKER (development.html) dibuat — history, plan, rekomendasi untuk 25 project dev.'},
+                {date:'3 Jun 2026',text:'Dua halaman saling terhubung (index.html ⟷ development.html). Navigasi dua arah.'},
+                {date:'Current',text:'Live di local. Belum di-host di GitHub Pages atau server publik.'},
+            ],
+            plan:[
+                'Hosting di GitHub Pages untuk akses online',
+                'Integrasi GitHub API untuk live stats repo (star, fork, last commit)',
+                'Auto-update project list dari GitHub API secara real-time',
+                'Filter & sort: by status, tech stack, tanggal',
+                'Dark mode toggle (walau sudah dark, variasi tema: amber/green/cyan)',
+                'Print-to-PDF untuk laporan offline'
+            ],
+            recommendations:[
+                {text:'Prioritas #1: hosting ke GitHub Pages — biar bisa diakses dari HP dan share ke orang lain.',priority:'high'},
+                {text:'Integrasi GitHub API agar project list auto-sync dengan repo — tidak perlu update manual tiap tambah repo.',priority:'high'},
+                {text:'Mobile responsive — dashboard harus nyaman di layar HP karena user akses via Telegram.',priority:'high'},
+                {text:'Search & filter: tambah filter tech stack dan status — biar cepat nemu project spesifik.',priority:'mid'},
+                {text:'Animation performance: optimasi particle canvas untuk device dengan GPU lemah.',priority:'low'},
+                {text:'Tambah mode "public share" — biar bisa ditampilkan ke kolega / rekan kerja tanpa data sensitif.',priority:'mid'}
+            ]
+        },
+    ];
+
+    // ============================================================
+    // RENDER
+    // ============================================================
+    function render(){
+        const list = document.getElementById('project-list');
+        let html = '';
+        let active=0, staging=0, paused=0;
+        DEV_PROJECTS.forEach((p,i)=>{
+            if(p.status==='active') active++;
+            else if(p.status==='staging') staging++;
+            else if(p.status==='paused') paused++;
+
+            const statusClass = p.status==='active'?'status-active':p.status==='staging'?'status-staging':'status-paused';
+            const statusLabel = p.status==='active'?'▶ ACTIVE':p.status==='staging'?'⟐ STAGING':'◌ PAUSED';
+
+            // Build timeline
+            let tlHtml = '';
+            if(p.history && p.history.length){
+                tlHtml = '<div class="section"><h3><span class="hl hl-cyan"></span> HISTORY</h3><div class="timeline">';
+                p.history.forEach(h=>{
+                    tlHtml += `<div class="tl-item"><div class="tl-date">${h.date}</div><div class="tl-text">${h.text}</div></div>`;
+                });
+                tlHtml += '</div></div>';
+            }
+
+            // Build plan
+            let planHtml = '';
+            if(p.plan && p.plan.length){
+                planHtml = '<div class="section"><h3><span class="hl hl-green"></span> PLAN / ROADMAP</h3><ul>';
+                p.plan.forEach(pl=>{ planHtml += `<li>${pl}</li>`; });
+                planHtml += '</ul></div>';
+            }
+
+            // Build recommendations
+            let recHtml = '';
+            if(p.recommendations && p.recommendations.length){
+                recHtml = '<div class="section"><h3><span class="hl hl-red"></span> REKOMENDASI PERBAIKAN</h3><div class="rec-grid">';
+                p.recommendations.forEach(r=>{
+                    const prio = r.priority==='high'?'prio-high':r.priority==='mid'?'prio-mid':'prio-low';
+                    const prioLabel = r.priority==='high'?'⚠ PRIORITAS':r.priority==='mid'?'◆ PENTING':'▸ SARAN';
+                    recHtml += `<div class="rec-item ${prio}"><div class="rec-prio">${prioLabel}</div>${r.text}</div>`;
+                });
+                recHtml += '</div></div>';
+            }
+
+            // Link
+            const link = p.repo || p.path || '#';
+            const linkLabel = p.repo ? 'GitHub' : 'Lokal';
+
+            html += `
+                <div class="proj-card" data-status="${p.status}" data-index="${i}">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <div class="icon">${p.icon}</div>
+                        <div class="info">
+                            <h2>${p.name} <a href="${link}" target="_blank" style="color:var(--text-dim);font-size:.65rem;text-decoration:none;opacity:.6;font-weight:400">[${linkLabel}]</a></h2>
+                            <div class="tags">${p.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+                        </div>
+                        <div class="status ${statusClass}">${statusLabel}</div>
+                        <div class="expand-icon">▶</div>
+                    </div>
+                    <div class="card-body">
+                        ${tlHtml}
+                        ${planHtml}
+                        ${recHtml}
+                    </div>
+                </div>
+            `;
+        });
+        list.innerHTML = html;
+
+        document.getElementById('s-active').textContent = active;
+        document.getElementById('s-staging').textContent = staging;
+        document.getElementById('s-paused').textContent = paused;
+        document.getElementById('s-total').textContent = DEV_PROJECTS.length;
+        document.getElementById('dev-count').textContent = DEV_PROJECTS.length;
+    }
+
+    function toggleCard(header){
+        const card = header.closest('.proj-card');
+        card.classList.toggle('expanded');
+    }
+
+    function toggleAll(){
+        document.querySelectorAll('.proj-card').forEach(c=>c.classList.add('expanded'));
+    }
+
+    function collapseAll(){
+        document.querySelectorAll('.proj-card').forEach(c=>c.classList.remove('expanded'));
+    }
+
+    function filterAll(){
+        document.querySelectorAll('.proj-card').forEach(c=>c.style.display='');
+    }
+
+    function filterActive(){
+        document.querySelectorAll('.proj-card').forEach(c=>{
+            c.style.display = c.dataset.status === 'active' ? '' : 'none';
+        });
+    }
+
+    render();
+</script>
+</body>
+</html>

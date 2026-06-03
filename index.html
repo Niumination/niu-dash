@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIU-DASH // DARK NEXUS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== RESET & BASE ========== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        :root {
+            --bg-primary: #050508;
+            --bg-secondary: #0a0a14;
+            --bg-card: #0d0d1a;
+            --bg-card-hover: #12122a;
+            --border: #1a1a3a;
+            --border-glow: #00fff2;
+            --cyan: #00fff2;
+            --cyan-dim: rgba(0,255,242,0.3);
+            --red: #ff0040;
+            --red-dim: rgba(255,0,64,0.3);
+            --magenta: #b000ff;
+            --magenta-dim: rgba(176,0,255,0.3);
+            --green: #00ff88;
+            --amber: #ffaa00;
+            --text-primary: #e8e8f0;
+            --text-secondary: #8888aa;
+            --text-muted: #55557a;
+            --glitch-blue: #0066ff;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ========== CRT SCANLINES ========== */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.08) 2px,
+                rgba(0,0,0,0.08) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ========== ANIMATED BACKGROUND ========== */
+        #particle-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* ========== GRID OVERLAY ========== */
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0,255,242,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,242,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ========== SCROLLBAR ========== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
+
+        /* ========== CONTAINER ========== */
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ========== TERMINAL BAR ========== */
+        .terminal-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 32px;
+            background: rgba(5,5,8,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 100;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+        .terminal-bar .left { display: flex; align-items: center; gap: 12px; }
+        .terminal-bar .dots { display: flex; gap: 6px; }
+        .terminal-bar .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .terminal-bar .dot.r { background: #ff5f56; }
+        .terminal-bar .dot.y { background: #ffbd2e; }
+        .terminal-bar .dot.g { background: #27c93f; }
+        .terminal-bar .title { color: var(--text-secondary); letter-spacing: 1px; }
+        .terminal-bar .title span { color: var(--cyan); }
+        .terminal-bar .right { color: var(--text-muted); font-size: 10px; }
+        .terminal-bar .right .blink { animation: blink 1s step-end infinite; }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* ========== HEADER ========== */
+        header {
+            padding: 80px 0 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .glitch-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 72px;
+            letter-spacing: -3px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            color: var(--text-primary);
+            text-shadow: 0 0 30px rgba(0,255,242,0.3);
+        }
+        .logo .accent { color: var(--cyan); }
+        .logo .slash { color: var(--red); margin: 0 4px; }
+
+        /* Glitch effect */
+        .glitch {
+            position: relative;
+        }
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+        .glitch::before {
+            color: var(--glitch-blue);
+            z-index: -1;
+            animation: glitch-1 3s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            color: var(--red);
+            z-index: -2;
+            animation: glitch-2 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-1 {
+            0%, 90%, 100% { transform: translate(0); opacity: 0; }
+            91% { transform: translate(-3px, 2px); opacity: 0.8; }
+            92% { transform: translate(3px, -1px); opacity: 0.6; }
+            93% { transform: translate(-1px, 3px); opacity: 0; }
+        }
+        @keyframes glitch-2 {
+            0%, 85%, 100% { transform: translate(0); opacity: 0; }
+            86% { transform: translate(2px, -2px); opacity: 0.7; }
+            87% { transform: translate(-4px, 1px); opacity: 0.4; }
+            88% { transform: translate(2px, 2px); opacity: 0; }
+        }
+
+        .tagline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .tagline .highlight {
+            color: var(--cyan);
+            animation: pulse-text 2s ease-in-out infinite;
+        }
+        @keyframes pulse-text {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .divider-line {
+            max-width: 200px;
+            height: 1px;
+            margin: 24px auto 0;
+            background: linear-gradient(90deg, transparent, var(--cyan), var(--red), transparent);
+        }
+
+        /* ========== STATUS BAR ========== */
+        .status-bar {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 32px 0;
+        }
+        .stat-card {
+            background: rgba(13,13,26,0.8);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 28px;
+            text-align: center;
+            min-width: 120px;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover {
+            border-color: var(--cyan-dim);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0,255,242,0.1);
+        }
+        .stat-card .number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .stat-card .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        .stat-card .number.green { color: var(--green); }
+        .stat-card .number.cyan { color: var(--cyan); }
+        .stat-card .number.amber { color: var(--amber); }
+        .stat-card .number.red { color: var(--red); }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            opacity: 0.6;
+        }
+        .stat-card:nth-child(1)::before { background: var(--green); }
+        .stat-card:nth-child(2)::before { background: var(--cyan); }
+        .stat-card:nth-child(3)::before { background: var(--amber); }
+        .stat-card:nth-child(4)::before { background: var(--red); }
+
+        /* ========== SEARCH BAR ========== */
+        .search-bar {
+            position: relative;
+            max-width: 480px;
+            margin: 0 auto 40px;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: rgba(13,13,26,0.8);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+        .search-bar input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0,255,242,0.15);
+        }
+        .search-bar input::placeholder {
+            color: var(--text-muted);
+        }
+        .search-bar .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        /* ========== SECTION TITLE ========== */
+        .section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title .badge {
+            font-size: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 8px;
+        }
+        .section-title .badge.green { color: var(--green); border-color: rgba(0,255,136,0.3); }
+        .section-title .badge.cyan { color: var(--cyan); border-color: rgba(0,255,242,0.3); }
+        .section-title .badge.amber { color: var(--amber); border-color: rgba(255,170,0,0.3); }
+
+        /* ========== PROJECT GRID ========== */
+        .project-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        @media (min-width: 768px) { .project-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1100px) { .project-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        /* Column-specific colors */
+        .project-grid.ready .project-card { border-left: 3px solid var(--green); }
+        .project-grid.ready .project-card:hover { border-color: var(--green); box-shadow: 0 0 25px rgba(0,255,136,0.1); }
+        .project-grid.ready .status-tag { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+        
+        .project-grid.dev .project-card { border-left: 3px solid var(--cyan); }
+        .project-grid.dev .project-card:hover { border-color: var(--cyan); box-shadow: 0 0 25px rgba(0,255,242,0.1); }
+        .project-grid.dev .status-tag { background: rgba(0,255,242,0.15); color: var(--cyan); border: 1px solid rgba(0,255,242,0.3); }
+        
+        .project-grid.ideas .project-card { border-left: 3px solid var(--amber); }
+        .project-grid.ideas .project-card:hover { border-color: var(--amber); box-shadow: 0 0 25px rgba(255,170,0,0.1); }
+        .project-grid.ideas .status-tag { background: rgba(255,170,0,0.15); color: var(--amber); border: 1px solid rgba(255,170,0,0.3); }
+
+        .project-card {
+            background: rgba(13,13,26,0.7);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+        }
+        .project-card:hover {
+            transform: translateY(-4px);
+            background: var(--bg-card-hover);
+        }
+        .project-card .card-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(0,255,242,0.03), transparent 60%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .project-card:hover .card-glow { opacity: 1; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .card-header .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .project-card.ready .card-header .icon { background: rgba(0,255,136,0.12); }
+        .project-card.dev .card-header .icon { background: rgba(0,255,242,0.12); }
+        .project-card.ideas .card-header .icon { background: rgba(255,170,0,0.12); }
+
+        .status-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .card-body { position: relative; z-index: 1; }
+        .card-body h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+        .card-body .path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-body .desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        .card-tags .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(85,85,122,0.15);
+            color: var(--text-muted);
+            border: 1px solid rgba(85,85,122,0.2);
+            transition: all 0.2s ease;
+        }
+        .card-tags .tag:hover { color: var(--text-secondary); }
+
+        .card-footer {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(26,26,58,0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .card-footer .date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .card-footer .open-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .card-footer .open-btn:hover {
+            border-color: var(--cyan-dim);
+            color: var(--cyan);
+            background: rgba(0,255,242,0.08);
+        }
+
+        /* ========== GLITCH DIVIDER ========== */
+        .glitch-divider {
+            text-align: center;
+            padding: 32px 0;
+            position: relative;
+        }
+        .glitch-divider span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: var(--text-muted);
+            background: var(--bg-primary);
+            padding: 0 20px;
+            position: relative;
+        }
+        .glitch-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            padding: 40px 0 60px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+        footer .system-info {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 2;
+        }
+        footer .system-info .val { color: var(--text-secondary); }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .project-card { animation: fadeInUp 0.5s ease forwards; opacity: 0; }
+        .project-card:nth-child(1) { animation-delay: 0.05s; }
+        .project-card:nth-child(2) { animation-delay: 0.1s; }
+        .project-card:nth-child(3) { animation-delay: 0.15s; }
+        .project-card:nth-child(4) { animation-delay: 0.2s; }
+        .project-card:nth-child(5) { animation-delay: 0.25s; }
+        .project-card:nth-child(6) { animation-delay: 0.3s; }
+        .project-card:nth-child(7) { animation-delay: 0.35s; }
+        .project-card:nth-child(8) { animation-delay: 0.4s; }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 600px) {
+            .logo { font-size: 40px; }
+            .terminal-bar .right { display: none; }
+            .stat-card { min-width: 80px; padding: 12px 16px; }
+            .stat-card .number { font-size: 24px; }
+            .container { padding: 0 12px; }
+        }
+
+        /* ========== LOADING SCREEN ========== */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.6s ease;
+        }
+        #loading-screen.hidden { opacity: 0; pointer-events: none; }
+        .loader-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--cyan);
+            margin-bottom: 16px;
+            animation: pulse-text 1.5s ease-in-out infinite;
+        }
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--cyan), var(--magenta));
+            animation: load-fill 1.2s ease forwards;
+        }
+        @keyframes load-fill {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* ========== GLITCH OVERLAY ========== */
+        .glitch-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 9998;
+            background: 
+                linear-gradient(90deg, rgba(255,0,64,0.02) 0%, transparent 2%, transparent 98%, rgba(0,255,242,0.02) 100%);
+            animation: glitch-flicker 4s infinite;
+        }
+        @keyframes glitch-flicker {
+            0%, 95%, 100% { opacity: 0; }
+            96% { opacity: 1; }
+            97% { opacity: 0; }
+        }
+
+        /* No results state */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            display: none;
+        }
+        .no-results .emoji { font-size: 32px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+    <div class="loader-text">⟐ INITIALIZING DARK NEXUS ⟐</div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- GLITCH OVERLAY -->
+<div class="glitch-overlay"></div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- GRID OVERLAY -->
+<div class="grid-overlay"></div>
+
+<!-- TERMINAL BAR -->
+<div class="terminal-bar">
+    <div class="left">
+        <div class="dots">
+            <div class="dot r"></div>
+            <div class="dot y"></div>
+            <div class="dot g"></div>
+        </div>
+        <div class="title"><span>niu</span>@dash:~$</div>
+    </div>
+    <div class="right">
+        <a href="development.html" style="color:var(--cyan);text-decoration:none;font-size:.7rem;margin-right:1rem;font-weight:600;letter-spacing:.5px">▶ DEV TRACKER</a>
+        <span id="clock">--:--:--</span> <span class="blink">▌</span>
+    </div>
+</div>
+
+<!-- HEADER -->
+<div class="container">
+    <header>
+        <div class="glitch-wrapper">
+            <h1 class="logo glitch" data-text="NIU-DASH">
+                NIU<span class="slash">⚡</span>DASH
+            </h1>
+        </div>
+        <p class="tagline">
+            // <span class="highlight">teknologi tidak pernah berhenti</span> — semakin cepat, semakin dalam //
+        </p>
+        <div class="divider-line"></div>
+    </header>
+
+    <!-- STATS -->
+    <div class="status-bar" id="stats-bar">
+        <div class="stat-card">
+            <div class="number green" id="total-ready">0</div>
+            <div class="label">Ready</div>
+        </div>
+        <div class="stat-card">
+            <div class="number cyan" id="total-dev">0</div>
+            <div class="label">Development</div>
+        </div>
+        <div class="stat-card">
+            <div class="number amber" id="total-ideas">0</div>
+            <div class="label">Ideas</div>
+        </div>
+        <div class="stat-card">
+            <div class="number red" id="total-all">0</div>
+            <div class="label">Total Projects</div>
+        </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-bar">
+        <span class="icon">⌕</span>
+        <input type="text" id="search-input" placeholder="Cari proyek..." oninput="filterProjects()">
+    </div>
+
+    <!-- READY SECTION -->
+    <div class="section-title">
+        ⚡ READY <span class="badge green" id="ready-count">0</span>
+    </div>
+    <div class="project-grid ready" id="ready-grid"></div>
+
+    <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
+
+    <!-- DEV SECTION -->
+    <div class="section-title">
+        ⟐ DEVELOPMENT <span class="badge cyan" id="dev-count">0</span>
+    </div>
+    <div class="project-grid dev" id="dev-grid"></div>
+
+    <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
+
+    <!-- IDEAS SECTION -->
+    <div class="section-title">
+        ◇ IDEAS / PLANNING <span class="badge amber" id="ideas-count">0</span>
+    </div>
+    <div class="project-grid ideas" id="ideas-grid"></div>
+
+    <div class="no-results" id="no-results">
+        <div class="emoji">⚡</div>
+        <div>// no projects found //</div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="system-info">
+            <div>NIU-DASH // dark nexus v1.0</div>
+            <div><span class="val">host</span> :: macbook-pro.zaryu.local</div>
+            <div><span class="val">kernel</span> :: darwin 24.6.0</div>
+            <div><span class="val">uptime</span> :: <span id="uptime">--</span></div>
+            <div style="margin-top:8px;color:var(--text-muted);font-size:9px;">
+                ⟐ <span id="footer-year">2026</span> — all projects tracked. all systems nominal. ⟐
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script>
+    /* ========== PROJECT DATA ========== */
+    const PROJECTS = {
+        // === READY — Produk jadi / deployable / hosted ===
+        ready: [
+            // Local web UI
+            { icon:'◈', name:'Meum', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Documents-Mac/Mac-Project/Meum/index.html', desc:'Halaman welcome Matrix-style dengan animasi particle dan CRT effect.', tags:['HTML','CSS','Canvas','Matrix'], date:'24 Feb 2026' },
+            { icon:'⊞', name:'DevFlow / niu-portal', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/niu-portal/index.html', desc:'Landing page manajemen proyek dengan Linear Design System. Dark theme responsive.', tags:['HTML','CSS','JS','Linear DS'], date:'3 Mei 2026' },
+            { icon:'◆', name:'Portfolio 3D', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/portfolio-3d/index.html', desc:'Portofolio interaktif 3D dengan animasi modern.', tags:['HTML','CSS','JS','3D'], date:'10 Mei 2026' },
+            { icon:'◈', name:'Maze Game (Vite)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/claude-projects-or/maze-game/', desc:'Game maze HTML5 + Vite + React. Maze procedural generator.', tags:['HTML5','Vite','Game','React'], date:'3 Mei 2026' },
+            { icon:'⎔', name:'zhtop', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/zhtop/', desc:'Tool terminal Node.js untuk monitoring & visualisasi data via CLI.', tags:['Node.js','CLI','Terminal'], date:'10 Mei 2026' },
+            { icon:'⊚', name:'Niumination Portal — Diskominfo', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Rekomendasi-Aplikasi-ASN-Daerah.html', desc:'Portal Dinas Kominfo Aceh Tengah. Tailwind CSS, tracker IPD, SPBE, sidebar menu.', tags:['HTML','Tailwind','Portal','ASN'], date:'11 Mei 2026' },
+            { icon:'⌁', name:'CPUFriendFriend', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/CPUFriendFriend/', desc:'Python script optimasi power management Hackintosh — frequency vectors → kext.', tags:['Python','Hackintosh','CPU','Kext'], date:'14 Mei 2026' },
+            // GitHub web/startpage
+            { icon:'☆', name:'Niu-Startpage', path:'https://github.com/Niumination/Niu-Startpage', desc:'Gateway pribadi ke internet. Startpage minimal + search + bookmark.', tags:['HTML','Startpage','GitHub'], date:'2026' },
+            { icon:'☆', name:'zaryu.startpage', path:'https://github.com/Niumination/zaryu.startpage', desc:'Aesthetic startpage Catppuccin style, clean minimal, hosted GitHub Pages.', tags:['HTML','CSS','Catppuccin','Pages'], date:'2026' },
+            { icon:'☆', name:'NiuHomePage', path:'https://github.com/Niumination/NiuHomePage', desc:'Homepage personal — karena pengen punya homepage sendiri.', tags:['HTML','CSS','Homepage'], date:'2026' },
+            { icon:'☆', name:'SilentSDDM', path:'https://github.com/Niumination/SilentSDDM', desc:'SDDM theme highly customizable untuk Arch / Hyprland.', tags:['SDDM','Theme','Linux','QML'], date:'2026' },
+            { icon:'☆', name:'Maze-3D-Game', path:'https://github.com/Niumination/Maze-3D-Game---Web-Based', desc:'Game maze 3D berbasis web. Labyrinth interaktif dalam 3D.', tags:['Web','3D','Game','Maze'], date:'2026' },
+            { icon:'☆', name:'Niu-Cyber-Search-Engine', path:'https://github.com/Niumination/Niu-Cyber-Search-Engine', desc:'Cyber search engine app pertama. Tema cyber/dark.', tags:['Search','Web','Cyber'], date:'2026' },
+            { icon:'☆', name:'Niu-LKH', path:'https://github.com/Niumination/Niu-LKH', desc:'Laporan Kegiatan Harian — Afrizal Munthe. Pelaporan aktivitas digital.', tags:['Web','Laporan','ASN'], date:'2026' },
+            { icon:'☆', name:'niu-speedtest', path:'https://github.com/Niumination/niu-speedtest', desc:'Aplikasi speed test kecepatan jaringan berbasis Python.', tags:['Speedtest','Python','Network'], date:'2026' },
+            { icon:'☆', name:'Bella', path:'https://github.com/Niumination/Bella', desc:'"Bella is best" — project personal.', tags:['Project','Personal'], date:'2026' },
+            { icon:'☆', name:'DiskominfoAT', path:'https://github.com/Niumination/DiskominfoAT', desc:'Website Diskominfo Aceh Tengah. Dibangun dgn Cursor + ContinueDev.', tags:['Website','Kominfo','GovTech'], date:'2026' },
+            { icon:'☆', name:'Database-DiskominfoAT', path:'https://github.com/Niumination/Database-DiskominfoAT', desc:'Database untuk website DiskominfoAT — struktur & skema data.', tags:['Database','SQL','Kominfo'], date:'2026' },
+            { icon:'☆', name:'Rekapitulasi-SPBE', path:'https://github.com/Niumination/Rekapitulasi-SPBE', desc:'Aplikasi rekap SPBE (Sistem Pemerintahan Berbasis Elektronik).', tags:['SPBE','GovTech','Rekap'], date:'2026' },
+            { icon:'☆', name:'AuditTI-AT', path:'https://github.com/Niumination/AuditTI-AT', desc:'IT Procurement Audit Kabupaten Aceh Tengah pakai AI. Sumber dari LPSE.', tags:['Audit','LPSE','AI','GovTech'], date:'2026' },
+            { icon:'☆', name:'Prakom-Surgawi', path:'https://github.com/Niumination/Prakom-Surgawi', desc:'Anything you want — project Pranata Komputer.', tags:['Project','ASN','Prakom'], date:'2026' },
+            { icon:'☆', name:'cyb3rgh0u1.github.io', path:'https://github.com/Niumination/cyb3rgh0u1.github.io', desc:'GitHub Pages — cyber/ghoul themed.', tags:['Pages','Cyber','GitHub'], date:'2026' },
+            { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project — PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
+        ],
+        // === DEV — Sedang aktif dikerjakan / prototyping ===
+        dev: [
+            // Aplikasi lokal
+            { icon:'☪', name:'Gayo Mengaji', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/Aplikasi Gayo Mengaji/', desc:'Aplikasi Al-Qur\'an digital untuk ASN Aceh Tengah. Flutter + Node.js + PostgreSQL. Workflow & tracking aktif.', tags:['Flutter','Node.js','PostgreSQL','Mobile'], date:'5 Apr 2026' },
+            { icon:'⊚', name:'Niumination Portal (Fullstack)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/niumination-portal/', desc:'Portal React + Express. Dashboard IPD, task tracker, SPBE, arsip.', tags:['React','Express','Vite','Fullstack'], date:'28 Apr 2026' },
+            { icon:'⌘', name:'ClaudeCode / claw-code', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ClaudeLeak/claudecode/', desc:'AI coding agent Python/Rust. Multi-provider LLM, multi-agent system.', tags:['Python','Rust','CLI','AI','LLM'], date:'26 Apr 2026' },
+            // AI & Developer Tooling
+            { icon:'△', name:'Flame-ADE', path:'https://github.com/Niumination/Flame-ADE', desc:'AI-native terminal emulator ~7MB. Tauri 2 + Rust + React 19. BYOK AI, no telemetry, OS keychain.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
+            { icon:'△', name:'terax-ai', path:'https://github.com/Niumination/terax-ai', desc:'Lightweight AI terminal emulator ~7MB. Rust + Tauri + React. Alternatif minimal Flame-ADE.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
+            { icon:'△', name:'flame-code', path:'https://github.com/Niumination/flame-code', desc:'My First Build, Using AI — project eksperimen AI coding pertama.', tags:['AI','Code','Experiment','TypeScript'], date:'2026' },
+            { icon:'△', name:'jcode', path:'https://github.com/Niumination/jcode', desc:'Coding Agent Harness — framework AI coding agent.', tags:['AI','Agent','Framework'], date:'2026' },
+            { icon:'△', name:'skills', path:'https://github.com/Niumination/skills', desc:'Skills for Real Engineers — dari .claude directory langsung.', tags:['Skills','Claude','AI','Config'], date:'2026' },
+            { icon:'△', name:'G0DM0D3', path:'https://github.com/Niumination/G0DM0D3', desc:'LIBERATED AI CHAT — AI chat bebas tanpa batasan.', tags:['AI','Chat','Uncensored'], date:'2026' },
+            { icon:'△', name:'disunday', path:'https://github.com/Niumination/disunday', desc:'Kontrol opencode dari Discord. Kelola AI coding 24/7 via Discord.', tags:['Discord','AI','Bot','opencode'], date:'2026' },
+            { icon:'△', name:'free-vps', path:'https://github.com/Niumination/free-vps', desc:'Project VPS gratis. Setup cloud infrastructure free tier.', tags:['VPS','Cloud','DevOps'], date:'2026' },
+            { icon:'△', name:'Free-Claude-Opus', path:'https://github.com/Niumination/Free-Claude-Opus', desc:'Akses gratis Claude Opus — eksperimen free tier AI premium.', tags:['AI','Claude','Free'], date:'2026' },
+            { icon:'△', name:'Continue-Agent', path:'https://github.com/Niumination/Continue-Agent', desc:'Continue agent integration — AI coding assistant untuk editor.', tags:['AI','Continue','Agent'], date:'2026' },
+            { icon:'△', name:'cursor-free-vip', path:'https://github.com/Niumination/cursor-free-vip', desc:'Reset Cursor AI MachineID & Bypass Higher Token Limit. Cursor AI auto reset.', tags:['Cursor','AI','VIP','Tool'], date:'2026' },
+            { icon:'△', name:'unlimited-claude-AI', path:'https://github.com/Niumination/unlimited-claude-AI', desc:'Claude AI unlimited — no backend, no server costs, 100% free.', tags:['AI','Claude','Free','Unlimited'], date:'2026' },
+            { icon:'△', name:'Activate-Office-365', path:'https://github.com/Niumination/Activate-Office-365-on-Windows-10-11', desc:'Leverage the cloud — aktivasi Office 365 di Windows.', tags:['Office','Windows','Tool'], date:'2026' },
+            { icon:'△', name:'docker-mcp-tutorial', path:'https://github.com/Niumination/docker-mcp-tutorial', desc:'Tutorial lengkap membangun MCP server dengan Docker — dari NetworkChuck.', tags:['Docker','MCP','Tutorial'], date:'2026' },
+            { icon:'△', name:'mcp-for-beginners', path:'https://github.com/Niumination/mcp-for-beginners-Microsoft', desc:'Open-source curriculum MCP fundamentals — dari Microsoft. ~2GB.', tags:['MCP','Microsoft','Curriculum','AI'], date:'2026' },
+            // GovTech
+            { icon:'⎔', name:'Diskominfo-Web', path:'https://github.com/Niumination/Diskominfo-Web', desc:'Alternatif website Diskominfo Aceh Tengah.', tags:['Web','Kominfo','GovTech'], date:'2026' },
+            { icon:'⎔', name:'kms-spbe', path:'https://github.com/Niumination/kms-spbe', desc:'Knowledge Management System untuk SPBE.', tags:['KMS','SPBE','GovTech'], date:'2026' },
+            { icon:'⎔', name:'SPBE-DevOps-Academy', path:'https://github.com/Niumination/SPBE-DevOps-Academy', desc:'Akademi DevOps untuk SPBE — pembelajaran DevOps pemerintahan.', tags:['DevOps','SPBE','Academy'], date:'2026' },
+            { icon:'⎔', name:'Devs-Niu', path:'https://github.com/Niumination/Devs-Niu', desc:'Developer portfolio / hub untuk semua project Niumination.', tags:['Dev','Portfolio','Hub'], date:'2026' },
+            { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta — Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
+            // Self-hosted project tracker
+            { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Documents/Niu-Dash/index.html', desc:'Dark web glitch dashboard tracker — 75+ project terinventarisasi, DEV TRACKER, history & rekomendasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'3 Jun 2026' },
+        ],
+        // === IDEAS — Eksperimen, dotfiles, dokumentasi, konsep ===
+        ideas: [
+            // Lokal
+            { icon:'⎇', name:'Hackintosh ThinkPad X13', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Hackintosh-ThinkPad-X13-Yoga.md', desc:'Panduan optimasi Hackintosh ThinkPad X13 Yoga — OpenCore, SSDT, Kexts, macOS Sequoia.', tags:['Hackintosh','OpenCore','macOS','Guide'], date:'7 Mei 2026' },
+            { icon:'⊞', name:'Windows 11 Optimasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Windows11-ThinkPad-X13.md', desc:'Panduan optimasi Windows 11 ThinkPad X13 — debloat, registry, power plan.', tags:['Windows','Optimasi','Guide'], date:'7 Mei 2026' },
+            { icon:'⏣', name:'MySystem — Dokumentasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/MySystem.md', desc:'Spesifikasi lengkap MacBook Pro & perangkat lain.', tags:['Dokumentasi','Hardware','System'], date:'14 Mar 2026' },
+            { icon:'⌁', name:'OpenClaw — Setup Agent', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/git-clone/claw-code/', desc:'Setup OpenClaw AI agent untuk workflow coding.', tags:['AI','Agent','OpenClaw','Setup'], date:'26 Apr 2026' },
+            { icon:'⎔', name:'ASN Workspace — KB', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ASN_Workspace_Knowledge_Base.xlsx', desc:'Basis pengetahuan ASN — aplikasi, regulasi, workflow.', tags:['ASN','KB','Excel'], date:'11 Mei 2026' },
+            { icon:'△', name:'OpenCore EFI Configs', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/efi/', desc:'Koleksi EFI OpenCore Hackintosh — BACKUP-1574, READY-TO-UPDATE.', tags:['Hackintosh','OpenCore','EFI','Bootloader'], date:'14 Mei 2026' },
+            { icon:'⌂', name:'Baca — Repo GitHub', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/Baca/', desc:'Repo pribadi ryu-id/Baca. Satu commit awal.', tags:['GitHub','Repo','Idea'], date:'2 Apr 2026' },
+            // Hyprland / Desktop Ricing
+            { icon:'☆', name:'ryu-dots', path:'https://github.com/Niumination/ryu-dots', desc:'Arch Linux config lengkap — Hyprland + Illogical Impulse.', tags:['Arch','Hyprland','Dotfiles','Linux'], date:'2026' },
+            { icon:'☆', name:'dotfiles (1.6GB)', path:'https://github.com/Niumination/dotfiles', desc:'My Arch Dotfiles — 1.64GB full Arch config collection.', tags:['Arch','Dotfiles','Config'], date:'2026' },
+            { icon:'☆', name:'Zaryu-HyDE (1.3GB)', path:'https://github.com/Niumination/Zaryu-HyDE', desc:'Portable re-work hyprdots. Aesthetic, dynamic, minimal — 1.3GB.', tags:['Hyprland','Dotfiles','Zaryu','Config'], date:'2026' },
+            { icon:'☆', name:'hyprdots', path:'https://github.com/Niumination/hyprdots', desc:'Aesthetic dynamic dots untuk Arch Hyprland — ~1GB.', tags:['Hyprland','Dotfiles','Aesthetic'], date:'2026' },
+            { icon:'☆', name:'ZaryuHive', path:'https://github.com/Niumination/ZaryuHive', desc:'Zaryu Hive — environment config.', tags:['Config','Zaryu','Hive'], date:'2026' },
+            { icon:'☆', name:'RyuDE', path:'https://github.com/Niumination/RyuDE', desc:'Personal Desktop Environment based on HyDE-Project — C++.', tags:['Hyprland','DE','C++','Ryu'], date:'2026' },
+            { icon:'☆', name:'ryuland', path:'https://github.com/Niumination/ryuland', desc:'Hyprland ecosystem dots — modern, useful, halal.', tags:['Hyprland','Dotfiles','Islamic','Config'], date:'2026' },
+            { icon:'☆', name:'ryuland-dotfiles', path:'https://github.com/Niumination/ryuland-dotfiles', desc:'Rice built for usability — Hyprland config.', tags:['Hyprland','Rice','Dotfiles'], date:'2026' },
+            { icon:'☆', name:'ryushell', path:'https://github.com/Niumination/ryushell', desc:'Shell config — No waybar here! — GPL-3.0.', tags:['Shell','Config','Waybar'], date:'2026' },
+            { icon:'☆', name:'AnachonisticHypr', path:'https://github.com/Niumination/AnachonisticHypr', desc:'Anachronistic Hyprland config — Shell.', tags:['Hyprland','Shell','Config'], date:'2026' },
+            { icon:'☆', name:'hive-dotfiles', path:'https://github.com/Niumination/hive-dotfiles', desc:'Hive dotfiles — CSS config.', tags:['Dotfiles','CSS','Config'], date:'2026' },
+            { icon:'☆', name:'Axenide-Dotfiles', path:'https://github.com/Niumination/Axenide-Dotfiles', desc:'Axenide dotfiles — ~450MB.', tags:['Dotfiles','Config','Fork'], date:'2026' },
+            { icon:'☆', name:'Hyde-cli', path:'https://github.com/Niumination/Hyde-cli', desc:'HyDE CLI wrapper, tweaks, workarounds.', tags:['HyDE','CLI','Wrapper'], date:'2026' },
+            { icon:'☆', name:'hyprfloat', path:'https://github.com/Niumination/hyprfloat', desc:'Hyprland floating WM + workspace overview utility.', tags:['Hyprland','Floating','WM'], date:'2026' },
+            { icon:'☆', name:'hyprnix', path:'https://github.com/Niumination/hyprnix', desc:'Hyprland Nix config — Nix language.', tags:['Nix','Hyprland','Config'], date:'2026' },
+            { icon:'☆', name:'kaizen', path:'https://github.com/Niumination/kaizen', desc:'Productive desktop environment setup.', tags:['Desktop','Productivity','Config'], date:'2026' },
+            { icon:'☆', name:'matt-dotfiles', path:'https://github.com/Niumination/matt-dotfiles', desc:'Yet another aesthetic Hyprland Config.', tags:['Hyprland','Aesthetic','Dotfiles'], date:'2026' },
+            { icon:'☆', name:'agsv1-hyprpanel', path:'https://github.com/Niumination/agsv1-hyprpanel', desc:'AGS v1 Hyprpanel — TypeScript.', tags:['AGS','Hyprpanel','TypeScript'], date:'2026' },
+            { icon:'☆', name:'win11-dotfiles', path:'https://github.com/Niumination/win11-dotfiles', desc:'Windows 11 dotfiles & config — CSS.', tags:['Windows','Dotfiles','Config'], date:'2026' },
+            { icon:'☆', name:'Windots', path:'https://github.com/Niumination/Windots', desc:'Koleksi Windows dotfiles & configs pribadi.', tags:['Windows','Dotfiles','Config'], date:'2026' },
+            // Hardware & misc
+            { icon:'☆', name:'roboto_origin', path:'https://github.com/Niumination/roboto_origin', desc:'Fully Open-Source DIY Humanoid Robot — 750MB. Skala penuh, bilingual EN/CN.', tags:['Robot','Hardware','DIY','Open-Source'], date:'2026' },
+            { icon:'☆', name:'lmarena.github.io', path:'https://github.com/Niumination/lmarena.github.io', desc:'GitHub Pages untuk LM Arena — ~320MB.', tags:['Pages','LM','Arena'], date:'2026' },
+        ]
+    };
+
+    /* ========== RENDER ========== */
+    function renderProjects() {
+        ['ready', 'dev', 'ideas'].forEach(cat => {
+            const grid = document.getElementById(cat + '-grid');
+            const countEl = document.getElementById(cat + '-count');
+            grid.innerHTML = '';
+            PROJECTS[cat].forEach((p, i) => {
+                const card = document.createElement('div');
+                card.className = 'project-card ' + cat;
+                card.style.animationDelay = (i * 0.08) + 's';
+                card.innerHTML = `
+                    <div class="card-glow"></div>
+                    <div class="card-header">
+                        <div class="icon">${p.icon}</div>
+                        <span class="status-tag">${cat === 'ready' ? '▸ ready' : cat === 'dev' ? '⟐ dev' : '◇ idea'}</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>${p.name}</h3>
+                        <div class="path">${p.path}</div>
+                        <div class="desc">${p.desc}</div>
+                        <div class="card-tags">
+                            ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                        </div>
+                        <div class="card-footer">
+                            <span class="date">${p.date}</span>
+                            <a class="open-btn" href="file://${p.path}" target="_blank">▸ open</a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            countEl.textContent = PROJECTS[cat].length;
+        });
+
+        // Update stats
+        document.getElementById('total-ready').textContent = PROJECTS.ready.length;
+        document.getElementById('total-dev').textContent = PROJECTS.dev.length;
+        document.getElementById('total-ideas').textContent = PROJECTS.ideas.length;
+        total = PROJECTS.ready.length + PROJECTS.dev.length + PROJECTS.ideas.length;
+        document.getElementById('total-all').textContent = total;
+    }
+
+    /* ========== FILTER ========== */
+    function filterProjects() {
+        const q = document.getElementById('search-input').value.toLowerCase().trim();
+        let visible = 0;
+        
+        ['ready', 'dev', 'ideas'].forEach(cat => {
+            const grid = document.getElementById(cat + '-grid');
+            const cards = grid.querySelectorAll('.project-card');
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const match = !q || text.includes(q);
+                card.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+        });
+
+        document.getElementById('no-results').style.display = visible ? 'none' : 'block';
+    }
+
+    /* ========== PARTICLE SYSTEM ========== */
+    function initParticles() {
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let w, h, particles = [];
+        const COUNT = 60;
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.r = Math.random() * 2 + 0.5;
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > w) this.vx *= -1;
+                if (this.y < 0 || this.y > h) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 255, 242, ${this.alpha * 0.6})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < COUNT; i++) particles.push(new Particle());
+
+        function drawLines() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 180) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        const alpha = (1 - dist / 180) * 0.15;
+                        ctx.strokeStyle = `rgba(0, 255, 242, ${alpha})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawLines();
+            requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    /* ========== CLOCK ========== */
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').textContent = 
+            String(now.getHours()).padStart(2,'0') + ':' +
+            String(now.getMinutes()).padStart(2,'0') + ':' +
+            String(now.getSeconds()).padStart(2,'0');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    /* ========== UPTIME SIM ========== */
+    const bootTime = Date.now();
+    setInterval(() => {
+        const elapsed = Math.floor((Date.now() - bootTime) / 1000);
+        const h = String(Math.floor(elapsed / 3600)).padStart(2,'0');
+        const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2,'0');
+        const s = String(elapsed % 60).padStart(2,'0');
+        document.getElementById('uptime').textContent = `${h}:${m}:${s}`;
+    }, 1000);
+
+    /* ========== FOOTER YEAR ========== */
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    /* ========== INIT ========== */
+    window.addEventListener('DOMContentLoaded', () => {
+        renderProjects();
+        initParticles();
+        // Hide loading screen
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('hidden');
+        }, 1400);
+    });
+</script>
+
+</body>
+</html>
