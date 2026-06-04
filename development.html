@@ -4,16 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIU-DASH // DEV TRACKER</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700;800&family=Orbitron:wght@500;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         :root{
             --bg:#050508;--bg2:#0a0a14;--bg3:#12121f;
-            --cyan:#00fff2;--red:#ff0040;--magenta:#ff00aa;--green:#00ff88;
-            --dim:#2a2a3a;--text:#c0c0d0;--text-dim:#606080;
-            --glow-cyan:0 0 20px rgba(0,255,242,.15);
-            --glow-red:0 0 20px rgba(255,0,64,.12);
+            --cyan:#00fff2;--neon-cyan:#00fff2;--red:#ff0040;
+            --magenta:#b000ff;--neon-purple:#b000ff;--green:#00ff88;--neon-razer:#44d62c;
+            --dim:#2a2a3a;--text:#c0c0d0;--text-dim:#606080;--border:#1a1a3a;
+            --glow-cyan:0 0 8px rgba(0,255,242,.5),0 0 24px rgba(0,255,242,.2);
+            --glow-purple:0 0 8px rgba(176,0,255,.55),0 0 24px rgba(176,0,255,.22);
+            --glow-razer:0 0 8px rgba(68,214,44,.55),0 0 24px rgba(68,214,44,.2);
             --rad:8px;
+        }
+        .boot-overlay{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;transition:opacity .8s,visibility .8s}
+        .boot-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .boot-overlay .boot-title{font-size:18px;font-weight:700;color:var(--cyan);letter-spacing:6px;margin-bottom:30px}
+        .boot-progress-wrap{width:320px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-bottom:16px}
+        .boot-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--magenta));transition:width .15s linear}
+        .boot-status{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:2px;min-height:20px}
+        .stagger-in{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s cubic-bezier(.4,0,.2,1);will-change:transform,opacity}
+        .stagger-in.visible{opacity:1;transform:translateY(0)}
+        .stagger-in.from-top{transform:translateY(-100%)}
+        .stagger-in.from-top.visible{transform:translateY(0)}
+        .stagger-in[data-delay="1"]{transition-delay:.1s}
+        .stagger-in[data-delay="2"]{transition-delay:.2s}
+        .stagger-in[data-delay="3"]{transition-delay:.3s}
+        .stagger-in[data-delay="4"]{transition-delay:.4s}
+        .stagger-in[data-delay="5"]{transition-delay:.5s}
+        .spring-btn{transition:transform .35s cubic-bezier(.175,.885,.32,1.275)!important;will-change:transform}
+        .spring-btn:hover{transform:scale(1.05)!important}
+        .spring-btn:active{transform:scale(.95)!important}
+        .tilt-card{transform-style:preserve-3d;will-change:transform}
+        .grid-overlay{position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,242,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,242,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:1;will-change:transform;animation:grid-scroll 8s linear infinite}
+        @keyframes grid-scroll{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+        #particle-canvas{position:fixed;inset:0;z-index:0;opacity:.5;width:100%;height:100%}
+        .neon-border-cyan{box-shadow:var(--glow-cyan);border-color:rgba(0,255,242,.35)!important}
+        .charts-grid-dev{display:grid;grid-template-columns:1fr;gap:1.2rem;margin-bottom:3rem}
+        @media(min-width:900px){.charts-grid-dev{grid-template-columns:1fr 1fr}}
+        .chart-panel-dev{background:rgba(13,13,30,.85);border:1px solid var(--border);border-radius:12px;padding:1.2rem;height:260px;contain:content}
+        .chart-panel-dev h3{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:.8rem;text-transform:uppercase}
+        .chart-panel-dev canvas{width:100%!important;height:calc(100% - 24px)!important}
+        #chart-tooltip{position:fixed;pointer-events:none;opacity:0;z-index:10000;padding:12px 14px;border-radius:8px;background:rgba(5,5,8,.82);backdrop-filter:blur(12px);border:1px solid rgba(0,255,242,.45);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text)}
+        #chart-tooltip .tt-title{font-family:'Orbitron',sans-serif;color:var(--cyan);margin-bottom:6px;font-size:10px}
+        @media(prefers-reduced-motion:reduce){
+            .grid-overlay,.scanline{animation:none}
+            .stagger-in,.stagger-in.from-top{transition:none;opacity:1;transform:none}
+            #particle-canvas{display:none}
         }
         html{scroll-behavior:smooth}
         body{
@@ -36,7 +73,7 @@
             border-bottom:1px solid rgba(255,255,255,.04);padding:0 2rem;
             display:flex;align-items:center;height:56px;
         }
-        .topbar .logo{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:1.1rem;color:var(--cyan);letter-spacing:-.5px}
+        .topbar .logo{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.1rem;color:var(--cyan);letter-spacing:-.5px}
         .topbar .logo span{color:var(--red)}
         .topbar .nav-links{margin-left:auto;display:flex;gap:.25rem}
         .topbar .nav-links a{
@@ -44,7 +81,7 @@
             font-size:.85rem;font-weight:600;border-radius:var(--rad);
             transition:all .2s;letter-spacing:.5px;
         }
-        .topbar .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+        .topbar .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06);filter:brightness(1.2)}
         .topbar .nav-links a.active{color:var(--cyan);background:rgba(0,255,242,.1);border:1px solid rgba(0,255,242,.15)}
 
         .container{max-width:1400px;margin:0 auto;padding:80px 2rem 4rem;position:relative;z-index:2}
@@ -52,9 +89,10 @@
         /* HEADER */
         .page-header{margin-bottom:3rem;padding-top:1.5rem}
         .page-header h1{
-            font-family:'JetBrains Mono',monospace;font-size:2.8rem;font-weight:800;
+            font-family:'Orbitron',sans-serif;font-size:2.8rem;font-weight:800;
             color:var(--cyan);letter-spacing:-2px;line-height:1.1;
             text-shadow:0 0 40px rgba(0,255,242,.12);
+            filter:drop-shadow(0 0 6px rgba(0,255,242,.5));
         }
         .page-header h1::before{content:'▶ ';color:var(--red)}
         .page-header .sub{
@@ -71,11 +109,12 @@
         .stat-card{
             background:rgba(13,13,30,0.8);border:1px solid rgba(255,255,255,.05);
             border-radius:12px;padding:1.5rem 1.8rem;
-            transition:all .3s;
+            transition:border-color .3s,box-shadow .3s;
+            will-change:transform;
         }
-        .stat-card:hover{border-color:rgba(0,255,242,.15);transform:translateY(-2px);box-shadow:0 0 20px rgba(0,255,242,.04)}
-        .stat-card .num{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:800}
-        .stat-card .lbl{font-size:.8rem;color:#7070a0;margin-top:.2rem;text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
+        .stat-card:hover{border-color:rgba(0,255,242,.15);box-shadow:var(--glow-cyan)}
+        .stat-card .num{font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:800}
+        .stat-card .lbl{font-family:'Rajdhani',sans-serif;font-size:.8rem;color:#7070a0;margin-top:.2rem;text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
         .stat-card:nth-child(1) .num{color:var(--red)}
         .stat-card:nth-child(2) .num{color:var(--cyan)}
         .stat-card:nth-child(3) .num{color:var(--green)}
@@ -130,7 +169,7 @@
         .proj-card .card-body .section{margin-top:2rem}
         .proj-card .card-body .section:first-child{margin-top:1.8rem}
         .proj-card .card-body .section h3{
-            font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;
+            font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;
             color:#6060a0;text-transform:uppercase;letter-spacing:1.5px;
             margin-bottom:.9rem;display:flex;align-items:center;gap:.6rem;
         }
@@ -194,7 +233,7 @@
         .toolbar button{
             background:rgba(13,13,28,0.85);border:1px solid rgba(255,255,255,.07);
             color:#8888aa;padding:.7rem 1.4rem;border-radius:var(--rad);
-            font-size:.82rem;cursor:pointer;transition:all .2s;
+            font-size:.82rem;cursor:pointer;transition:border-color .2s,color .2s,background .2s,transform .35s cubic-bezier(.175,.885,.32,1.275);
             font-family:'JetBrains Mono',monospace;font-weight:600;
         }
         .toolbar button:hover{
@@ -245,11 +284,18 @@
     </style>
 </head>
 <body>
+<div class="boot-overlay" id="boot-overlay">
+    <div class="boot-title">⟐ LOADING DEV DATABASE ⟐</div>
+    <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
+    <div class="boot-status" id="boot-status">initializing...</div>
+</div>
 <div class="scanline"></div>
 <div class="glitch-overlay"></div>
+<canvas id="particle-canvas"></canvas>
+<div class="grid-overlay"></div>
 
 <!-- TOPBAR -->
-<div class="topbar">
+<div class="topbar stagger-in from-top" data-delay="1">
     <div class="logo">NIU<span>//</span>DEV</div>
     <div class="nav-links">
         <a href="index.html">⟐ DASHBOARD</a>
@@ -259,21 +305,33 @@
 
 <div class="container">
     <!-- HEADER -->
-    <div class="page-header">
+    <div class="page-header stagger-in" data-delay="2">
         <h1>DEV TRACKER</h1>
         <div class="sub">Prioritas · History · Plan · Rekomendasi — <span id="dev-count">25</span> project dalam pengembangan</div>
     </div>
 
     <!-- STAT BAR -->
-    <div class="statbar">
-        <div class="stat-card"><div class="num" id="s-active">0</div><div class="lbl">Aktif</div></div>
-        <div class="stat-card"><div class="num" id="s-staging">0</div><div class="lbl">Staging</div></div>
-        <div class="stat-card"><div class="num" id="s-paused">0</div><div class="lbl">Paused</div></div>
-        <div class="stat-card"><div class="num" id="s-total">0</div><div class="lbl">Total Dev</div></div>
+    <div class="statbar stagger-in" data-delay="3">
+        <div class="stat-card tilt-card neon-border-cyan"><div class="num count-up" id="s-active" data-target="0">0</div><div class="lbl">Aktif</div></div>
+        <div class="stat-card tilt-card neon-border-cyan"><div class="num count-up" id="s-staging" data-target="0">0</div><div class="lbl">Staging</div></div>
+        <div class="stat-card tilt-card"><div class="num count-up" id="s-paused" data-target="0">0</div><div class="lbl">Paused</div></div>
+        <div class="stat-card tilt-card neon-border-purple"><div class="num count-up" id="s-total" data-target="0">0</div><div class="lbl">Total Dev</div></div>
     </div>
 
+    <!-- DEV CHARTS -->
+    <section class="charts-grid-dev stagger-in" data-delay="4">
+        <div class="chart-panel-dev neon-border-cyan">
+            <h3>Status Proyek</h3>
+            <canvas id="chart-dev-status"></canvas>
+        </div>
+        <div class="chart-panel-dev neon-border-purple">
+            <h3>Rekomendasi per Prioritas</h3>
+            <canvas id="chart-dev-priority"></canvas>
+        </div>
+    </section>
+
     <!-- TOOLBAR -->
-    <div class="toolbar">
+    <div class="toolbar stagger-in" data-delay="5">
         <button onclick="toggleAll()">[ ⋮ ] Expand All</button>
         <button onclick="collapseAll()">[ △ ] Collapse All</button>
         <button onclick="filterActive()">[ ▶ ] Active Only</button>
@@ -281,9 +339,11 @@
     </div>
 
     <!-- PROJECTS -->
-    <div id="project-list"></div>
+    <div id="project-list" class="stagger-in" data-delay="6"></div>
 </div>
 
+<div id="chart-tooltip"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script>
     // ============================================================
     // DATA — 25 Development Projects with History, Plan, Recommendations
@@ -787,7 +847,7 @@
             const linkLabel = p.repo ? 'GitHub' : 'Lokal';
 
             html += `
-                <div class="proj-card" data-status="${p.status}" data-index="${i}">
+                <div class="proj-card stagger-in tilt-card" data-status="${p.status}" data-index="${i}" style="transition-delay:${(i * 0.04)}s">
                     <div class="card-header" onclick="toggleCard(this)">
                         <div class="icon">${p.icon}</div>
                         <div class="info">
@@ -807,11 +867,25 @@
         });
         list.innerHTML = html;
 
-        document.getElementById('s-active').textContent = active;
-        document.getElementById('s-staging').textContent = staging;
-        document.getElementById('s-paused').textContent = paused;
-        document.getElementById('s-total').textContent = DEV_PROJECTS.length;
+        const stats = { active, staging, paused, total: DEV_PROJECTS.length };
+        ['s-active','s-staging','s-paused','s-total'].forEach((id, i) => {
+            const el = document.getElementById(id);
+            const val = [active, staging, paused, DEV_PROJECTS.length][i];
+            el.dataset.target = val;
+            el.textContent = '0';
+        });
         document.getElementById('dev-count').textContent = DEV_PROJECTS.length;
+        return stats;
+    }
+
+    function aggregatePriorities() {
+        const counts = { high: 0, mid: 0, low: 0 };
+        DEV_PROJECTS.forEach(p => {
+            (p.recommendations || []).forEach(r => {
+                if (counts[r.priority] !== undefined) counts[r.priority]++;
+            });
+        });
+        return counts;
     }
 
     function toggleCard(header){
@@ -837,7 +911,227 @@
         });
     }
 
-    render();
+    const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const Sfx = {
+        ctx: null, lastHover: 0, muted: false,
+        init() { if (!this.muted && !this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+        click() {
+            if (this.muted) return;
+            try {
+                this.init();
+                const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+                o.connect(g); g.connect(this.ctx.destination);
+                o.frequency.value = 800; o.type = 'square';
+                g.gain.setValueAtTime(0.04, this.ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+                o.start(this.ctx.currentTime); o.stop(this.ctx.currentTime + 0.06);
+            } catch (_) {}
+        },
+        hover() {
+            if (this.muted) return;
+            const n = Date.now();
+            if (n - this.lastHover < 80) return;
+            this.lastHover = n;
+            try {
+                this.init();
+                const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+                o.connect(g); g.connect(this.ctx.destination);
+                o.frequency.value = 1200; o.type = 'sine';
+                g.gain.setValueAtTime(0.015, this.ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
+                o.start(this.ctx.currentTime); o.stop(this.ctx.currentTime + 0.04);
+            } catch (_) {}
+        }
+    };
+
+    function animateCount(el, target, duration = 1200) {
+        const start = performance.now();
+        function tick(now) {
+            const t = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - t, 3);
+            el.textContent = Math.floor(eased * target);
+            if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+    }
+
+    function startCountUp() {
+        document.querySelectorAll('.count-up').forEach(el => {
+            animateCount(el, parseInt(el.dataset.target, 10) || 0);
+        });
+    }
+
+    function initParticles() {
+        if (prefersReducedMotion()) return;
+        const canvas = document.getElementById('particle-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let w, h, particles = [];
+        const COUNT = window.matchMedia('(max-width:768px)').matches ? 35 : 50;
+        function resize() { w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+        for (let i = 0; i < COUNT; i++) {
+            particles.push({
+                x: Math.random() * w, y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+                r: Math.random() * 1.5 + 0.5, a: Math.random() * 0.4 + 0.2
+            });
+        }
+        function loop() {
+            if (!document.hidden) {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0 || p.x > w) p.vx *= -1;
+                    if (p.y < 0 || p.y > h) p.vy *= -1;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(0,255,242,${p.a * 0.5})`;
+                    ctx.fill();
+                });
+            }
+            requestAnimationFrame(loop);
+        }
+        loop();
+    }
+
+    function setupTiltCards() {
+        if (prefersReducedMotion()) return;
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const r = card.getBoundingClientRect();
+                const rx = ((e.clientY - r.top - r.height / 2) / (r.height / 2)) * -6;
+                const ry = ((e.clientX - r.left - r.width / 2) / (r.width / 2)) * 6;
+                card.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(700px) rotateX(0) rotateY(0)';
+            });
+        });
+    }
+
+    function externalTooltipHandler(context) {
+        const el = document.getElementById('chart-tooltip');
+        const m = context.tooltip;
+        if (m.opacity === 0) { el.style.opacity = '0'; return; }
+        const title = m.title || [];
+        const body = m.body ? m.body.map(b => b.lines).flat() : [];
+        el.innerHTML = '<div class="tt-title">' + title.join(' ') + '</div>' + body.join('<br>');
+        const { offsetLeft: x, offsetTop: y } = context.chart.canvas;
+        el.style.opacity = '1';
+        el.style.left = (x + m.caretX) + 'px';
+        el.style.top = (y + m.caretY) + 'px';
+    }
+
+    const chartTooltipOpts = { enabled: false, external: externalTooltipHandler };
+
+    function initDevCharts(stats) {
+        const statusCtx = document.getElementById('chart-dev-status');
+        const prioCtx = document.getElementById('chart-dev-priority');
+        if (!statusCtx || !prioCtx || typeof Chart === 'undefined') return;
+        const dur = prefersReducedMotion() ? 0 : 1500;
+        const prio = aggregatePriorities();
+        const scale = { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8888aa', font: { family: 'Rajdhani', size: 11 } } };
+        let started = false;
+        function create() {
+            if (started) return;
+            started = true;
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Active', 'Staging', 'Paused'],
+                    datasets: [{
+                        data: [stats.active, stats.staging, stats.paused],
+                        backgroundColor: ['rgba(0,255,136,.55)', 'rgba(0,255,242,.5)', 'rgba(255,208,0,.45)'],
+                        borderColor: ['#44d62c', '#00fff2', '#ffd000'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    animation: { duration: dur, easing: 'easeOutQuart' },
+                    plugins: { legend: { position: 'bottom', labels: { color: '#8888aa', font: { family: 'JetBrains Mono', size: 10 } } }, tooltip: chartTooltipOpts }
+                }
+            });
+            new Chart(prioCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['High', 'Mid', 'Low'],
+                    datasets: [{
+                        data: [prio.high, prio.mid, prio.low],
+                        backgroundColor: ['rgba(255,0,64,.5)', 'rgba(176,0,255,.5)', 'rgba(0,255,242,.45)'],
+                        borderColor: ['#ff0040', '#b000ff', '#00fff2'],
+                        borderWidth: 1, borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    animation: { duration: dur, easing: 'easeOutQuart' },
+                    plugins: { legend: { display: false }, tooltip: chartTooltipOpts },
+                    scales: { x: { beginAtZero: true, ...scale }, y: scale }
+                }
+            });
+        }
+        const section = document.querySelector('.charts-grid-dev');
+        if (!section) return;
+        if (prefersReducedMotion()) { create(); return; }
+        const obs = new IntersectionObserver(es => {
+            if (es.some(e => e.isIntersecting)) { create(); obs.disconnect(); }
+        }, { threshold: 0.25 });
+        obs.observe(section);
+    }
+
+    function revealStaggered() {
+        document.querySelectorAll('.stagger-in').forEach(el => el.classList.add('visible'));
+        setTimeout(startCountUp, 300);
+    }
+
+    function runBoot() {
+        const overlay = document.getElementById('boot-overlay');
+        const bar = document.getElementById('boot-bar');
+        const status = document.getElementById('boot-status');
+        if (prefersReducedMotion()) {
+            overlay.classList.add('hidden');
+            revealStaggered();
+            return;
+        }
+        const msgs = [['sync repos...',15],['load dev index...',35],['parse timelines...',55],['rank priorities...',75],['HUD ready.',100]];
+        let step = 0;
+        const iv = setInterval(() => {
+            if (step < msgs.length) {
+                const [m, p] = msgs[step];
+                bar.style.width = p + '%';
+                status.textContent = '[' + String(p).padStart(3) + '%] ' + m;
+                step++;
+            } else {
+                clearInterval(iv);
+                setTimeout(() => { overlay.classList.add('hidden'); revealStaggered(); }, 400);
+            }
+        }, 200);
+    }
+
+    function bindSfx() {
+        document.querySelectorAll('button, .topbar .nav-links a, .chart-panel-dev').forEach(el => {
+            el.addEventListener('click', () => Sfx.click());
+            el.addEventListener('mouseenter', () => Sfx.hover());
+        });
+        document.querySelectorAll('.toolbar button').forEach(el => el.classList.add('spring-btn'));
+        document.querySelectorAll('.topbar .nav-links a').forEach(el => el.classList.add('spring-btn'));
+        document.addEventListener('click', () => Sfx.init(), { once: true });
+    }
+
+    let lastStats = null;
+    window.addEventListener('DOMContentLoaded', () => {
+        if (prefersReducedMotion()) Sfx.muted = true;
+        lastStats = render();
+        setupTiltCards();
+        initParticles();
+        initDevCharts(lastStats);
+        bindSfx();
+        runBoot();
+    });
 </script>
 
 </body>

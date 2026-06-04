@@ -590,6 +590,10 @@
         .section-title .badge.green { color: var(--green); border-color: rgba(0,255,136,0.3); }
         .section-title .badge.cyan { color: var(--cyan); border-color: rgba(0,255,242,0.3); }
         .section-title .badge.amber { color: var(--amber); border-color: rgba(255,170,0,0.3); }
+        .section-title .badge.purple { color: var(--neon-purple); border-color: rgba(176,0,255,0.3); }
+        .section-title .badge.dim { color: var(--text-muted); border-color: rgba(120,120,140,0.3); }
+        .sidebar .sb-filter button .sb-badge.purple { background: rgba(176,0,255,0.2); color: var(--neon-purple); }
+        .sidebar .sb-filter button .sb-badge.dim { background: rgba(120,120,140,0.2); color: var(--text-muted); }
 
         /* ========== PROJECT GRID ========== */
         .project-grid {
@@ -906,12 +910,20 @@
         <button data-filter="ideas" onclick="setFilter('ideas')">
             <span>◇</span> Ideas <span class="sb-badge amber" id="sb-ideas">0</span>
         </button>
+        <button data-filter="config" onclick="setFilter('config')">
+            <span>⚙</span> Config <span class="sb-badge purple" id="sb-config">0</span>
+        </button>
+        <button data-filter="legacy" onclick="setFilter('legacy')">
+            <span>◫</span> Legacy <span class="sb-badge dim" id="sb-legacy">0</span>
+        </button>
     </div>
     <div class="sb-section" style="margin-top:24px">◆ Statistik</div>
     <div class="sb-stats">
         <div class="sb-stat"><div class="num" style="color:var(--green)" id="sb-st-ready">0</div><div class="lbl">Ready</div></div>
         <div class="sb-stat"><div class="num" style="color:var(--cyan)" id="sb-st-dev">0</div><div class="lbl">Dev</div></div>
         <div class="sb-stat"><div class="num" style="color:var(--amber)" id="sb-st-ideas">0</div><div class="lbl">Ideas</div></div>
+        <div class="sb-stat"><div class="num" style="color:var(--neon-purple)" id="sb-st-config">0</div><div class="lbl">Config</div></div>
+        <div class="sb-stat"><div class="num" style="color:var(--text-muted)" id="sb-st-legacy">0</div><div class="lbl">Legacy</div></div>
         <div class="sb-stat"><div class="num" style="color:var(--red)" id="sb-st-total">0</div><div class="lbl">Total</div></div>
     </div>
 </nav>
@@ -958,6 +970,22 @@
     </div>
     <div class="project-grid ideas stagger-in" data-delay="6" id="ideas-grid"></div>
 
+    <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
+
+    <!-- CONFIG SECTION -->
+    <div class="section-title stagger-in" data-delay="6">
+        ⚙ CONFIG / DOTFILES <span class="badge purple" id="config-count">0</span>
+    </div>
+    <div class="project-grid config stagger-in" data-delay="6" id="config-grid"></div>
+
+    <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
+
+    <!-- LEGACY SECTION -->
+    <div class="section-title stagger-in" data-delay="6">
+        ◫ LEGACY / ARSIP <span class="badge dim" id="legacy-count">0</span>
+    </div>
+    <div class="project-grid legacy stagger-in" data-delay="6" id="legacy-grid"></div>
+
     <div class="no-results" id="no-results">
         <div class="emoji">⚡</div>
         <div>// no projects found //</div>
@@ -978,7 +1006,7 @@
 </div>
 
 <script>
-    /* ========== PROJECT DATA ========== */
+        /* ========== PROJECT DATA ========== */
     const PROJECTS = {
         // === READY — Produk jadi / deployable / hosted ===
         ready: [
@@ -987,98 +1015,121 @@
             { icon:'⊞', name:'DevFlow / niu-portal', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/niu-portal/index.html', desc:'Landing page manajemen proyek dengan Linear Design System. Dark theme responsive.', tags:['HTML','CSS','JS','Linear DS'], date:'3 Mei 2026' },
             { icon:'◆', name:'Portfolio 3D', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/portfolio-3d/index.html', desc:'Portofolio interaktif 3D dengan animasi modern.', tags:['HTML','CSS','JS','3D'], date:'10 Mei 2026' },
             { icon:'◈', name:'Maze Game (Vite)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/claude-projects-or/maze-game/', desc:'Game maze HTML5 + Vite + React. Maze procedural generator.', tags:['HTML5','Vite','Game','React'], date:'3 Mei 2026' },
-            { icon:'⎔', name:'zhtop', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/zhtop/', desc:'Tool terminal Node.js untuk monitoring & visualisasi data via CLI.', tags:['Node.js','CLI','Terminal'], date:'10 Mei 2026' },
-            { icon:'⊚', name:'Niumination Portal — Diskominfo', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Rekomendasi-Aplikasi-ASN-Daerah.html', desc:'Portal Dinas Kominfo Aceh Tengah. Tailwind CSS, tracker IPD, SPBE, sidebar menu.', tags:['HTML','Tailwind','Portal','ASN'], date:'11 Mei 2026' },
-            { icon:'⌁', name:'CPUFriendFriend', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/CPUFriendFriend/', desc:'Python script optimasi power management Hackintosh — frequency vectors → kext.', tags:['Python','Hackintosh','CPU','Kext'], date:'14 Mei 2026' },
-            // GitHub web/startpage
+            { icon:'⎔', name:'zhtop', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/zhtop/', desc:'Tool terminal Node.js untuk monitoring and visualisasi data via CLI.', tags:['Node.js','CLI','Terminal'], date:'10 Mei 2026' },
+            { icon:'⊚', name:'Niumination Portal - Diskominfo', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Rekomendasi-Aplikasi-ASN-Daerah.html', desc:'Portal Dinas Kominfo Aceh Tengah. Tailwind CSS, tracker IPD, SPBE, sidebar menu.', tags:['HTML','Tailwind','Portal','ASN'], date:'11 Mei 2026' },
+            { icon:'⌁', name:'CPUFriendFriend', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/CPUFriendFriend/', desc:'Python script optimasi power management Hackintosh.', tags:['Python','Hackintosh','CPU','Kext'], date:'14 Mei 2026' },
+            // GitHub web - startpage
             { icon:'☆', name:'Niu-Startpage', path:'https://github.com/Niumination/Niu-Startpage', desc:'Gateway pribadi ke internet. Startpage minimal + search + bookmark.', tags:['HTML','Startpage','GitHub'], date:'2026' },
             { icon:'☆', name:'zaryu.startpage', path:'https://github.com/Niumination/zaryu.startpage', desc:'Aesthetic startpage Catppuccin style, clean minimal, hosted GitHub Pages.', tags:['HTML','CSS','Catppuccin','Pages'], date:'2026' },
-            { icon:'☆', name:'NiuHomePage', path:'https://github.com/Niumination/NiuHomePage', desc:'Homepage personal — karena pengen punya homepage sendiri.', tags:['HTML','CSS','Homepage'], date:'2026' },
+            { icon:'☆', name:'NiuHomePage', path:'https://github.com/Niumination/NiuHomePage', desc:'Homepage personal karena pengen punya homepage sendiri.', tags:['HTML','CSS','Homepage'], date:'2026' },
             { icon:'☆', name:'SilentSDDM', path:'https://github.com/Niumination/SilentSDDM', desc:'SDDM theme highly customizable untuk Arch / Hyprland.', tags:['SDDM','Theme','Linux','QML'], date:'2026' },
             { icon:'☆', name:'Maze-3D-Game', path:'https://github.com/Niumination/Maze-3D-Game---Web-Based', desc:'Game maze 3D berbasis web. Labyrinth interaktif dalam 3D.', tags:['Web','3D','Game','Maze'], date:'2026' },
             { icon:'☆', name:'Niu-Cyber-Search-Engine', path:'https://github.com/Niumination/Niu-Cyber-Search-Engine', desc:'Cyber search engine app pertama. Tema cyber/dark.', tags:['Search','Web','Cyber'], date:'2026' },
-            { icon:'☆', name:'Niu-LKH', path:'https://github.com/Niumination/Niu-LKH', desc:'Laporan Kegiatan Harian — Afrizal Munthe. Pelaporan aktivitas digital.', tags:['Web','Laporan','ASN'], date:'2026' },
+            { icon:'☆', name:'Niu-LKH', path:'https://github.com/Niumination/Niu-LKH', desc:'Laporan Kegiatan Harian - Afrizal Munthe. Pelaporan aktivitas digital.', tags:['Web','Laporan','ASN'], date:'2026' },
             { icon:'☆', name:'niu-speedtest', path:'https://github.com/Niumination/niu-speedtest', desc:'Aplikasi speed test kecepatan jaringan berbasis Python.', tags:['Speedtest','Python','Network'], date:'2026' },
-            { icon:'☆', name:'Bella', path:'https://github.com/Niumination/Bella', desc:'"Bella is best" — project personal.', tags:['Project','Personal'], date:'2026' },
-            { icon:'☆', name:'DiskominfoAT', path:'https://github.com/Niumination/DiskominfoAT', desc:'Website Diskominfo Aceh Tengah. Dibangun dgn Cursor + ContinueDev.', tags:['Website','Kominfo','GovTech'], date:'2026' },
-            { icon:'☆', name:'Database-DiskominfoAT', path:'https://github.com/Niumination/Database-DiskominfoAT', desc:'Database untuk website DiskominfoAT — struktur & skema data.', tags:['Database','SQL','Kominfo'], date:'2026' },
+            { icon:'☆', name:'Bella', path:'https://github.com/Niumination/Bella', desc:'Bella is best - project personal.', tags:['Project','Personal'], date:'2026' },
+            { icon:'☆', name:'DiskominfoAT', path:'https://github.com/Niumination/DiskominfoAT', desc:'Website Diskominfo Aceh Tengah. Dibangun dengan Cursor + ContinueDev.', tags:['Website','Kominfo','GovTech'], date:'2026' },
+            { icon:'☆', name:'Database-DiskominfoAT', path:'https://github.com/Niumination/Database-DiskominfoAT', desc:'Database untuk website DiskominfoAT - struktur and skema data.', tags:['Database','SQL','Kominfo'], date:'2026' },
             { icon:'☆', name:'Rekapitulasi-SPBE', path:'https://github.com/Niumination/Rekapitulasi-SPBE', desc:'Aplikasi rekap SPBE (Sistem Pemerintahan Berbasis Elektronik).', tags:['SPBE','GovTech','Rekap'], date:'2026' },
             { icon:'☆', name:'AuditTI-AT', path:'https://github.com/Niumination/AuditTI-AT', desc:'IT Procurement Audit Kabupaten Aceh Tengah pakai AI. Sumber dari LPSE.', tags:['Audit','LPSE','AI','GovTech'], date:'2026' },
-            { icon:'☆', name:'Prakom-Surgawi', path:'https://github.com/Niumination/Prakom-Surgawi', desc:'Anything you want — project Pranata Komputer.', tags:['Project','ASN','Prakom'], date:'2026' },
-            { icon:'☆', name:'cyb3rgh0u1.github.io', path:'https://github.com/Niumination/cyb3rgh0u1.github.io', desc:'GitHub Pages — cyber/ghoul themed.', tags:['Pages','Cyber','GitHub'], date:'2026' },
-            { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project — PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
+            { icon:'☆', name:'Prakom-Surgawi', path:'https://github.com/Niumination/Prakom-Surgawi', desc:'Anything you want - project Pranata Komputer.', tags:['Project','ASN','Prakom'], date:'2026' },
+            { icon:'☆', name:'cyb3rgh0u1.github.io', path:'https://github.com/Niumination/cyb3rgh0u1.github.io', desc:'GitHub Pages - cyber/ghoul themed.', tags:['Pages','Cyber','GitHub'], date:'2026' },
+            { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project - PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
+            // NEW discovered
+            { icon:'☆', name:'acehtengah-web', path:'/Users/zaryu/Documents/GitHub/zen-/acehtengah-web/', desc:'Website statis multi-halaman Aceh Tengah - HTML murni, berita, layanan publik.', tags:['HTML','CSS','Website','AcehTengah'], date:'2026' },
         ],
         // === DEV — Sedang aktif dikerjakan / prototyping ===
         dev: [
             // Aplikasi lokal
-            { icon:'☪', name:'Gayo Mengaji', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/Aplikasi Gayo Mengaji/', desc:'Aplikasi Al-Qur\'an digital untuk ASN Aceh Tengah. Flutter + Node.js + PostgreSQL. Workflow & tracking aktif.', tags:['Flutter','Node.js','PostgreSQL','Mobile'], date:'5 Apr 2026' },
+            { icon:'☪', name:'Gayo Mengaji', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/Aplikasi Gayo Mengaji/', desc:'Aplikasi Al-Quran digital untuk ASN Aceh Tengah. Flutter + Node.js + PostgreSQL.', tags:['Flutter','Node.js','PostgreSQL','Mobile'], date:'5 Apr 2026' },
             { icon:'⊚', name:'Niumination Portal (Fullstack)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/niumination-portal/', desc:'Portal React + Express. Dashboard IPD, task tracker, SPBE, arsip.', tags:['React','Express','Vite','Fullstack'], date:'28 Apr 2026' },
             { icon:'⌘', name:'ClaudeCode / claw-code', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ClaudeLeak/claudecode/', desc:'AI coding agent Python/Rust. Multi-provider LLM, multi-agent system.', tags:['Python','Rust','CLI','AI','LLM'], date:'26 Apr 2026' },
             // AI & Developer Tooling
-            { icon:'△', name:'Flame-ADE', path:'https://github.com/Niumination/Flame-ADE', desc:'AI-native terminal emulator ~7MB. Tauri 2 + Rust + React 19. BYOK AI, no telemetry, OS keychain.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
-            { icon:'△', name:'terax-ai', path:'https://github.com/Niumination/terax-ai', desc:'Lightweight AI terminal emulator ~7MB. Rust + Tauri + React. Alternatif minimal Flame-ADE.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
-            { icon:'△', name:'flame-code', path:'https://github.com/Niumination/flame-code', desc:'My First Build, Using AI — project eksperimen AI coding pertama.', tags:['AI','Code','Experiment','TypeScript'], date:'2026' },
-            { icon:'△', name:'jcode', path:'https://github.com/Niumination/jcode', desc:'Coding Agent Harness — framework AI coding agent.', tags:['AI','Agent','Framework'], date:'2026' },
-            { icon:'△', name:'skills', path:'https://github.com/Niumination/skills', desc:'Skills for Real Engineers — dari .claude directory langsung.', tags:['Skills','Claude','AI','Config'], date:'2026' },
-            { icon:'△', name:'G0DM0D3', path:'https://github.com/Niumination/G0DM0D3', desc:'LIBERATED AI CHAT — AI chat bebas tanpa batasan.', tags:['AI','Chat','Uncensored'], date:'2026' },
+            { icon:'△', name:'Flame-ADE', path:'https://github.com/Niumination/Flame-ADE', desc:'AI-native terminal emulator 7MB. Tauri 2 + Rust + React 19. BYOK AI, no telemetry.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
+            { icon:'△', name:'terax-ai', path:'https://github.com/Niumination/terax-ai', desc:'Lightweight AI terminal emulator 7MB. Rust + Tauri + React.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
+            { icon:'△', name:'flame-code', path:'https://github.com/Niumination/flame-code', desc:'My First Build, Using AI - project eksperimen AI coding pertama.', tags:['AI','Code','Experiment','TypeScript'], date:'2026' },
+            { icon:'△', name:'jcode', path:'https://github.com/Niumination/jcode', desc:'Coding Agent Harness - framework AI coding agent.', tags:['AI','Agent','Framework'], date:'2026' },
+            { icon:'△', name:'skills', path:'https://github.com/Niumination/skills', desc:'Skills for Real Engineers - dari .claude directory langsung.', tags:['Skills','Claude','AI','Config'], date:'2026' },
+            { icon:'△', name:'G0DM0D3', path:'https://github.com/Niumination/G0DM0D3', desc:'LIBERATED AI CHAT - AI chat bebas tanpa batasan.', tags:['AI','Chat','Uncensored'], date:'2026' },
             { icon:'△', name:'disunday', path:'https://github.com/Niumination/disunday', desc:'Kontrol opencode dari Discord. Kelola AI coding 24/7 via Discord.', tags:['Discord','AI','Bot','opencode'], date:'2026' },
             { icon:'△', name:'free-vps', path:'https://github.com/Niumination/free-vps', desc:'Project VPS gratis. Setup cloud infrastructure free tier.', tags:['VPS','Cloud','DevOps'], date:'2026' },
-            { icon:'△', name:'Free-Claude-Opus', path:'https://github.com/Niumination/Free-Claude-Opus', desc:'Akses gratis Claude Opus — eksperimen free tier AI premium.', tags:['AI','Claude','Free'], date:'2026' },
-            { icon:'△', name:'Continue-Agent', path:'https://github.com/Niumination/Continue-Agent', desc:'Continue agent integration — AI coding assistant untuk editor.', tags:['AI','Continue','Agent'], date:'2026' },
-            { icon:'△', name:'cursor-free-vip', path:'https://github.com/Niumination/cursor-free-vip', desc:'Reset Cursor AI MachineID & Bypass Higher Token Limit. Cursor AI auto reset.', tags:['Cursor','AI','VIP','Tool'], date:'2026' },
-            { icon:'△', name:'unlimited-claude-AI', path:'https://github.com/Niumination/unlimited-claude-AI', desc:'Claude AI unlimited — no backend, no server costs, 100% free.', tags:['AI','Claude','Free','Unlimited'], date:'2026' },
-            { icon:'△', name:'Activate-Office-365', path:'https://github.com/Niumination/Activate-Office-365-on-Windows-10-11', desc:'Leverage the cloud — aktivasi Office 365 di Windows.', tags:['Office','Windows','Tool'], date:'2026' },
-            { icon:'△', name:'docker-mcp-tutorial', path:'https://github.com/Niumination/docker-mcp-tutorial', desc:'Tutorial lengkap membangun MCP server dengan Docker — dari NetworkChuck.', tags:['Docker','MCP','Tutorial'], date:'2026' },
-            { icon:'△', name:'mcp-for-beginners', path:'https://github.com/Niumination/mcp-for-beginners-Microsoft', desc:'Open-source curriculum MCP fundamentals — dari Microsoft. ~2GB.', tags:['MCP','Microsoft','Curriculum','AI'], date:'2026' },
+            { icon:'△', name:'Free-Claude-Opus', path:'https://github.com/Niumination/Free-Claude-Opus', desc:'Akses gratis Claude Opus - eksperimen free tier AI premium.', tags:['AI','Claude','Free'], date:'2026' },
+            { icon:'△', name:'Continue-Agent', path:'https://github.com/Niumination/Continue-Agent', desc:'Continue agent integration - AI coding assistant untuk editor.', tags:['AI','Continue','Agent'], date:'2026' },
+            { icon:'△', name:'cursor-free-vip', path:'https://github.com/Niumination/cursor-free-vip', desc:'Reset Cursor AI MachineID and Bypass Higher Token Limit.', tags:['Cursor','AI','VIP','Tool'], date:'2026' },
+            { icon:'△', name:'unlimited-claude-AI', path:'https://github.com/Niumination/unlimited-claude-AI', desc:'Claude AI unlimited - no backend, no server costs, 100% free.', tags:['AI','Claude','Free','Unlimited'], date:'2026' },
+            { icon:'△', name:'Activate-Office-365', path:'https://github.com/Niumination/Activate-Office-365-on-Windows-10-11', desc:'Leverage the cloud - aktivasi Office 365 di Windows.', tags:['Office','Windows','Tool'], date:'2026' },
+            { icon:'△', name:'docker-mcp-tutorial', path:'https://github.com/Niumination/docker-mcp-tutorial', desc:'Tutorial lengkap membangun MCP server dengan Docker - dari NetworkChuck.', tags:['Docker','MCP','Tutorial'], date:'2026' },
+            { icon:'△', name:'mcp-for-beginners', path:'https://github.com/Niumination/mcp-for-beginners-Microsoft', desc:'Open-source curriculum MCP fundamentals - dari Microsoft. 2GB.', tags:['MCP','Microsoft','Curriculum','AI'], date:'2026' },
             // GovTech
             { icon:'⎔', name:'Diskominfo-Web', path:'https://github.com/Niumination/Diskominfo-Web', desc:'Alternatif website Diskominfo Aceh Tengah.', tags:['Web','Kominfo','GovTech'], date:'2026' },
             { icon:'⎔', name:'kms-spbe', path:'https://github.com/Niumination/kms-spbe', desc:'Knowledge Management System untuk SPBE.', tags:['KMS','SPBE','GovTech'], date:'2026' },
-            { icon:'⎔', name:'SPBE-DevOps-Academy', path:'https://github.com/Niumination/SPBE-DevOps-Academy', desc:'Akademi DevOps untuk SPBE — pembelajaran DevOps pemerintahan.', tags:['DevOps','SPBE','Academy'], date:'2026' },
+            { icon:'⎔', name:'SPBE-DevOps-Academy', path:'https://github.com/Niumination/SPBE-DevOps-Academy', desc:'Akademi DevOps untuk SPBE - pembelajaran DevOps pemerintahan.', tags:['DevOps','SPBE','Academy'], date:'2026' },
             { icon:'⎔', name:'Devs-Niu', path:'https://github.com/Niumination/Devs-Niu', desc:'Developer portfolio / hub untuk semua project Niumination.', tags:['Dev','Portfolio','Hub'], date:'2026' },
-            { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta — Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
-            // Self-hosted project tracker
-            { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Documents/Niu-Dash/index.html', desc:'Dark web glitch dashboard tracker — 75+ project terinventarisasi, DEV TRACKER, history & rekomendasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'3 Jun 2026' },
+            { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta - Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
+            { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Documents/Niu-Dash/index.html', desc:'Dark web glitch dashboard tracker - 90+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'3 Jun 2026' },
+            // NEW discovered
+            { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework.', tags:['Next.js','GovTech','AcehTengah','Portal'], date:'Jun 2026' },
+            { icon:'△', name:'VirtualAssistance', path:'https://github.com/Niumination/VirtualAssistance', desc:'Virtual Assistance web3 app - Next.js + TypeScript.', tags:['Next.js','Web3','TypeScript'], date:'Jun 2026' },
+            { icon:'△', name:'niu-studio', path:'/Users/zaryu/Desktop/niu-studio/', desc:'Tauri + React studio app - eksperimen desktop hybrid.', tags:['Tauri','React','Desktop','Studio'], date:'2026' },
+            { icon:'△', name:'NiuTUI', path:'/Users/zaryu/Documents/ZMP/NiuTUI/', desc:'Rust CLI/TUI app - terminal interface untuk Niu ecosystem.', tags:['Rust','CLI','TUI'], date:'2026' },
+            { icon:'△', name:'NiuTerm', path:'/Users/zaryu/Documents/ZMP/NiuTerm/', desc:'Tauri terminal emulator - niuterm v0.1.0.', tags:['Rust','Tauri','Terminal'], date:'2026' },
+            { icon:'△', name:'niude', path:'/Users/zaryu/Documents/ZMP/niude/', desc:'Tauri app v0.1.0 - desktop app eksperimental.', tags:['Rust','Tauri','Desktop'], date:'2026' },
         ],
-        // === IDEAS — Eksperimen, dotfiles, dokumentasi, konsep ===
+        // === IDEAS — Konsep, dokumentasi, referensi ===
         ideas: [
-            // Lokal
-            { icon:'⎇', name:'Hackintosh ThinkPad X13', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Hackintosh-ThinkPad-X13-Yoga.md', desc:'Panduan optimasi Hackintosh ThinkPad X13 Yoga — OpenCore, SSDT, Kexts, macOS Sequoia.', tags:['Hackintosh','OpenCore','macOS','Guide'], date:'7 Mei 2026' },
-            { icon:'⊞', name:'Windows 11 Optimasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Windows11-ThinkPad-X13.md', desc:'Panduan optimasi Windows 11 ThinkPad X13 — debloat, registry, power plan.', tags:['Windows','Optimasi','Guide'], date:'7 Mei 2026' },
-            { icon:'⏣', name:'MySystem — Dokumentasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/MySystem.md', desc:'Spesifikasi lengkap MacBook Pro & perangkat lain.', tags:['Dokumentasi','Hardware','System'], date:'14 Mar 2026' },
-            { icon:'⌁', name:'OpenClaw — Setup Agent', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/git-clone/claw-code/', desc:'Setup OpenClaw AI agent untuk workflow coding.', tags:['AI','Agent','OpenClaw','Setup'], date:'26 Apr 2026' },
-            { icon:'⎔', name:'ASN Workspace — KB', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ASN_Workspace_Knowledge_Base.xlsx', desc:'Basis pengetahuan ASN — aplikasi, regulasi, workflow.', tags:['ASN','KB','Excel'], date:'11 Mei 2026' },
-            { icon:'△', name:'OpenCore EFI Configs', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/efi/', desc:'Koleksi EFI OpenCore Hackintosh — BACKUP-1574, READY-TO-UPDATE.', tags:['Hackintosh','OpenCore','EFI','Bootloader'], date:'14 Mei 2026' },
-            { icon:'⌂', name:'Baca — Repo GitHub', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/Baca/', desc:'Repo pribadi ryu-id/Baca. Satu commit awal.', tags:['GitHub','Repo','Idea'], date:'2 Apr 2026' },
-            // Hyprland / Desktop Ricing
-            { icon:'☆', name:'ryu-dots', path:'https://github.com/Niumination/ryu-dots', desc:'Arch Linux config lengkap — Hyprland + Illogical Impulse.', tags:['Arch','Hyprland','Dotfiles','Linux'], date:'2026' },
-            { icon:'☆', name:'dotfiles (1.6GB)', path:'https://github.com/Niumination/dotfiles', desc:'My Arch Dotfiles — 1.64GB full Arch config collection.', tags:['Arch','Dotfiles','Config'], date:'2026' },
-            { icon:'☆', name:'Zaryu-HyDE (1.3GB)', path:'https://github.com/Niumination/Zaryu-HyDE', desc:'Portable re-work hyprdots. Aesthetic, dynamic, minimal — 1.3GB.', tags:['Hyprland','Dotfiles','Zaryu','Config'], date:'2026' },
-            { icon:'☆', name:'hyprdots', path:'https://github.com/Niumination/hyprdots', desc:'Aesthetic dynamic dots untuk Arch Hyprland — ~1GB.', tags:['Hyprland','Dotfiles','Aesthetic'], date:'2026' },
-            { icon:'☆', name:'ZaryuHive', path:'https://github.com/Niumination/ZaryuHive', desc:'Zaryu Hive — environment config.', tags:['Config','Zaryu','Hive'], date:'2026' },
-            { icon:'☆', name:'RyuDE', path:'https://github.com/Niumination/RyuDE', desc:'Personal Desktop Environment based on HyDE-Project — C++.', tags:['Hyprland','DE','C++','Ryu'], date:'2026' },
-            { icon:'☆', name:'ryuland', path:'https://github.com/Niumination/ryuland', desc:'Hyprland ecosystem dots — modern, useful, halal.', tags:['Hyprland','Dotfiles','Islamic','Config'], date:'2026' },
-            { icon:'☆', name:'ryuland-dotfiles', path:'https://github.com/Niumination/ryuland-dotfiles', desc:'Rice built for usability — Hyprland config.', tags:['Hyprland','Rice','Dotfiles'], date:'2026' },
-            { icon:'☆', name:'ryushell', path:'https://github.com/Niumination/ryushell', desc:'Shell config — No waybar here! — GPL-3.0.', tags:['Shell','Config','Waybar'], date:'2026' },
-            { icon:'☆', name:'AnachonisticHypr', path:'https://github.com/Niumination/AnachonisticHypr', desc:'Anachronistic Hyprland config — Shell.', tags:['Hyprland','Shell','Config'], date:'2026' },
-            { icon:'☆', name:'hive-dotfiles', path:'https://github.com/Niumination/hive-dotfiles', desc:'Hive dotfiles — CSS config.', tags:['Dotfiles','CSS','Config'], date:'2026' },
-            { icon:'☆', name:'Axenide-Dotfiles', path:'https://github.com/Niumination/Axenide-Dotfiles', desc:'Axenide dotfiles — ~450MB.', tags:['Dotfiles','Config','Fork'], date:'2026' },
+            { icon:'⎇', name:'Hackintosh ThinkPad X13', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Hackintosh-ThinkPad-X13-Yoga.md', desc:'Panduan optimasi Hackintosh ThinkPad X13 Yoga.', tags:['Hackintosh','OpenCore','macOS','Guide'], date:'7 Mei 2026' },
+            { icon:'⊞', name:'Windows 11 Optimasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Windows11-ThinkPad-X13.md', desc:'Panduan optimasi Windows 11 ThinkPad X13 - debloat, registry, power plan.', tags:['Windows','Optimasi','Guide'], date:'7 Mei 2026' },
+            { icon:'⏣', name:'MySystem - Dokumentasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/MySystem.md', desc:'Spesifikasi lengkap MacBook Pro dan perangkat lain.', tags:['Dokumentasi','Hardware','System'], date:'14 Mar 2026' },
+            { icon:'⌁', name:'OpenClaw - Setup Agent', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/git-clone/claw-code/', desc:'Setup OpenClaw AI agent untuk workflow coding.', tags:['AI','Agent','OpenClaw','Setup'], date:'26 Apr 2026' },
+            { icon:'⎔', name:'ASN Workspace - KB', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ASN_Workspace_Knowledge_Base.xlsx', desc:'Basis pengetahuan ASN - aplikasi, regulasi, workflow.', tags:['ASN','KB','Excel'], date:'11 Mei 2026' },
+            { icon:'△', name:'OpenCore EFI Configs', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/efi/', desc:'Koleksi EFI OpenCore Hackintosh - BACKUP-1574, READY-TO-UPDATE.', tags:['Hackintosh','OpenCore','EFI','Bootloader'], date:'14 Mei 2026' },
+            { icon:'⌂', name:'Baca - Repo GitHub', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/Baca/', desc:'Repo pribadi ryu-id/Baca. Satu commit awal.', tags:['GitHub','Repo','Idea'], date:'2 Apr 2026' },
+            { icon:'☆', name:'roboto_origin', path:'https://github.com/Niumination/roboto_origin', desc:'Fully Open-Source DIY Humanoid Robot - 750MB. Skala penuh, bilingual EN/CN.', tags:['Robot','Hardware','DIY','Open-Source'], date:'2026' },
+            { icon:'☆', name:'lmarena.github.io', path:'https://github.com/Niumination/lmarena.github.io', desc:'GitHub Pages untuk LM Arena - 320MB.', tags:['Pages','LM','Arena'], date:'2026' },
+            // NEW local ideas
+            { icon:'△', name:'Ultra Automation System', path:'/Users/zaryu/Documents/arena.ai/ultra-automation-system/', desc:'Node.js ultra automation system - arsitektur sistem otomatis.', tags:['Node.js','Automation','System'], date:'2026' },
+            { icon:'△', name:'obsidian-ai-os', path:'/Users/zaryu/Documents/obsidian-ai-os/', desc:'Obsidian plugin AI OS - integrasi AI dalam vault Obsidian.', tags:['Obsidian','Plugin','AI','OS'], date:'2026' },
+            { icon:'△', name:'Flame-ADE-Desain', path:'/Users/zaryu/Documents/ZMP/Flame-ADE-Desain/', desc:'Desain/template HTML untuk Flame ADE - mockup UI.', tags:['Design','HTML','Mockup','ADE'], date:'2026' },
+        ],
+        // === CONFIG — Dotfiles, ricing, desktop environment ===
+        config: [
+            { icon:'☆', name:'ryu-dots', path:'https://github.com/Niumination/ryu-dots', desc:'Arch Linux config lengkap - Hyprland + Illogical Impulse.', tags:['Arch','Hyprland','Dotfiles','Linux'], date:'2026' },
+            { icon:'☆', name:'dotfiles (1.6GB)', path:'https://github.com/Niumination/dotfiles', desc:'My Arch Dotfiles - 1.64GB full Arch config collection.', tags:['Arch','Dotfiles','Config'], date:'2026' },
+            { icon:'☆', name:'Zaryu-HyDE (1.3GB)', path:'https://github.com/Niumination/Zaryu-HyDE', desc:'Portable re-work hyprdots. Aesthetic, dynamic, minimal - 1.3GB.', tags:['Hyprland','Dotfiles','Zaryu','Config'], date:'2026' },
+            { icon:'☆', name:'hyprdots', path:'https://github.com/Niumination/hyprdots', desc:'Aesthetic dynamic dots untuk Arch Hyprland - 1GB.', tags:['Hyprland','Dotfiles','Aesthetic'], date:'2026' },
+            { icon:'☆', name:'ZaryuHive', path:'https://github.com/Niumination/ZaryuHive', desc:'Zaryu Hive - environment config.', tags:['Config','Zaryu','Hive'], date:'2026' },
+            { icon:'☆', name:'RyuDE', path:'https://github.com/Niumination/RyuDE', desc:'Personal Desktop Environment based on HyDE-Project - C++.', tags:['Hyprland','DE','C++','Ryu'], date:'2026' },
+            { icon:'☆', name:'ryuland', path:'https://github.com/Niumination/ryuland', desc:'Hyprland ecosystem dots - modern, useful, halal.', tags:['Hyprland','Dotfiles','Islamic','Config'], date:'2026' },
+            { icon:'☆', name:'ryuland-dotfiles', path:'https://github.com/Niumination/ryuland-dotfiles', desc:'Rice built for usability - Hyprland config.', tags:['Hyprland','Rice','Dotfiles'], date:'2026' },
+            { icon:'☆', name:'ryushell', path:'https://github.com/Niumination/ryushell', desc:'Shell config - No waybar here! - GPL-3.0.', tags:['Shell','Config','Waybar'], date:'2026' },
+            { icon:'☆', name:'AnachonisticHypr', path:'https://github.com/Niumination/AnachonisticHypr', desc:'Anachronistic Hyprland config - Shell.', tags:['Hyprland','Shell','Config'], date:'2026' },
+            { icon:'☆', name:'hive-dotfiles', path:'https://github.com/Niumination/hive-dotfiles', desc:'Hive dotfiles - CSS config.', tags:['Dotfiles','CSS','Config'], date:'2026' },
+            { icon:'☆', name:'Axenide-Dotfiles', path:'https://github.com/Niumination/Axenide-Dotfiles', desc:'Axenide dotfiles - 450MB.', tags:['Dotfiles','Config','Fork'], date:'2026' },
             { icon:'☆', name:'Hyde-cli', path:'https://github.com/Niumination/Hyde-cli', desc:'HyDE CLI wrapper, tweaks, workarounds.', tags:['HyDE','CLI','Wrapper'], date:'2026' },
             { icon:'☆', name:'hyprfloat', path:'https://github.com/Niumination/hyprfloat', desc:'Hyprland floating WM + workspace overview utility.', tags:['Hyprland','Floating','WM'], date:'2026' },
-            { icon:'☆', name:'hyprnix', path:'https://github.com/Niumination/hyprnix', desc:'Hyprland Nix config — Nix language.', tags:['Nix','Hyprland','Config'], date:'2026' },
+            { icon:'☆', name:'hyprnix', path:'https://github.com/Niumination/hyprnix', desc:'Hyprland Nix config - Nix language.', tags:['Nix','Hyprland','Config'], date:'2026' },
             { icon:'☆', name:'kaizen', path:'https://github.com/Niumination/kaizen', desc:'Productive desktop environment setup.', tags:['Desktop','Productivity','Config'], date:'2026' },
             { icon:'☆', name:'matt-dotfiles', path:'https://github.com/Niumination/matt-dotfiles', desc:'Yet another aesthetic Hyprland Config.', tags:['Hyprland','Aesthetic','Dotfiles'], date:'2026' },
-            { icon:'☆', name:'agsv1-hyprpanel', path:'https://github.com/Niumination/agsv1-hyprpanel', desc:'AGS v1 Hyprpanel — TypeScript.', tags:['AGS','Hyprpanel','TypeScript'], date:'2026' },
-            { icon:'☆', name:'win11-dotfiles', path:'https://github.com/Niumination/win11-dotfiles', desc:'Windows 11 dotfiles & config — CSS.', tags:['Windows','Dotfiles','Config'], date:'2026' },
-            { icon:'☆', name:'Windots', path:'https://github.com/Niumination/Windots', desc:'Koleksi Windows dotfiles & configs pribadi.', tags:['Windows','Dotfiles','Config'], date:'2026' },
-            // Hardware & misc
-            { icon:'☆', name:'roboto_origin', path:'https://github.com/Niumination/roboto_origin', desc:'Fully Open-Source DIY Humanoid Robot — 750MB. Skala penuh, bilingual EN/CN.', tags:['Robot','Hardware','DIY','Open-Source'], date:'2026' },
-            { icon:'☆', name:'lmarena.github.io', path:'https://github.com/Niumination/lmarena.github.io', desc:'GitHub Pages untuk LM Arena — ~320MB.', tags:['Pages','LM','Arena'], date:'2026' },
+            { icon:'☆', name:'agsv1-hyprpanel', path:'https://github.com/Niumination/agsv1-hyprpanel', desc:'AGS v1 Hyprpanel - TypeScript.', tags:['AGS','Hyprpanel','TypeScript'], date:'2026' },
+            { icon:'☆', name:'win11-dotfiles', path:'https://github.com/Niumination/win11-dotfiles', desc:'Windows 11 dotfiles and config - CSS.', tags:['Windows','Dotfiles','Config'], date:'2026' },
+            { icon:'☆', name:'Windots', path:'https://github.com/Niumination/Windots', desc:'Koleksi Windows dotfiles and configs pribadi.', tags:['Windows','Dotfiles','Config'], date:'2026' },
+            { icon:'☆', name:'.local dotfiles', path:'/Users/zaryu/.local/src/dotfiles/', desc:'Dotfiles lokal - mirror config symlinked dari berbagai proyek.', tags:['Dotfiles','Local','Config'], date:'2026' },
+        ],
+        // === LEGACY — Arsip, backup, proyek lama ===
+        legacy: [
+            { icon:'◇', name:'Claude-Free-Project (LEAK)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Claude-Free-Project (LEAK)/', desc:'Static HTML website dari backup Windows - eksperimen Claude Free.', tags:['HTML','Backup','Legacy'], date:'2026' },
+            { icon:'◇', name:'Portal Pemdi (Desktop)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project PEMDI - Claude Desktop (FreeAccount)/Portal Pemdi/Portal-Pemdi/', desc:'Vite + React portal Pemdi versi awal - backup Windows.', tags:['React','Vite','Pemdi','Backup'], date:'2026' },
+            { icon:'◇', name:'DropBeam Flutter', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project DropBeam - Claude/dropbeam-production/dropbeam-flutter/', desc:'Flutter mobile app - project DropBeam (backup Windows).', tags:['Flutter','Mobile','Backup'], date:'2026' },
+            { icon:'◇', name:'DropBeam Server', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project DropBeam - Claude/dropbeam-production/dropbeam-server/', desc:'Node.js backend untuk DropBeam (backup Windows).', tags:['Node.js','Backend','Backup'], date:'2026' },
+            { icon:'◇', name:'jcode-docs', path:'/Users/zaryu/Desktop/jcode-docs/', desc:'Dokumentasi JCode - referensi coding agent framework.', tags:['Docs','JCode','Reference'], date:'2026' },
+            { icon:'◇', name:'Hermes-USB-Portable', path:'/Users/zaryu/Music/Devs/Hermes-USB-Portable-main/', desc:'Dokumentasi portable Hermes Agent USB.', tags:['Docs','Hermes','Portable'], date:'2026' },
+            { icon:'◇', name:'xero-dotfiles-docs', path:'/Users/zaryu/Desktop/xero-dotfiles-docs/', desc:'Dokumentasi Xero dotfiles - referensi tema/ricing.', tags:['Docs','Dotfiles','Xero','Reference'], date:'2026' },
         ]
     };
 
-    /* ========== RENDER ========== */
+/* ========== RENDER ========== */
     function renderProjects() {
-        ['ready', 'dev', 'ideas'].forEach(cat => {
+        ['ready', 'dev', 'ideas', 'config', 'legacy'].forEach(cat => {
             const grid = document.getElementById(cat + '-grid');
             const countEl = document.getElementById(cat + '-count');
             grid.innerHTML = '';
@@ -1086,11 +1137,12 @@
                 const card = document.createElement('div');
                 card.className = 'project-card ' + cat;
                 card.style.animationDelay = (i * 0.08) + 's';
+                let statusTag = cat === 'ready' ? '▸ ready' : cat === 'dev' ? '⟐ dev' : cat === 'ideas' ? '◇ idea' : cat === 'config' ? '⚙ config' : '◫ legacy';
                 card.innerHTML = `
                     <div class="card-glow"></div>
                     <div class="card-header">
                         <div class="icon">${p.icon}</div>
-                        <span class="status-tag">${cat === 'ready' ? '▸ ready' : cat === 'dev' ? '⟐ dev' : '◇ idea'}</span>
+                        <span class="status-tag">${statusTag}</span>
                     </div>
                     <div class="card-body">
                         <h3>${p.name}</h3>
@@ -1100,26 +1152,27 @@
                             ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
                         </div>
                         <div class="card-footer">
-                            <span class="date">${p.date}</span>
-                            <a class="open-btn" href="${p.path.startsWith('http') ? p.path : 'file://' + p.path}" target="_blank">▸ buka</a>
+                            ${p.date ? `<span class="date">${p.date}</span>` : ''}
+                            <button class="open-btn spring-btn" onclick="window.open('${p.path}','_blank')">↗ OPEN</button>
                         </div>
                     </div>
                 `;
-                grid.appendChild(card);
+                countEl.textContent = PROJECTS[cat].length;
             });
-            countEl.textContent = PROJECTS[cat].length;
         });
-
         // Update stats
-        const total = PROJECTS.ready.length + PROJECTS.dev.length + PROJECTS.ideas.length;
-        // Sidebar stats
+        const total = PROJECTS.ready.length + PROJECTS.dev.length + PROJECTS.ideas.length + PROJECTS.config.length + PROJECTS.legacy.length;
         document.getElementById('sb-ready').textContent = PROJECTS.ready.length;
         document.getElementById('sb-dev').textContent = PROJECTS.dev.length;
         document.getElementById('sb-ideas').textContent = PROJECTS.ideas.length;
+        document.getElementById('sb-config').textContent = PROJECTS.config.length;
+        document.getElementById('sb-legacy').textContent = PROJECTS.legacy.length;
         document.getElementById('sb-total').textContent = total;
         document.getElementById('sb-st-ready').textContent = PROJECTS.ready.length;
         document.getElementById('sb-st-dev').textContent = PROJECTS.dev.length;
         document.getElementById('sb-st-ideas').textContent = PROJECTS.ideas.length;
+        document.getElementById('sb-st-config').textContent = PROJECTS.config.length;
+        document.getElementById('sb-st-legacy').textContent = PROJECTS.legacy.length;
         document.getElementById('sb-st-total').textContent = total;
     }
 
@@ -1146,7 +1199,7 @@
         applyFilter(filter);
     }
     function applyFilter(filter) {
-        const grids = ['ready', 'dev', 'ideas'];
+        const grids = ['ready', 'dev', 'ideas', 'config', 'legacy'];
         let visible = 0;
         grids.forEach(cat => {
             const grid = document.getElementById(cat + '-grid');
@@ -1166,7 +1219,7 @@
         const q = document.getElementById('search-input').value.toLowerCase().trim();
         let visible = 0;
         
-        ['ready', 'dev', 'ideas'].forEach(cat => {
+        ['ready', 'dev', 'ideas', 'config', 'legacy'].forEach(cat => {
             const grid = document.getElementById(cat + '-grid');
             const cards = grid.querySelectorAll('.project-card');
             cards.forEach(card => {
