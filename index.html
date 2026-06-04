@@ -3,1484 +3,1107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIU-DASH // DARK NEXUS</title>
+    <title>NIU-DASH // THREE-PANEL NEXUS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ========== RESET & BASE ========== */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        
-        :root {
-            --bg-primary: #050508;
-            --bg-secondary: #0a0a14;
-            --bg-card: #0d0d1a;
-            --bg-card-hover: #12122a;
-            --border: #1a1a3a;
-            --border-glow: #00fff2;
-            --cyan: #00fff2;
-            --cyan-dim: rgba(0,255,242,0.3);
-            --red: #ff0040;
-            --red-dim: rgba(255,0,64,0.3);
-            --magenta: #b000ff;
-            --magenta-dim: rgba(176,0,255,0.3);
-            --green: #00ff88;
-            --amber: #ffaa00;
-            --text-primary: #e8e8f0;
-            --text-secondary: #8888aa;
-            --text-muted: #55557a;
-            --glitch-blue: #0066ff;
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth;background:#050508}
+        :root{
+            --bg-primary:#050508;--bg-secondary:#0a0a14;--bg-card:#0d0d1a;
+            --bg-card-hover:#12122a;--border:#1a1a3a;--border-subtle:rgba(255,255,255,.04);
+            --cyan:#00fff2;--cyan-dim:rgba(0,255,242,.3);--red:#ff0040;--red-dim:rgba(255,0,64,.3);
+            --magenta:#b000ff;--magenta-dim:rgba(176,0,255,.3);--green:#00ff88;
+            --neon-purple:#b000ff;--amber:#ffaa00;--glitch-blue:#0066ff;
+            --text-primary:#e8e8f0;--text-secondary:#8888aa;--text-muted:#55557a;
+            --sidebar-w:260px;--detail-w:380px;
+            --glow-cyan:0 0 7px rgba(0,255,242,.6),0 0 20px rgba(0,255,242,.3);
+            --glow-red:0 0 7px rgba(255,0,64,.6),0 0 20px rgba(255,0,64,.3);
+            --glow-box-cyan:0 0 10px rgba(0,255,242,.15),0 0 30px rgba(0,255,242,.05);
+            --rad:8px;
+        }
+        .font-orbitron{font-family:'Orbitron',sans-serif}
+        .font-rajdhani{font-family:'Rajdhani',sans-serif}
+        .font-mono{font-family:'JetBrains Mono',monospace}
+        .glow-cyan{text-shadow:0 0 7px rgba(0,255,242,.6),0 0 20px rgba(0,255,242,.3)}
+
+        /* ===== BOOT OVERLAY ===== */
+        .boot-overlay{position:fixed;inset:0;z-index:99999;background:var(--bg-primary);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;transition:opacity .8s,visibility .8s}
+        .boot-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .boot-overlay .boot-title{font-size:18px;font-weight:700;color:var(--cyan);letter-spacing:6px;margin-bottom:30px}
+        .boot-progress-wrap{width:320px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-bottom:16px}
+        .boot-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--magenta));transition:width .15s linear}
+        .boot-status{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:2px;min-height:20px}
+
+        /* ===== GRID OVERLAY ===== */
+        .grid-overlay{position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,242,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,242,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;animation:grid-scroll 8s linear infinite}
+        @keyframes grid-scroll{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+
+        /* ===== GLITCH OVERLAY ===== */
+        .glitch-overlay{position:fixed;inset:0;pointer-events:none;z-index:9998;background:linear-gradient(90deg,rgba(255,0,64,.02) 0%,transparent 2%,transparent 98%,rgba(0,255,242,.02) 100%);animation:glitch-flicker 4s infinite}
+        @keyframes glitch-flicker{0%,95%,100%{opacity:0}96%{opacity:1}97%{opacity:0}}
+        body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,242,.008) 2px,rgba(0,255,242,.008) 4px);pointer-events:none;z-index:9999}
+        #particle-canvas{position:fixed;inset:0;z-index:0;opacity:.5;width:100%;height:100%;pointer-events:none}
+
+        /* ===== APP LAYOUT (3-PANEL) ===== */
+        .app-layout{display:flex;height:100vh;overflow:hidden;position:relative;z-index:1}
+
+        /* ===== SIDEBAR ===== */
+        .sidebar{
+            width:var(--sidebar-w);min-width:var(--sidebar-w);height:100vh;
+            background:rgba(8,8,20,.97);border-right:1px solid var(--border);
+            display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;
+            font-family:'JetBrains Mono',monospace;padding:0;z-index:100;
+            transition:transform .35s cubic-bezier(.4,0,.2,1);
+        }
+        .sidebar .sb-pad{padding:20px}
+        .sidebar .sb-logo{font-size:15px;font-weight:800;color:var(--cyan);letter-spacing:-.5px;display:flex;align-items:center;gap:6px}
+        .sidebar .sb-logo span{color:var(--red)}
+        .sidebar .sb-sub{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:16px}
+        .sidebar .clock-widget{font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:10px;background:rgba(0,255,242,.04);border:1px solid rgba(0,255,242,.1);border-radius:var(--rad);padding:5px 12px;margin-bottom:20px;transition:all .3s ease}
+        .sidebar .clock-widget:hover{border-color:rgba(0,255,242,.25)}
+        .sidebar .clock-widget .cw-time{font-size:13px;font-weight:600;color:var(--cyan);letter-spacing:2px}
+        .sidebar .clock-widget .cw-dot{width:5px;height:5px;border-radius:50%;background:var(--cyan);opacity:.6;animation:cw-pulse 1.2s ease-in-out infinite}
+        @keyframes cw-pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.9;transform:scale(1.3)}}
+        .sidebar .sb-section{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;padding:0 20px;margin-bottom:10px;margin-top:16px}
+        .sidebar .sb-nav{display:flex;flex-direction:column;gap:4px;padding:0 20px}
+        .sidebar .sb-nav button{
+            background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--text-secondary);
+            padding:10px 14px;border-radius:var(--rad);font-family:'JetBrains Mono',monospace;
+            font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;
+            display:flex;align-items:center;gap:10px
+        }
+        .sidebar .sb-nav button:hover{background:rgba(0,255,242,.06);border-color:rgba(0,255,242,.2);color:var(--cyan)}
+        .sidebar .sb-nav button.active{background:rgba(0,255,242,.1);border-color:var(--cyan);color:var(--cyan)}
+        .sidebar .sb-nav button .sb-badge{margin-left:auto;font-size:10px;padding:1px 8px;border-radius:8px;background:rgba(255,255,255,.05)}
+        .sidebar .sb-nav button.active .sb-badge{background:rgba(0,255,242,.15)}
+        .sidebar .sb-nav button .sb-badge.green{color:var(--green)}
+        .sidebar .sb-nav button .sb-badge.cyan{color:var(--cyan)}
+        .sidebar .sb-nav button .sb-badge.amber{color:var(--amber)}
+        .sidebar .sb-nav button .sb-badge.purple{color:var(--neon-purple);background:rgba(176,0,255,.15)}
+        .sidebar .sb-nav button .sb-badge.dim{color:var(--text-muted);background:rgba(120,120,140,.15)}
+        .sidebar .sb-status{border-top:1px solid var(--border);padding:12px 20px;display:flex;flex-wrap:wrap;gap:4px}
+        .sidebar .sb-status button{
+            background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--text-muted);
+            padding:5px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;
+            font-size:9px;font-weight:600;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.5px
+        }
+        .sidebar .sb-status button:hover{border-color:var(--cyan);color:var(--cyan)}
+        .sidebar .sb-status button.active{background:rgba(0,255,242,.1);border-color:var(--cyan);color:var(--cyan)}
+        .sidebar .sb-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:0 20px 20px}
+        .sidebar .sb-stat{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--rad);padding:10px 6px;text-align:center}
+        .sidebar .sb-stat .num{font-size:16px;font-weight:700;display:block;font-family:'Orbitron',sans-serif}
+        .sidebar .sb-stat .lbl{font-size:7px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-top:2px;display:block}
+        .sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--cyan);width:32px;height:28px;border-radius:var(--rad);cursor:pointer;font-size:16px;transition:all .3s;flex-shrink:0}
+        .sidebar-toggle:hover{border-color:var(--cyan);background:rgba(0,255,242,.1)}
+        .sb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;opacity:0;pointer-events:none;transition:opacity .3s}
+        .sb-overlay.show{opacity:1;pointer-events:auto}
+
+        /* ===== FEED (CENTER) ===== */
+        .feed{flex:1;overflow-y:auto;overflow-x:hidden;min-width:0;height:100vh;position:relative}
+        .feed .topbar{
+            position:sticky;top:0;z-index:50;
+            background:rgba(5,5,8,.85);backdrop-filter:blur(20px) saturate(1.2);
+            border-bottom:1px solid var(--border-subtle);padding:8px 24px;
+            display:flex;align-items:center;gap:12px;height:50px;
+        }
+        .feed .topbar .logo-text{font-family:'Orbitron',sans-serif;font-weight:800;font-size:14px;color:var(--cyan);letter-spacing:-.3px;margin-right:auto}
+        .feed .topbar .logo-text span{color:var(--red)}
+        .feed .topbar .filter-info{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:1px}
+        .feed .topbar .filter-info em{color:var(--cyan);font-style:normal}
+        .feed-body{padding:20px 24px 40px}
+        .feed-body .page-header{margin-bottom:20px}
+        .feed-body .page-header h1{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;color:var(--cyan);letter-spacing:-1px;line-height:1.1;text-shadow:0 0 40px rgba(0,255,242,.12)}
+        .feed-body .page-header h1 .slash{color:var(--red);margin:0 2px}
+        .feed-body .page-header .sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-top:4px}
+        .feed-body .page-header .sub em{color:var(--cyan);font-style:normal}
+        .search-bar{position:relative;max-width:480px;margin-bottom:20px}
+        .search-bar input{
+            width:100%;padding:10px 14px 10px 38px;
+            background:rgba(13,13,26,.8);border:1px solid var(--border);
+            border-radius:var(--rad);color:var(--text-primary);
+            font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:all .3s
+        }
+        .search-bar input:focus{border-color:var(--cyan);box-shadow:0 0 20px rgba(0,255,242,.15)}
+        .search-bar input::placeholder{color:var(--text-muted)}
+        .search-bar .icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px}
+        .feed-stats{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+        .feed-stats .fs-item{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:.5px}
+        .feed-stats .fs-item strong{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;margin-right:4px}
+
+        /* ===== FEED CARDS ===== */
+        .feed-cards{display:flex;flex-direction:column;gap:10px}
+        .feed-card{
+            background:linear-gradient(145deg,rgba(18,18,38,.92) 0%,rgba(12,12,28,.85) 100%);
+            border:1px solid var(--border);border-radius:12px;padding:16px 20px;
+            transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;
+            cursor:pointer;display:flex;align-items:flex-start;gap:14px;
+            animation:cardFade .4s ease forwards;opacity:0;
+        }
+        .feed-card:hover{transform:translateY(-2px);border-color:rgba(0,255,242,.15);box-shadow:0 4px 24px rgba(0,0,0,.3)}
+        .feed-card.selected{background:rgba(0,255,242,.06);border-color:var(--cyan);box-shadow:0 0 20px rgba(0,255,242,.1)}
+        .feed-card .fc-icon{
+            width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+            font-size:20px;flex-shrink:0;background:rgba(0,255,242,.12);
+        }
+        .feed-card.ready .fc-icon{background:rgba(0,255,136,.15)}
+        .feed-card.dev .fc-icon{background:rgba(0,255,242,.15)}
+        .feed-card.ideas .fc-icon{background:rgba(255,170,0,.15)}
+        .feed-card.config .fc-icon{background:rgba(176,0,255,.12)}
+        .feed-card.legacy .fc-icon{background:rgba(120,120,140,.12)}
+        .feed-card .fc-body{flex:1;min-width:0}
+        .feed-card .fc-body h3{font-size:14px;font-weight:700;color:#f0f0f8;margin-bottom:2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .feed-card .fc-body h3 .fc-date{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(150,150,200,.4);font-weight:400}
+        .feed-card .fc-desc{font-size:12px;color:#a0a0c0;line-height:1.5;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+        .feed-card .fc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+        .feed-card .fc-tags .tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(80,80,160,.15);color:#9090b8;border:1px solid rgba(80,80,160,.2)}
+        .feed-card .fc-strip{width:3px;align-self:stretch;border-radius:2px;flex-shrink:0}
+        .feed-card.ready .fc-strip{background:var(--green)}
+        .feed-card.dev .fc-strip{background:var(--cyan)}
+        .feed-card.ideas .fc-strip{background:var(--amber)}
+        .feed-card.config .fc-strip{background:var(--magenta)}
+        .feed-card.legacy .fc-strip{background:var(--text-muted)}
+        .feed-card .fc-status{
+            font-family:'JetBrains Mono',monospace;font-size:8px;text-transform:uppercase;
+            letter-spacing:.8px;padding:2px 8px;border-radius:4px;font-weight:600;
+            background:rgba(0,255,136,.12);color:var(--green);border:1px solid rgba(0,255,136,.2);
+            margin-left:auto;flex-shrink:0
+        }
+        @keyframes cardFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        #no-results{text-align:center;padding:60px 20px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:12px;display:none}
+        #no-results .emoji{font-size:28px;margin-bottom:10px}
+
+        /* ===== DETAIL PANEL ===== */
+        .detail-panel{
+            width:var(--detail-w);min-width:var(--detail-w);height:100vh;
+            background:rgba(8,8,20,.95);border-left:1px solid var(--border);
+            display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;
+            font-family:'JetBrains Mono',monospace;transition:transform .35s cubic-bezier(.4,0,.2,1);
+            z-index:50;
+        }
+        .detail-panel .dp-header{
+            position:sticky;top:0;z-index:2;
+            background:rgba(8,8,20,.95);backdrop-filter:blur(12px);
+            border-bottom:1px solid var(--border);
+            padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
+        }
+        .detail-panel .dp-header .dp-title{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-weight:600}
+        .detail-panel .dp-header .dp-close{
+            background:none;border:1px solid var(--border);color:var(--text-muted);width:24px;height:24px;
+            border-radius:6px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .2s
+        }
+        .detail-panel .dp-header .dp-close:hover{border-color:var(--red);color:var(--red);background:rgba(255,0,64,.1)}
+        .dp-content{padding:20px;flex:1;min-height:0}
+        .dp-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;color:var(--text-muted);text-align:center;padding:20px}
+        .dp-empty .emoji{font-size:32px;margin-bottom:12px;opacity:.3}
+        .dp-empty p{font-size:11px;line-height:1.8}
+        .dp-item{animation:cardFade .3s ease forwards}
+        .dp-item .dp-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+        .dp-item .dp-top .dp-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:rgba(0,255,242,.12)}
+        .dp-item .dp-top .dp-info{flex:1;min-width:0}
+        .dp-item .dp-top .dp-info h2{font-size:16px;font-weight:700;color:#f0f0f8;margin-bottom:2px}
+        .dp-item .dp-top .dp-info .dp-sub{font-size:10px;color:var(--text-muted)}
+        .dp-item .dp-top .dp-status{
+            font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;
+            letter-spacing:1px;padding:4px 10px;border-radius:6px;font-weight:600;flex-shrink:0
+        }
+        .dp-status-active{background:rgba(0,255,136,.12);color:var(--green);border:1px solid rgba(0,255,136,.25)}
+        .dp-status-paused{background:rgba(255,255,0,.08);color:#ffd000;border:1px solid rgba(255,255,0,.15)}
+        .dp-status-staging{background:rgba(0,255,242,.12);color:var(--cyan);border:1px solid rgba(0,255,242,.2)}
+        .dp-item .dp-path{font-size:11px;color:rgba(150,150,200,.4);margin-bottom:8px;word-break:break-all}
+        .dp-item .dp-desc{font-size:12px;color:#b0b0d0;line-height:1.7;margin-bottom:12px}
+        .dp-item .dp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:20px}
+        .dp-item .dp-tags span{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 10px;border-radius:4px;background:rgba(80,80,160,.15);color:#9090b8;border:1px solid rgba(80,80,160,.2)}
+        .dp-item .dp-open-btn{
+            font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+            padding:8px 20px;border-radius:7px;border:1px solid rgba(0,255,242,.25);
+            background:rgba(0,255,242,.08);color:var(--cyan);cursor:pointer;
+            transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:24px
+        }
+        .dp-item .dp-open-btn:hover{border-color:var(--cyan);background:rgba(0,255,242,.18);box-shadow:0 0 20px rgba(0,255,242,.15);transform:translateY(-1px)}
+        .dp-section{margin-bottom:20px}
+        .dp-section h4{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;color:#6060a0;text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+        .dp-section h4 .hl{width:16px;height:2px;border-radius:2px}
+        .dp-section .hl-cyan{background:var(--cyan)}
+        .dp-section .hl-green{background:var(--green)}
+        .dp-section .hl-red{background:var(--red)}
+        .dp-section p{font-size:11px;line-height:1.8;color:#b0b0d0}
+        .dp-section ul{list-style:none;padding:0}
+        .dp-section ul li{padding:5px 0 5px 14px;position:relative;font-size:11px;color:#b0b0d0;line-height:1.6}
+        .dp-section ul li::before{content:'›';position:absolute;left:0;color:var(--cyan);font-weight:700}
+        .dp-timeline{position:relative;padding-left:16px}
+        .dp-timeline::before{content:'';position:absolute;left:6px;top:4px;bottom:4px;width:1.5px;background:linear-gradient(180deg,var(--cyan),transparent)}
+        .dp-tl-item{position:relative;padding:6px 0 6px 12px}
+        .dp-tl-item::before{content:'';position:absolute;left:-12px;top:10px;width:8px;height:8px;border-radius:50%;background:var(--bg-secondary);border:2px solid var(--cyan)}
+        .dp-tl-item .tl-date{font-size:9px;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:700}
+        .dp-tl-item .tl-text{font-size:11px;color:#9999b5;margin-top:2px;line-height:1.6}
+        .dp-rec-grid{display:grid;grid-template-columns:1fr;gap:8px}
+        .dp-rec-item{background:rgba(18,18,35,.8);border:1px solid rgba(255,255,255,.04);border-radius:var(--rad);padding:10px 12px;border-left:3px solid var(--cyan);font-size:11px;line-height:1.6;color:#b0b0d0}
+        .dp-rec-item.prio-high{border-left-color:var(--red)}
+        .dp-rec-item.prio-mid{border-left-color:var(--magenta)}
+        .dp-rec-item .rec-prio{font-size:8px;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+        .prio-high .rec-prio{color:var(--red)}
+        .prio-mid .rec-prio{color:var(--magenta)}
+        .prio-low .rec-prio{color:var(--cyan)}
+        .dp-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:1024px){
+            .detail-panel{position:fixed;right:0;top:0;transform:translateX(100%)}
+            .detail-panel.open{transform:translateX(0);box-shadow:-10px 0 40px rgba(0,0,0,.5)}
+        }
+        @media(max-width:768px){
+            .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%)}
+            .sidebar.open{transform:translateX(0);box-shadow:10px 0 40px rgba(0,0,0,.5)}
+            .feed .topbar .logo-text{display:none}
+            .sidebar-toggle{display:inline-flex !important}
+            .feed-body{padding:12px 14px 30px}
+            .feed .topbar{padding:8px 14px}
+            .feed-card{padding:12px 14px;flex-wrap:wrap}
+            .feed-card .fc-status{margin-left:0}
+            .detail-panel{width:100vw}
+            .feed-body .page-header h1{font-size:22px}
+            .search-bar{max-width:100%}
+        }
+        @media(min-width:769px){
+            .sidebar-toggle{display:none !important}
         }
 
-        /* ========== GAMING HUD UTILITIES ========== */
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-
-        /* Neon Glow */
-        .glow-cyan { text-shadow: 0 0 7px rgba(0,255,242,0.6), 0 0 20px rgba(0,255,242,0.3); }
-        .glow-red { text-shadow: 0 0 7px rgba(255,0,64,0.6), 0 0 20px rgba(255,0,64,0.3); }
-        .glow-purple { text-shadow: 0 0 7px rgba(176,0,255,0.6), 0 0 20px rgba(176,0,255,0.3); }
-        .glow-green { text-shadow: 0 0 7px rgba(0,255,136,0.6), 0 0 20px rgba(0,255,136,0.3); }
-        .glow-box-cyan { box-shadow: 0 0 10px rgba(0,255,242,0.15), 0 0 30px rgba(0,255,242,0.05); }
-        .glow-box-purple { box-shadow: 0 0 10px rgba(176,0,255,0.15), 0 0 30px rgba(176,0,255,0.05); }
-        .glow-box-green { box-shadow: 0 0 10px rgba(0,255,136,0.15), 0 0 30px rgba(0,255,136,0.05); }
-        .glow-box-red { box-shadow: 0 0 10px rgba(255,0,64,0.15), 0 0 30px rgba(255,0,64,0.05); }
-
-        /* ========== BOOT OVERLAY ========== */
-        .boot-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
-            background: var(--bg-primary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron', monospace;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-        .boot-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        .boot-overlay .boot-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--cyan);
-            letter-spacing: 6px;
-            margin-bottom: 30px;
-            animation: boot-pulse 1.2s ease-in-out infinite;
-        }
-        .boot-overlay .boot-progress-wrap {
-            width: 320px;
-            height: 3px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
-        .boot-overlay .boot-progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--cyan), var(--magenta));
-            border-radius: 2px;
-            transition: width 0.15s linear;
-        }
-        .boot-overlay .boot-status {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            min-height: 20px;
-        }
-        @keyframes boot-pulse {
-            0%,100% { opacity: 1; }
-            50% { opacity: 0.6; }
+        /* ===== REDUCED MOTION ===== */
+        @media(prefers-reduced-motion:reduce){
+            .grid-overlay,.glitch-overlay,body::before{animation:none}
+            .boot-overlay,.feed-card,.dp-item{transition:none;animation:none;opacity:1;transform:none}
+            #particle-canvas{display:none}
         }
 
-        /* ========== STAGGERED ENTRANCE ========== */
-        .stagger-in {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4,0,0.2,1);
-        }
-        .stagger-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .stagger-in[data-delay="1"] { transition-delay: 0.1s; }
-        .stagger-in[data-delay="2"] { transition-delay: 0.2s; }
-        .stagger-in[data-delay="3"] { transition-delay: 0.3s; }
-        .stagger-in[data-delay="4"] { transition-delay: 0.4s; }
-        .stagger-in[data-delay="5"] { transition-delay: 0.5s; }
-        .stagger-in[data-delay="6"] { transition-delay: 0.6s; }
-        .stagger-in[data-delay="7"] { transition-delay: 0.7s; }
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:rgba(0,255,242,.15);border-radius:2px}
+        ::-webkit-scrollbar-thumb:hover{background:rgba(0,255,242,.3)}
 
-        /* ========== SPRING BUTTON ========== */
-        .spring-btn {
-            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-            will-change: transform;
-        }
-        .spring-btn:hover { transform: scale(1.05) !important; }
-        .spring-btn:active { transform: scale(0.95) !important; }
-
-        /* ========== TILT PERSPECTIVE ========== */
-        .tilt-card {
-            transform-style: preserve-3d;
-            perspective: 800px;
-            will-change: transform;
-        }
-
-        /* ========== SIDEBAR FLASH ========== */
-        .sidebar-flash {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, rgba(0,255,242,0.15), transparent 60%);
-            opacity: 0;
-            pointer-events: none;
-            border-radius: inherit;
-            transition: opacity 0.15s ease;
-        }
-        .sidebar-flash.flash {
-            opacity: 1;
-            transition: none;
-        }
-
-        /* ========== ANIMATED GRID BG ========== */
-        .grid-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                linear-gradient(rgba(0,255,242,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,255,242,0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 1;
-            animation: grid-scroll 8s linear infinite;
-        }
-        @keyframes grid-scroll {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(40px, 40px); }
-        }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* ========== CRT SCANLINES ========== */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,0,0,0.08) 2px,
-                rgba(0,0,0,0.08) 4px
-            );
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        /* ========== ANIMATED BACKGROUND ========== */
-        #particle-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.6;
-        }
-
-        /* ========== SCROLLBAR ========== */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
-
-        /* ========== CONTAINER ========== */
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* ========== TERMINAL BAR ========== */
-        .terminal-bar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 40px;
-            background: rgba(5,5,8,0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 100;
-        }
-        .terminal-bar .left { display: flex; align-items: center; gap: 12px; }
-        .terminal-bar .right { display: flex; align-items: center; }
-
-        /* ========== SIDEBAR TOGGLE ========== */
-        .sidebar-toggle {
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--cyan);
-            width: 28px;
-            height: 22px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            line-height: 1;
-        }
-        .sidebar-toggle:hover {
-            border-color: var(--cyan);
-            background: rgba(0,255,242,0.1);
-        }
-        .sidebar-toggle.active {
-            border-color: var(--cyan);
-            background: rgba(0,255,242,0.15);
-        }
-
-        /* ========== CLOCK WIDGET ========== */
-        .clock-widget {
-            font-family: 'JetBrains Mono', monospace;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: rgba(0, 255, 242, 0.04);
-            border: 1px solid rgba(0, 255, 242, 0.1);
-            border-radius: 8px;
-            padding: 5px 16px 5px 20px;
-            height: 28px;
-            transition: all 0.3s ease;
-        }
-        .clock-widget:hover {
-            border-color: rgba(0, 255, 242, 0.25);
-            background: rgba(0, 255, 242, 0.07);
-        }
-        .clock-widget .cw-time {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--cyan);
-            letter-spacing: 2px;
-        }
-        .clock-widget .cw-dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: var(--cyan);
-            opacity: 0.6;
-            animation: cw-pulse 1.2s ease-in-out infinite;
-        }
-        .clock-widget .cw-label {
-            font-size: 9px;
-            color: rgba(0, 255, 242, 0.35);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        @keyframes cw-pulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.9; transform: scale(1.3); }
-        }
-
-        /* ========== SIDEBAR ========== */
-        .sidebar {
-            position: fixed;
-            top: 40px;
-            left: -360px;
-            width: 340px;
-            bottom: 0;
-            background: rgba(8, 8, 20, 0.97);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--border);
-            z-index: 99;
-            transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 24px 20px;
-            overflow-y: auto;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .sidebar.open { left: 0; }
-        .sidebar .sb-logo {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--cyan);
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-        }
-        .sidebar .sb-logo span { color: var(--red); }
-        .sidebar .sb-sub {
-            font-size: 10px;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 16px;
-        }
-        .sidebar .sb-section {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-        }
-        .sidebar .sb-filter {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 24px;
-        }
-        .sidebar .sb-filter button {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .sidebar .sb-filter button:hover {
-            background: rgba(0,255,242,0.06);
-            border-color: rgba(0,255,242,0.2);
-            color: var(--cyan);
-        }
-        .sidebar .sb-filter button.active {
-            background: rgba(0,255,242,0.1);
-            border-color: var(--cyan);
-            color: var(--cyan);
-        }
-        .sidebar .sb-filter button .sb-badge {
-            margin-left: auto;
-            font-size: 11px;
-            padding: 2px 10px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.05);
-        }
-        .sidebar .sb-filter button.active .sb-badge {
-            background: rgba(0,255,242,0.15);
-        }
-        .sidebar .sb-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--cyan);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 20px;
-        }
-        .sidebar .sb-nav-link:hover {
-            background: rgba(0,255,242,0.08);
-            border-color: rgba(0,255,242,0.25);
-            box-shadow: 0 0 15px rgba(0,255,242,0.08);
-        }
-        .sidebar .sb-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .sidebar .sb-stat {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 14px 12px;
-            text-align: center;
-        }
-        .sidebar .sb-stat .num {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .sidebar .sb-stat .lbl {
-            font-size: 9px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 3px;
-        }
-        .sb-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 98;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .sb-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* ========== HEADER ========== */
-        header {
-            padding: 80px 0 40px;
-            text-align: center;
-            position: relative;
-        }
-
-        .glitch-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: 72px;
-            letter-spacing: -3px;
-            text-transform: uppercase;
-            position: relative;
-            display: inline-block;
-            color: var(--cyan);
-            text-shadow: 0 0 20px rgba(0,255,242,0.4), 0 0 60px rgba(0,255,242,0.15), 0 0 120px rgba(0,255,242,0.05);
-        }
-        .logo .accent { color: var(--cyan); }
-        .logo .slash { color: var(--red); margin: 0 4px; }
-
-        /* Glitch effect */
-        .glitch {
-            position: relative;
-        }
-        .glitch::before,
-        .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-        }
-        .glitch::before {
-            color: var(--glitch-blue);
-            z-index: -1;
-            animation: glitch-1 3s infinite linear alternate-reverse;
-        }
-        .glitch::after {
-            color: var(--red);
-            z-index: -2;
-            animation: glitch-2 2.5s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-1 {
-            0%, 90%, 100% { transform: translate(0); opacity: 0; }
-            91% { transform: translate(-3px, 2px); opacity: 0.8; }
-            92% { transform: translate(3px, -1px); opacity: 0.6; }
-            93% { transform: translate(-1px, 3px); opacity: 0; }
-        }
-        @keyframes glitch-2 {
-            0%, 85%, 100% { transform: translate(0); opacity: 0; }
-            86% { transform: translate(2px, -2px); opacity: 0.7; }
-            87% { transform: translate(-4px, 1px); opacity: 0.4; }
-            88% { transform: translate(2px, 2px); opacity: 0; }
-        }
-
-        .tagline {
-            font-family: 'Rajdhani', 'JetBrains Mono', monospace;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 18px;
-            letter-spacing: 3px;
-            margin-top: 12px;
-        }
-        .tagline .highlight {
-            color: var(--cyan);
-            animation: pulse-text 2s ease-in-out infinite;
-        }
-        @keyframes pulse-text {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .divider-line {
-            max-width: 200px;
-            height: 1px;
-            margin: 24px auto 0;
-            background: linear-gradient(90deg, transparent, var(--cyan), var(--red), transparent);
-        }
-
-        /* ========== STATUS BAR ========== */
-        /* ========== SEARCH BAR ========== */
-        .search-bar {
-            position: relative;
-            max-width: 480px;
-            margin: 0 auto 40px;
-        }
-        .search-bar input {
-            width: 100%;
-            padding: 12px 16px 12px 44px;
-            background: rgba(13,13,26,0.8);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            outline: none;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
-        }
-        .search-bar input:focus {
-            border-color: var(--cyan);
-            box-shadow: 0 0 20px rgba(0,255,242,0.15);
-        }
-        .search-bar input::placeholder {
-            color: var(--text-muted);
-        }
-        .search-bar .icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 16px;
-        }
-
-        /* ========== SECTION TITLE ========== */
-        .section-title {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--text-primary);
-            margin-bottom: 20px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .section-title .badge {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            font-weight: 600;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 2px 10px;
-        }
-        .section-title .badge.green { color: var(--green); border-color: rgba(0,255,136,0.3); }
-        .section-title .badge.cyan { color: var(--cyan); border-color: rgba(0,255,242,0.3); }
-        .section-title .badge.amber { color: var(--amber); border-color: rgba(255,170,0,0.3); }
-        .section-title .badge.purple { color: var(--neon-purple); border-color: rgba(176,0,255,0.3); }
-        .section-title .badge.dim { color: var(--text-muted); border-color: rgba(120,120,140,0.3); }
-        .sidebar .sb-filter button .sb-badge.purple { background: rgba(176,0,255,0.2); color: var(--neon-purple); }
-        .sidebar .sb-filter button .sb-badge.dim { background: rgba(120,120,140,0.2); color: var(--text-muted); }
-
-        /* ========== PROJECT GRID ========== */
-        .project-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 28px;
-            margin-bottom: 48px;
-        }
-        @media (min-width: 768px) { .project-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1100px) { .project-grid { grid-template-columns: repeat(3, 1fr); } }
-
-        /* Column-specific colors */
-        .project-grid.ready .project-card { border-left: 3px solid var(--green); }
-        .project-grid.ready .project-card:hover { border-color: var(--green); box-shadow: 0 0 25px rgba(0,255,136,0.1); }
-        .project-grid.ready .status-tag { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
-        
-        .project-grid.dev .project-card { border-left: 3px solid var(--cyan); }
-        .project-grid.dev .project-card:hover { border-color: var(--cyan); box-shadow: 0 0 25px rgba(0,255,242,0.1); }
-        .project-grid.dev .status-tag { background: rgba(0,255,242,0.15); color: var(--cyan); border: 1px solid rgba(0,255,242,0.3); }
-        
-        .project-grid.ideas .project-card { border-left: 3px solid var(--amber); }
-        .project-grid.ideas .project-card:hover { border-color: var(--amber); box-shadow: 0 0 25px rgba(255,170,0,0.1); }
-        .project-grid.ideas .status-tag { background: rgba(255,170,0,0.15); color: var(--amber); border: 1px solid rgba(255,170,0,0.3); }
-        /* ========== PROJECT CARDS ========== */
-        .project-card {
-            background: linear-gradient(145deg, rgba(18, 18, 38, 0.92) 0%, rgba(12, 12, 28, 0.85) 100%);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 32px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(6px);
-            cursor: pointer;
-        }
-        .project-card:hover {
-            transform: translateY(-3px);
-            background: rgba(20, 20, 42, 0.9);
-            border-color: rgba(0,255,242,0.15);
-        }
-        .project-card .card-glow {
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 40%, rgba(0,255,242,0.03), transparent 60%);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        .project-card:hover .card-glow { opacity: 1; }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 14px;
-            position: relative;
-            z-index: 1;
-        }
-        .card-header .icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-        .project-card.ready .card-header .icon { background: rgba(0,255,136,0.15); }
-        .project-card.dev .card-header .icon { background: rgba(0,255,242,0.15); }
-        .project-card.ideas .card-header .icon { background: rgba(255,170,0,0.15); }
-
-        .status-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            padding: 5px 14px;
-            border-radius: 6px;
-            white-space: nowrap;
-            font-weight: 600;
-        }
-
-        .card-body { position: relative; z-index: 1; }
-        .card-body h3 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #f0f0f8;
-        }
-        .card-body .path {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: rgba(150,150,200,0.5);
-            margin-bottom: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .card-body .desc {
-            font-size: 15px;
-            color: #c8c8e0;
-            line-height: 1.7;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 14px;
-            position: relative;
-            z-index: 1;
-        }
-        .card-tags .tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            padding: 5px 14px;
-            border-radius: 6px;
-            background: rgba(80, 80, 160, 0.15);
-            color: #b0b0d8;
-            border: 1px solid rgba(80, 80, 160, 0.2);
-            transition: all 0.2s ease;
-        }
-        .card-tags .tag:hover { color: #d0d0f0; background: rgba(80, 80, 160, 0.25); }
-
-        .card-footer {
-            margin-top: 22px;
-            padding-top: 18px;
-            border-top: 1px solid rgba(26,26,58,0.6);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-        .card-footer .date {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: rgba(150,150,200,0.5);
-            font-weight: 500;
-        }
-        .card-footer .open-btn {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            font-weight: 700;
-            padding: 9px 26px;
-            border-radius: 7px;
-            border: 1px solid rgba(0, 255, 242, 0.25);
-            background: rgba(0, 255, 242, 0.08);
-            color: var(--cyan);
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .card-footer .open-btn:hover {
-            border-color: var(--cyan);
-            color: var(--cyan);
-            background: rgba(0,255,242,0.18);
-            box-shadow: 0 0 20px rgba(0,255,242,0.15);
-            transform: translateY(-1px);
-        }
-
-        /* ========== GLITCH DIVIDER ========== */
-        .glitch-divider {
-            text-align: center;
-            padding: 32px 0;
-            position: relative;
-        }
-        .glitch-divider span {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            color: var(--text-muted);
-            background: var(--bg-primary);
-            padding: 0 20px;
-            position: relative;
-        }
-        .glitch-divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 10%;
-            right: 10%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border), transparent);
-        }
-
-        /* ========== FOOTER ========== */
-        footer {
-            padding: 40px 0 60px;
-            text-align: center;
-            border-top: 1px solid var(--border);
-            margin-top: 40px;
-        }
-        footer .system-info {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: var(--text-muted);
-            line-height: 2;
-        }
-        footer .system-info .val { color: var(--text-secondary); }
-
-        /* ========== ANIMATIONS ========== */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .project-card { animation: fadeInUp 0.5s ease forwards; opacity: 0; }
-        .project-card:nth-child(1) { animation-delay: 0.05s; }
-        .project-card:nth-child(2) { animation-delay: 0.1s; }
-        .project-card:nth-child(3) { animation-delay: 0.15s; }
-        .project-card:nth-child(4) { animation-delay: 0.2s; }
-        .project-card:nth-child(5) { animation-delay: 0.25s; }
-        .project-card:nth-child(6) { animation-delay: 0.3s; }
-        .project-card:nth-child(7) { animation-delay: 0.35s; }
-        .project-card:nth-child(8) { animation-delay: 0.4s; }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 600px) {
-            .logo { font-size: 40px; }
-            .card-footer .date { font-size: 10px; }
-        }
-
-        /* ========== GLITCH OVERLAY ========== */
-        .glitch-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: 9998;
-            background: 
-                linear-gradient(90deg, rgba(255,0,64,0.02) 0%, transparent 2%, transparent 98%, rgba(0,255,242,0.02) 100%);
-            animation: glitch-flicker 4s infinite;
-        }
-        @keyframes glitch-flicker {
-            0%, 95%, 100% { opacity: 0; }
-            96% { opacity: 1; }
-            97% { opacity: 0; }
-        }
-
-        /* No results state */
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            display: none;
-        }
-        .no-results .emoji { font-size: 32px; margin-bottom: 12px; }
+        /* SPRING BUTTON UTILITY */
+        .spring-btn{transition:transform .35s cubic-bezier(.175,.885,.32,1.275)!important;will-change:transform}
+        .spring-btn:hover{transform:scale(1.05)!important}
+        .spring-btn:active{transform:scale(.95)!important}
     </style>
 </head>
 <body>
 
-<!-- BOOT OVERLAY -->
 <div class="boot-overlay" id="boot-overlay">
-    <div class="boot-title">⟐ SYSTEM INITIALIZING ⟐</div>
-    <div class="boot-progress-wrap">
-        <div class="boot-progress-bar" id="boot-bar"></div>
-    </div>
-    <div class="boot-status" id="boot-status">loading modules...</div>
+    <div class="boot-title">⟐ THREE-PANEL NEXUS ⟐</div>
+    <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
+    <div class="boot-status" id="boot-status">initializing...</div>
 </div>
 
-<!-- GLITCH OVERLAY -->
 <div class="glitch-overlay"></div>
-
-<!-- PARTICLE CANVAS -->
 <canvas id="particle-canvas"></canvas>
-
-<!-- GRID OVERLAY -->
 <div class="grid-overlay"></div>
 
-<!-- TERMINAL BAR -->
-<div class="terminal-bar">
-    <div class="left">
-        <button class="sidebar-toggle" id="sb-toggle" onclick="toggleSidebar()">☰</button>
-    </div>
-    <div class="right">
-        <div class="clock-widget">
-            <span class="cw-label">wib</span>
-            <span class="cw-dot"></span>
-            <span class="cw-time" id="clock">--:--:--</span>
-        </div>
-    </div>
-</div>
-
-<!-- SIDEBAR -->
 <div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
-<nav class="sidebar" id="sidebar">
-    <div class="sb-logo">NIU<span>⚡</span>DASH</div>
-    <div class="sb-sub">dark nexus v1.0 // control panel</div>
-    <a href="development.html" class="sb-nav-link">▶ Dev Tracker</a>
-    <div class="sb-section">⌕ Filter Projek</div>
-    <div class="sb-filter" id="sb-filter">
-        <button class="active" data-filter="all" onclick="setFilter('all')">
-            <span>◈</span> All Projects <span class="sb-badge" id="sb-total">0</span>
-        </button>
-        <button data-filter="ready" onclick="setFilter('ready')">
-            <span>⚡</span> Ready <span class="sb-badge green" id="sb-ready">0</span>
-        </button>
-        <button data-filter="dev" onclick="setFilter('dev')">
-            <span>⟐</span> Development <span class="sb-badge cyan" id="sb-dev">0</span>
-        </button>
-        <button data-filter="ideas" onclick="setFilter('ideas')">
-            <span>◇</span> Ideas <span class="sb-badge amber" id="sb-ideas">0</span>
-        </button>
-        <button data-filter="config" onclick="setFilter('config')">
-            <span>⚙</span> Config <span class="sb-badge purple" id="sb-config">0</span>
-        </button>
-        <button data-filter="legacy" onclick="setFilter('legacy')">
-            <span>◫</span> Legacy <span class="sb-badge dim" id="sb-legacy">0</span>
-        </button>
-    </div>
-    <div class="sb-section" style="margin-top:24px">◆ Statistik</div>
-    <div class="sb-stats">
-        <div class="sb-stat"><div class="num" style="color:var(--green)" id="sb-st-ready">0</div><div class="lbl">Ready</div></div>
-        <div class="sb-stat"><div class="num" style="color:var(--cyan)" id="sb-st-dev">0</div><div class="lbl">Dev</div></div>
-        <div class="sb-stat"><div class="num" style="color:var(--amber)" id="sb-st-ideas">0</div><div class="lbl">Ideas</div></div>
-        <div class="sb-stat"><div class="num" style="color:var(--neon-purple)" id="sb-st-config">0</div><div class="lbl">Config</div></div>
-        <div class="sb-stat"><div class="num" style="color:var(--text-muted)" id="sb-st-legacy">0</div><div class="lbl">Legacy</div></div>
-        <div class="sb-stat"><div class="num" style="color:var(--red)" id="sb-st-total">0</div><div class="lbl">Total</div></div>
-    </div>
-</nav>
 
-<!-- HEADER -->
-<div class="container">
-    <header>
-        <div class="glitch-wrapper stagger-in" data-delay="1">
-            <h1 class="logo glitch" data-text="NIU-DASH">
-                NIU<span class="slash">⚡</span>DASH
-            </h1>
-        </div>
-        <p class="tagline stagger-in" data-delay="2">
-            // <span class="highlight">teknologi tidak pernah berhenti</span> — semakin cepat, semakin dalam //
-        </p>
-        <div class="divider-line stagger-in" data-delay="2"></div>
-    </header>
+<div class="app-layout" id="app">
 
-    <!-- SEARCH -->
-    <div class="search-bar stagger-in" data-delay="3">
-        <span class="icon">⌕</span>
-        <input type="text" id="search-input" placeholder="Cari proyek..." oninput="filterProjects()">
-    </div>
-
-    <!-- READY SECTION -->
-    <div class="section-title stagger-in" data-delay="4">
-        ⚡ READY <span class="badge green" id="ready-count">0</span>
-    </div>
-    <div class="project-grid ready stagger-in" data-delay="4" id="ready-grid"></div>
-
-    <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
-
-    <!-- DEV SECTION -->
-    <div class="section-title stagger-in" data-delay="5">
-        ⟐ DEVELOPMENT <span class="badge cyan" id="dev-count">0</span>
-    </div>
-    <div class="project-grid dev stagger-in" data-delay="5" id="dev-grid"></div>
-
-    <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
-
-    <!-- IDEAS SECTION -->
-    <div class="section-title stagger-in" data-delay="6">
-        ◇ IDEAS / PLANNING <span class="badge amber" id="ideas-count">0</span>
-    </div>
-    <div class="project-grid ideas stagger-in" data-delay="6" id="ideas-grid"></div>
-
-    <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
-
-    <!-- CONFIG SECTION -->
-    <div class="section-title stagger-in" data-delay="6">
-        ⚙ CONFIG / DOTFILES <span class="badge purple" id="config-count">0</span>
-    </div>
-    <div class="project-grid config stagger-in" data-delay="6" id="config-grid"></div>
-
-    <div class="glitch-divider"><span>◈ ◈ ◈</span></div>
-
-    <!-- LEGACY SECTION -->
-    <div class="section-title stagger-in" data-delay="6">
-        ◫ LEGACY / ARSIP <span class="badge dim" id="legacy-count">0</span>
-    </div>
-    <div class="project-grid legacy stagger-in" data-delay="6" id="legacy-grid"></div>
-
-    <div class="no-results" id="no-results">
-        <div class="emoji">⚡</div>
-        <div>// no projects found //</div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="system-info">
-            <div>NIU-DASH // dark nexus v1.0</div>
-            <div><span class="val">host</span> :: macbook-pro.zaryu.local</div>
-            <div><span class="val">kernel</span> :: darwin 24.6.0</div>
-            <div><span class="val">uptime</span> :: <span id="uptime">--</span></div>
-            <div style="margin-top:8px;color:var(--text-muted);font-size:9px;">
-                ⟐ <span id="footer-year">2026</span> — all projects tracked. all systems nominal. ⟐
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sb-pad">
+            <div class="sb-logo">NIU<span>⚡</span>DASH</div>
+            <div class="sb-sub">three-panel nexus v2.0</div>
+            <div class="clock-widget">
+                <span class="cw-dot"></span>
+                <span class="cw-time" id="clock">--:--:--</span>
             </div>
         </div>
-    </footer>
+
+        <div class="sb-section">⌕ Kategori</div>
+        <div class="sb-nav" id="sb-nav">
+            <button data-filter="all" class="active" onclick="setFilter('all')"><span>◈</span> All Projects <span class="sb-badge" id="sb-total">0</span></button>
+            <button data-filter="ready" onclick="setFilter('ready')"><span>⚡</span> Ready <span class="sb-badge green" id="sb-ready">0</span></button>
+            <button data-filter="dev" onclick="setFilter('dev')"><span>⟐</span> Development <span class="sb-badge cyan" id="sb-dev">0</span></button>
+            <button data-filter="ideas" onclick="setFilter('ideas')"><span>◇</span> Ideas <span class="sb-badge amber" id="sb-ideas">0</span></button>
+            <button data-filter="config" onclick="setFilter('config')"><span>⚙</span> Config <span class="sb-badge purple" id="sb-config">0</span></button>
+            <button data-filter="legacy" onclick="setFilter('legacy')"><span>◫</span> Legacy <span class="sb-badge dim" id="sb-legacy">0</span></button>
+        </div>
+
+        <div class="sb-section">◆ Status (Dev)</div>
+        <div class="sb-status" id="sb-status">
+            <button data-status="all" class="active" onclick="setStatusFilter('all')">All</button>
+            <button data-status="active" onclick="setStatusFilter('active')">▶ Active</button>
+            <button data-status="staging" onclick="setStatusFilter('staging')">⟐ Staging</button>
+            <button data-status="paused" onclick="setStatusFilter('paused')">◌ Paused</button>
+        </div>
+
+        <div class="sb-section" style="margin-top:auto">◆ Statistik</div>
+        <div class="sb-stats">
+            <div class="sb-stat"><span class="num" style="color:var(--green)" id="sb-st-ready">0</span><span class="lbl">Ready</span></div>
+            <div class="sb-stat"><span class="num" style="color:var(--cyan)" id="sb-st-dev">0</span><span class="lbl">Dev</span></div>
+            <div class="sb-stat"><span class="num" style="color:var(--amber)" id="sb-st-ideas">0</span><span class="lbl">Ideas</span></div>
+            <div class="sb-stat"><span class="num" style="color:var(--neon-purple)" id="sb-st-config">0</span><span class="lbl">Config</span></div>
+            <div class="sb-stat"><span class="num" style="color:var(--text-muted)" id="sb-st-legacy">0</span><span class="lbl">Legacy</span></div>
+            <div class="sb-stat"><span class="num" style="color:var(--red)" id="sb-st-total">0</span><span class="lbl">Total</span></div>
+        </div>
+    </aside>
+
+    <!-- ===== FEED ===== -->
+    <main class="feed" id="feed">
+        <div class="topbar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <span class="logo-text">NIU<span>⚡</span>DASH</span>
+            <span class="filter-info" id="filter-info">◈ <em>all</em> projects</span>
+        </div>
+        <div class="feed-body">
+            <div class="page-header stagger-in" data-delay="1">
+                <h1>NIU<span class="slash">⚡</span>DASH</h1>
+                <p class="sub">three-panel nexus // <em id="total-projects">0</em> projects tracked</p>
+            </div>
+            <div class="search-bar stagger-in" data-delay="2">
+                <span class="icon">⌕</span>
+                <input type="text" id="search-input" placeholder="Cari proyek..." oninput="filterProjects()">
+            </div>
+            <div class="feed-stats stagger-in" data-delay="3" id="feed-stats"></div>
+            <div class="feed-cards" id="feed-list"></div>
+            <div id="no-results"><div class="emoji">⚡</div>// no projects found //</div>
+        </div>
+    </main>
+
+    <!-- ===== DETAIL PANEL ===== -->
+    <aside class="detail-panel" id="detail-panel">
+        <div class="dp-header">
+            <span class="dp-title">⟐ Project Detail</span>
+            <button class="dp-close" onclick="closeDetail()">✕</button>
+        </div>
+        <div class="dp-content" id="dp-content">
+            <div class="dp-empty">
+                <div class="emoji">⚡</div>
+                <p>Pilih project dari daftar<br>untuk melihat detail</p>
+            </div>
+        </div>
+    </aside>
+
 </div>
 
 <script>
-        /* ========== PROJECT DATA ========== */
-    const PROJECTS = {
-        // === READY — Produk jadi / deployable / hosted ===
-        ready: [
-            // Local web UI
-            { icon:'◈', name:'Meum', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Documents-Mac/Mac-Project/Meum/index.html', desc:'Halaman welcome Matrix-style dengan animasi particle dan CRT effect.', tags:['HTML','CSS','Canvas','Matrix'], date:'24 Feb 2026' },
-            { icon:'⊞', name:'DevFlow / niu-portal', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/niu-portal/index.html', desc:'Landing page manajemen proyek dengan Linear Design System. Dark theme responsive.', tags:['HTML','CSS','JS','Linear DS'], date:'3 Mei 2026' },
-            { icon:'◆', name:'Portfolio 3D', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/portfolio-3d/index.html', desc:'Portofolio interaktif 3D dengan animasi modern.', tags:['HTML','CSS','JS','3D'], date:'10 Mei 2026' },
-            { icon:'◈', name:'Maze Game (Vite)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/claude-projects-or/maze-game/', desc:'Game maze HTML5 + Vite + React. Maze procedural generator.', tags:['HTML5','Vite','Game','React'], date:'3 Mei 2026' },
-            { icon:'⎔', name:'zhtop', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/zhtop/', desc:'Tool terminal Node.js untuk monitoring and visualisasi data via CLI.', tags:['Node.js','CLI','Terminal'], date:'10 Mei 2026' },
-            { icon:'⊚', name:'Niumination Portal - Diskominfo', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Rekomendasi-Aplikasi-ASN-Daerah.html', desc:'Portal Dinas Kominfo Aceh Tengah. Tailwind CSS, tracker IPD, SPBE, sidebar menu.', tags:['HTML','Tailwind','Portal','ASN'], date:'11 Mei 2026' },
-            { icon:'⌁', name:'CPUFriendFriend', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/CPUFriendFriend/', desc:'Python script optimasi power management Hackintosh.', tags:['Python','Hackintosh','CPU','Kext'], date:'14 Mei 2026' },
-            // GitHub web - startpage
-            { icon:'☆', name:'Niu-Startpage', path:'https://github.com/Niumination/Niu-Startpage', desc:'Gateway pribadi ke internet. Startpage minimal + search + bookmark.', tags:['HTML','Startpage','GitHub'], date:'2026' },
-            { icon:'☆', name:'zaryu.startpage', path:'https://github.com/Niumination/zaryu.startpage', desc:'Aesthetic startpage Catppuccin style, clean minimal, hosted GitHub Pages.', tags:['HTML','CSS','Catppuccin','Pages'], date:'2026' },
-            { icon:'☆', name:'NiuHomePage', path:'https://github.com/Niumination/NiuHomePage', desc:'Homepage personal karena pengen punya homepage sendiri.', tags:['HTML','CSS','Homepage'], date:'2026' },
-            { icon:'☆', name:'SilentSDDM', path:'https://github.com/Niumination/SilentSDDM', desc:'SDDM theme highly customizable untuk Arch / Hyprland.', tags:['SDDM','Theme','Linux','QML'], date:'2026' },
-            { icon:'☆', name:'Maze-3D-Game', path:'https://github.com/Niumination/Maze-3D-Game---Web-Based', desc:'Game maze 3D berbasis web. Labyrinth interaktif dalam 3D.', tags:['Web','3D','Game','Maze'], date:'2026' },
-            { icon:'☆', name:'Niu-Cyber-Search-Engine', path:'https://github.com/Niumination/Niu-Cyber-Search-Engine', desc:'Cyber search engine app pertama. Tema cyber/dark.', tags:['Search','Web','Cyber'], date:'2026' },
-            { icon:'☆', name:'Niu-LKH', path:'https://github.com/Niumination/Niu-LKH', desc:'Laporan Kegiatan Harian - Afrizal Munthe. Pelaporan aktivitas digital.', tags:['Web','Laporan','ASN'], date:'2026' },
-            { icon:'☆', name:'niu-speedtest', path:'https://github.com/Niumination/niu-speedtest', desc:'Aplikasi speed test kecepatan jaringan berbasis Python.', tags:['Speedtest','Python','Network'], date:'2026' },
-            { icon:'☆', name:'Bella', path:'https://github.com/Niumination/Bella', desc:'Bella is best - project personal.', tags:['Project','Personal'], date:'2026' },
-            { icon:'☆', name:'DiskominfoAT', path:'https://github.com/Niumination/DiskominfoAT', desc:'Website Diskominfo Aceh Tengah. Dibangun dengan Cursor + ContinueDev.', tags:['Website','Kominfo','GovTech'], date:'2026' },
-            { icon:'☆', name:'Database-DiskominfoAT', path:'https://github.com/Niumination/Database-DiskominfoAT', desc:'Database untuk website DiskominfoAT - struktur and skema data.', tags:['Database','SQL','Kominfo'], date:'2026' },
-            { icon:'☆', name:'Rekapitulasi-SPBE', path:'https://github.com/Niumination/Rekapitulasi-SPBE', desc:'Aplikasi rekap SPBE (Sistem Pemerintahan Berbasis Elektronik).', tags:['SPBE','GovTech','Rekap'], date:'2026' },
-            { icon:'☆', name:'AuditTI-AT', path:'https://github.com/Niumination/AuditTI-AT', desc:'IT Procurement Audit Kabupaten Aceh Tengah pakai AI. Sumber dari LPSE.', tags:['Audit','LPSE','AI','GovTech'], date:'2026' },
-            { icon:'☆', name:'Prakom-Surgawi', path:'https://github.com/Niumination/Prakom-Surgawi', desc:'Anything you want - project Pranata Komputer.', tags:['Project','ASN','Prakom'], date:'2026' },
-            { icon:'☆', name:'cyb3rgh0u1.github.io', path:'https://github.com/Niumination/cyb3rgh0u1.github.io', desc:'GitHub Pages - cyber/ghoul themed.', tags:['Pages','Cyber','GitHub'], date:'2026' },
-            { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project - PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
-            // NEW discovered
-            { icon:'☆', name:'acehtengah-web', path:'/Users/zaryu/Documents/GitHub/zen-/acehtengah-web/', desc:'Website statis multi-halaman Aceh Tengah - HTML murni, berita, layanan publik.', tags:['HTML','CSS','Website','AcehTengah'], date:'2026' },
+// ===== PROJECT DATA (99 projects, 5 categories) =====
+const PROJECTS = {
+    ready: [
+        { icon:'◈', name:'Meum', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Documents-Mac/Mac-Project/Meum/index.html', desc:'Halaman welcome Matrix-style dengan animasi particle dan CRT effect.', tags:['HTML','CSS','Canvas','Matrix'], date:'24 Feb 2026' },
+        { icon:'⊞', name:'DevFlow / niu-portal', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/niu-portal/index.html', desc:'Landing page manajemen proyek dengan Linear Design System. Dark theme responsive.', tags:['HTML','CSS','JS','Linear DS'], date:'3 Mei 2026' },
+        { icon:'◆', name:'Portfolio 3D', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/portfolio-3d/index.html', desc:'Portofolio interaktif 3D dengan animasi modern.', tags:['HTML','CSS','JS','3D'], date:'10 Mei 2026' },
+        { icon:'◈', name:'Maze Game (Vite)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/claude-projects-or/maze-game/', desc:'Game maze HTML5 + Vite + React. Maze procedural generator.', tags:['HTML5','Vite','Game','React'], date:'3 Mei 2026' },
+        { icon:'⎔', name:'zhtop', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/zhtop/', desc:'Tool terminal Node.js untuk monitoring and visualisasi data via CLI.', tags:['Node.js','CLI','Terminal'], date:'10 Mei 2026' },
+        { icon:'⊚', name:'Niumination Portal - Diskominfo', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Rekomendasi-Aplikasi-ASN-Daerah.html', desc:'Portal Dinas Kominfo Aceh Tengah. Tailwind CSS, tracker IPD, SPBE, sidebar menu.', tags:['HTML','Tailwind','Portal','ASN'], date:'11 Mei 2026' },
+        { icon:'⌁', name:'CPUFriendFriend', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/CPUFriendFriend/', desc:'Python script optimasi power management Hackintosh.', tags:['Python','Hackintosh','CPU','Kext'], date:'14 Mei 2026' },
+        { icon:'☆', name:'Niu-Startpage', path:'https://github.com/Niumination/Niu-Startpage', desc:'Gateway pribadi ke internet. Startpage minimal + search + bookmark.', tags:['HTML','Startpage','GitHub'], date:'2026' },
+        { icon:'☆', name:'zaryu.startpage', path:'https://github.com/Niumination/zaryu.startpage', desc:'Aesthetic startpage Catppuccin style, clean minimal, hosted GitHub Pages.', tags:['HTML','CSS','Catppuccin','Pages'], date:'2026' },
+        { icon:'☆', name:'NiuHomePage', path:'https://github.com/Niumination/NiuHomePage', desc:'Homepage personal karena pengen punya homepage sendiri.', tags:['HTML','CSS','Homepage'], date:'2026' },
+        { icon:'☆', name:'SilentSDDM', path:'https://github.com/Niumination/SilentSDDM', desc:'SDDM theme highly customizable untuk Arch / Hyprland.', tags:['SDDM','Theme','Linux','QML'], date:'2026' },
+        { icon:'☆', name:'Maze-3D-Game', path:'https://github.com/Niumination/Maze-3D-Game---Web-Based', desc:'Game maze 3D berbasis web. Labyrinth interaktif dalam 3D.', tags:['Web','3D','Game','Maze'], date:'2026' },
+        { icon:'☆', name:'Niu-Cyber-Search-Engine', path:'https://github.com/Niumination/Niu-Cyber-Search-Engine', desc:'Cyber search engine app pertama. Tema cyber/dark.', tags:['Search','Web','Cyber'], date:'2026' },
+        { icon:'☆', name:'Niu-LKH', path:'https://github.com/Niumination/Niu-LKH', desc:'Laporan Kegiatan Harian - Afrizal Munthe. Pelaporan aktivitas digital.', tags:['Web','Laporan','ASN'], date:'2026' },
+        { icon:'☆', name:'niu-speedtest', path:'https://github.com/Niumination/niu-speedtest', desc:'Aplikasi speed test kecepatan jaringan berbasis Python.', tags:['Speedtest','Python','Network'], date:'2026' },
+        { icon:'☆', name:'Bella', path:'https://github.com/Niumination/Bella', desc:'Bella is best - project personal.', tags:['Project','Personal'], date:'2026' },
+        { icon:'☆', name:'DiskominfoAT', path:'https://github.com/Niumination/DiskominfoAT', desc:'Website Diskominfo Aceh Tengah. Dibangun dengan Cursor + ContinueDev.', tags:['Website','Kominfo','GovTech'], date:'2026' },
+        { icon:'☆', name:'Database-DiskominfoAT', path:'https://github.com/Niumination/Database-DiskominfoAT', desc:'Database untuk website DiskominfoAT - struktur and skema data.', tags:['Database','SQL','Kominfo'], date:'2026' },
+        { icon:'☆', name:'Rekapitulasi-SPBE', path:'https://github.com/Niumination/Rekapitulasi-SPBE', desc:'Aplikasi rekap SPBE (Sistem Pemerintahan Berbasis Elektronik).', tags:['SPBE','GovTech','Rekap'], date:'2026' },
+        { icon:'☆', name:'AuditTI-AT', path:'https://github.com/Niumination/AuditTI-AT', desc:'IT Procurement Audit Kabupaten Aceh Tengah pakai AI. Sumber dari LPSE.', tags:['Audit','LPSE','AI','GovTech'], date:'2026' },
+        { icon:'☆', name:'Prakom-Surgawi', path:'https://github.com/Niumination/Prakom-Surgawi', desc:'Anything you want - project Pranata Komputer.', tags:['Project','ASN','Prakom'], date:'2026' },
+        { icon:'☆', name:'cyb3rgh0u1.github.io', path:'https://github.com/Niumination/cyb3rgh0u1.github.io', desc:'GitHub Pages - cyber/ghoul themed.', tags:['Pages','Cyber','GitHub'], date:'2026' },
+        { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project - PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
+        { icon:'☆', name:'acehtengah-web', path:'/Users/zaryu/Documents/GitHub/zen-/acehtengah-web/', desc:'Website statis multi-halaman Aceh Tengah - HTML murni, berita, layanan publik.', tags:['HTML','CSS','Website','AcehTengah'], date:'2026' },
+    ],
+    dev: [
+        { icon:'☪', name:'Gayo Mengaji', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/Aplikasi Gayo Mengaji/', desc:'Aplikasi Al-Quran digital untuk ASN Aceh Tengah. Flutter + Node.js + PostgreSQL.', tags:['Flutter','Node.js','PostgreSQL','Mobile'], date:'5 Apr 2026' },
+        { icon:'⊚', name:'Niumination Portal (Fullstack)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/niumination-portal/', desc:'Portal React + Express. Dashboard IPD, task tracker, SPBE, arsip.', tags:['React','Express','Vite','Fullstack'], date:'28 Apr 2026' },
+        { icon:'⌘', name:'ClaudeCode / claw-code', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ClaudeLeak/claudecode/', desc:'AI coding agent Python/Rust. Multi-provider LLM, multi-agent system.', tags:['Python','Rust','CLI','AI','LLM'], date:'26 Apr 2026' },
+        { icon:'△', name:'Flame-ADE', path:'https://github.com/Niumination/Flame-ADE', desc:'AI-native terminal emulator 7MB. Tauri 2 + Rust + React 19. BYOK AI, no telemetry.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
+        { icon:'△', name:'terax-ai', path:'https://github.com/Niumination/terax-ai', desc:'Lightweight AI terminal emulator 7MB. Rust + Tauri + React.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
+        { icon:'△', name:'flame-code', path:'https://github.com/Niumination/flame-code', desc:'My First Build, Using AI - project eksperimen AI coding pertama.', tags:['AI','Code','Experiment','TypeScript'], date:'2026' },
+        { icon:'△', name:'jcode', path:'https://github.com/Niumination/jcode', desc:'Coding Agent Harness - framework AI coding agent.', tags:['AI','Agent','Framework'], date:'2026' },
+        { icon:'△', name:'skills', path:'https://github.com/Niumination/skills', desc:'Skills for Real Engineers - dari .claude directory langsung.', tags:['Skills','Claude','AI','Config'], date:'2026' },
+        { icon:'△', name:'G0DM0D3', path:'https://github.com/Niumination/G0DM0D3', desc:'LIBERATED AI CHAT - AI chat bebas tanpa batasan.', tags:['AI','Chat','Uncensored'], date:'2026' },
+        { icon:'△', name:'disunday', path:'https://github.com/Niumination/disunday', desc:'Kontrol opencode dari Discord. Kelola AI coding 24/7 via Discord.', tags:['Discord','AI','Bot','opencode'], date:'2026' },
+        { icon:'△', name:'free-vps', path:'https://github.com/Niumination/free-vps', desc:'Project VPS gratis. Setup cloud infrastructure free tier.', tags:['VPS','Cloud','DevOps'], date:'2026' },
+        { icon:'△', name:'Free-Claude-Opus', path:'https://github.com/Niumination/Free-Claude-Opus', desc:'Akses gratis Claude Opus - eksperimen free tier AI premium.', tags:['AI','Claude','Free'], date:'2026' },
+        { icon:'△', name:'Continue-Agent', path:'https://github.com/Niumination/Continue-Agent', desc:'Continue agent integration - AI coding assistant untuk editor.', tags:['AI','Continue','Agent'], date:'2026' },
+        { icon:'△', name:'cursor-free-vip', path:'https://github.com/Niumination/cursor-free-vip', desc:'Reset Cursor AI MachineID and Bypass Higher Token Limit.', tags:['Cursor','AI','VIP','Tool'], date:'2026' },
+        { icon:'△', name:'unlimited-claude-AI', path:'https://github.com/Niumination/unlimited-claude-AI', desc:'Claude AI unlimited - no backend, no server costs, 100% free.', tags:['AI','Claude','Free','Unlimited'], date:'2026' },
+        { icon:'△', name:'Activate-Office-365', path:'https://github.com/Niumination/Activate-Office-365-on-Windows-10-11', desc:'Leverage the cloud - aktivasi Office 365 di Windows.', tags:['Office','Windows','Tool'], date:'2026' },
+        { icon:'△', name:'docker-mcp-tutorial', path:'https://github.com/Niumination/docker-mcp-tutorial', desc:'Tutorial lengkap membangun MCP server dengan Docker - dari NetworkChuck.', tags:['Docker','MCP','Tutorial'], date:'2026' },
+        { icon:'△', name:'mcp-for-beginners', path:'https://github.com/Niumination/mcp-for-beginners-Microsoft', desc:'Open-source curriculum MCP fundamentals - dari Microsoft. 2GB.', tags:['MCP','Microsoft','Curriculum','AI'], date:'2026' },
+        { icon:'⎔', name:'Diskominfo-Web', path:'https://github.com/Niumination/Diskominfo-Web', desc:'Alternatif website Diskominfo Aceh Tengah.', tags:['Web','Kominfo','GovTech'], date:'2026' },
+        { icon:'⎔', name:'kms-spbe', path:'https://github.com/Niumination/kms-spbe', desc:'Knowledge Management System untuk SPBE.', tags:['KMS','SPBE','GovTech'], date:'2026' },
+        { icon:'⎔', name:'SPBE-DevOps-Academy', path:'https://github.com/Niumination/SPBE-DevOps-Academy', desc:'Akademi DevOps untuk SPBE - pembelajaran DevOps pemerintahan.', tags:['DevOps','SPBE','Academy'], date:'2026' },
+        { icon:'⎔', name:'Devs-Niu', path:'https://github.com/Niumination/Devs-Niu', desc:'Developer portfolio / hub untuk semua project Niumination.', tags:['Dev','Portfolio','Hub'], date:'2026' },
+        { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta - Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
+        { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Documents/Niu-Dash/index.html', desc:'Dark web glitch dashboard tracker - 90+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'3 Jun 2026' },
+        { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework.', tags:['Next.js','GovTech','AcehTengah','Portal'], date:'Jun 2026' },
+        { icon:'△', name:'VirtualAssistance', path:'https://github.com/Niumination/VirtualAssistance', desc:'Virtual Assistance web3 app - Next.js + TypeScript.', tags:['Next.js','Web3','TypeScript'], date:'Jun 2026' },
+        { icon:'△', name:'niu-studio', path:'/Users/zaryu/Desktop/niu-studio/', desc:'Tauri + React studio app - eksperimen desktop hybrid.', tags:['Tauri','React','Desktop','Studio'], date:'2026' },
+        { icon:'△', name:'NiuTUI', path:'/Users/zaryu/Documents/ZMP/NiuTUI/', desc:'Rust CLI/TUI app - terminal interface untuk Niu ecosystem.', tags:['Rust','CLI','TUI'], date:'2026' },
+        { icon:'△', name:'NiuTerm', path:'/Users/zaryu/Documents/ZMP/NiuTerm/', desc:'Tauri terminal emulator - niuterm v0.1.0.', tags:['Rust','Tauri','Terminal'], date:'2026' },
+        { icon:'△', name:'niude', path:'/Users/zaryu/Documents/ZMP/niude/', desc:'Tauri app v0.1.0 - desktop app eksperimental.', tags:['Rust','Tauri','Desktop'], date:'2026' },
+        { icon:'△', name:'Niu-Flow', path:'/Users/zaryu/Desktop/Niumination/Niu-Flow/', desc:'Multi-agent pipeline orchestration — integrasi Hermes + JCode + Codex. Parallel ThreadPoolExecutor, GitHub auto-sync.', tags:['Python','Pipeline','Orchestrator','AI'], date:'Jun 2026' },
+        { icon:'△', name:'JHermUSB-portable', path:'/Users/zaryu/Desktop/Niumination/JHermUSB-portable/', desc:'Hermes Agent USB portable variant — cross-platform launcher, docs, scripts.', tags:['Hermes','USB','Portable','Cross-Platform'], date:'Jun 2026' },
+        { icon:'△', name:'Orchestrator', path:'/Users/zaryu/Documents/ZMP/Orchestrator/', desc:'Python task orchestrator — scheduler, task queue, config JSON, logging.', tags:['Python','Scheduler','Orchestrator','Automation'], date:'Jun 2026' },
+        { icon:'△', name:'street-racer-offline', path:'/Users/zaryu/Desktop/Niumination/aistudio-google/street-racer-offline/', desc:'Android racing game — Kotlin, Jetpack Compose, Gradle. AI Studio Google.', tags:['Android','Kotlin','Game','Compose'], date:'Jun 2026' },
+    ],
+    ideas: [
+        { icon:'⎇', name:'Hackintosh ThinkPad X13', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Hackintosh-ThinkPad-X13-Yoga.md', desc:'Panduan optimasi Hackintosh ThinkPad X13 Yoga.', tags:['Hackintosh','OpenCore','macOS','Guide'], date:'7 Mei 2026' },
+        { icon:'⊞', name:'Windows 11 Optimasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Windows11-ThinkPad-X13.md', desc:'Panduan optimasi Windows 11 ThinkPad X13 - debloat, registry, power plan.', tags:['Windows','Optimasi','Guide'], date:'7 Mei 2026' },
+        { icon:'⏣', name:'MySystem - Dokumentasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/MySystem.md', desc:'Spesifikasi lengkap MacBook Pro dan perangkat lain.', tags:['Dokumentasi','Hardware','System'], date:'14 Mar 2026' },
+        { icon:'⌁', name:'OpenClaw - Setup Agent', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/git-clone/claw-code/', desc:'Setup OpenClaw AI agent untuk workflow coding.', tags:['AI','Agent','OpenClaw','Setup'], date:'26 Apr 2026' },
+        { icon:'⎔', name:'ASN Workspace - KB', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ASN_Workspace_Knowledge_Base.xlsx', desc:'Basis pengetahuan ASN - aplikasi, regulasi, workflow.', tags:['ASN','KB','Excel'], date:'11 Mei 2026' },
+        { icon:'△', name:'OpenCore EFI Configs', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/efi/', desc:'Koleksi EFI OpenCore Hackintosh - BACKUP-1574, READY-TO-UPDATE.', tags:['Hackintosh','OpenCore','EFI','Bootloader'], date:'14 Mei 2026' },
+        { icon:'⌂', name:'Baca - Repo GitHub', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/Baca/', desc:'Repo pribadi ryu-id/Baca. Satu commit awal.', tags:['GitHub','Repo','Idea'], date:'2 Apr 2026' },
+        { icon:'☆', name:'roboto_origin', path:'https://github.com/Niumination/roboto_origin', desc:'Fully Open-Source DIY Humanoid Robot - 750MB. Skala penuh, bilingual EN/CN.', tags:['Robot','Hardware','DIY','Open-Source'], date:'2026' },
+        { icon:'☆', name:'lmarena.github.io', path:'https://github.com/Niumination/lmarena.github.io', desc:'GitHub Pages untuk LM Arena - 320MB.', tags:['Pages','LM','Arena'], date:'2026' },
+        { icon:'△', name:'Ultra Automation System', path:'/Users/zaryu/Documents/arena.ai/ultra-automation-system/', desc:'Node.js ultra automation system - arsitektur sistem otomatis.', tags:['Node.js','Automation','System'], date:'2026' },
+        { icon:'△', name:'obsidian-ai-os', path:'/Users/zaryu/Documents/obsidian-ai-os/', desc:'Obsidian plugin AI OS - integrasi AI dalam vault Obsidian.', tags:['Obsidian','Plugin','AI','OS'], date:'2026' },
+        { icon:'△', name:'Flame-ADE-Desain', path:'/Users/zaryu/Documents/ZMP/Flame-ADE-Desain/', desc:'Desain/template HTML untuk Flame ADE - mockup UI.', tags:['Design','HTML','Mockup','ADE'], date:'2026' },
+    ],
+    config: [
+        { icon:'☆', name:'ryu-dots', path:'https://github.com/Niumination/ryu-dots', desc:'Arch Linux config lengkap - Hyprland + Illogical Impulse.', tags:['Arch','Hyprland','Dotfiles','Linux'], date:'2026' },
+        { icon:'☆', name:'dotfiles (1.6GB)', path:'https://github.com/Niumination/dotfiles', desc:'My Arch Dotfiles - 1.64GB full Arch config collection.', tags:['Arch','Dotfiles','Config'], date:'2026' },
+        { icon:'☆', name:'Zaryu-HyDE (1.3GB)', path:'https://github.com/Niumination/Zaryu-HyDE', desc:'Portable re-work hyprdots. Aesthetic, dynamic, minimal - 1.3GB.', tags:['Hyprland','Dotfiles','Zaryu','Config'], date:'2026' },
+        { icon:'☆', name:'hyprdots', path:'https://github.com/Niumination/hyprdots', desc:'Aesthetic dynamic dots untuk Arch Hyprland - 1GB.', tags:['Hyprland','Dotfiles','Aesthetic'], date:'2026' },
+        { icon:'☆', name:'ZaryuHive', path:'https://github.com/Niumination/ZaryuHive', desc:'Zaryu Hive - environment config.', tags:['Config','Zaryu','Hive'], date:'2026' },
+        { icon:'☆', name:'RyuDE', path:'https://github.com/Niumination/RyuDE', desc:'Personal Desktop Environment based on HyDE-Project - C++.', tags:['Hyprland','DE','C++','Ryu'], date:'2026' },
+        { icon:'☆', name:'ryuland', path:'https://github.com/Niumination/ryuland', desc:'Hyprland ecosystem dots - modern, useful, halal.', tags:['Hyprland','Dotfiles','Islamic','Config'], date:'2026' },
+        { icon:'☆', name:'ryuland-dotfiles', path:'https://github.com/Niumination/ryuland-dotfiles', desc:'Rice built for usability - Hyprland config.', tags:['Hyprland','Rice','Dotfiles'], date:'2026' },
+        { icon:'☆', name:'ryushell', path:'https://github.com/Niumination/ryushell', desc:'Shell config - No waybar here! - GPL-3.0.', tags:['Shell','Config','Waybar'], date:'2026' },
+        { icon:'☆', name:'AnachonisticHypr', path:'https://github.com/Niumination/AnachonisticHypr', desc:'Anachronistic Hyprland config - Shell.', tags:['Hyprland','Shell','Config'], date:'2026' },
+        { icon:'☆', name:'hive-dotfiles', path:'https://github.com/Niumination/hive-dotfiles', desc:'Hive dotfiles - CSS config.', tags:['Dotfiles','CSS','Config'], date:'2026' },
+        { icon:'☆', name:'Axenide-Dotfiles', path:'https://github.com/Niumination/Axenide-Dotfiles', desc:'Axenide dotfiles - 450MB.', tags:['Dotfiles','Config','Fork'], date:'2026' },
+        { icon:'☆', name:'Hyde-cli', path:'https://github.com/Niumination/Hyde-cli', desc:'HyDE CLI wrapper, tweaks, workarounds.', tags:['HyDE','CLI','Wrapper'], date:'2026' },
+        { icon:'☆', name:'hyprfloat', path:'https://github.com/Niumination/hyprfloat', desc:'Hyprland floating WM + workspace overview utility.', tags:['Hyprland','Floating','WM'], date:'2026' },
+        { icon:'☆', name:'hyprnix', path:'https://github.com/Niumination/hyprnix', desc:'Hyprland Nix config - Nix language.', tags:['Nix','Hyprland','Config'], date:'2026' },
+        { icon:'☆', name:'kaizen', path:'https://github.com/Niumination/kaizen', desc:'Productive desktop environment setup.', tags:['Desktop','Productivity','Config'], date:'2026' },
+        { icon:'☆', name:'matt-dotfiles', path:'https://github.com/Niumination/matt-dotfiles', desc:'Yet another aesthetic Hyprland Config.', tags:['Hyprland','Aesthetic','Dotfiles'], date:'2026' },
+        { icon:'☆', name:'agsv1-hyprpanel', path:'https://github.com/Niumination/agsv1-hyprpanel', desc:'AGS v1 Hyprpanel - TypeScript.', tags:['AGS','Hyprpanel','TypeScript'], date:'2026' },
+        { icon:'☆', name:'win11-dotfiles', path:'https://github.com/Niumination/win11-dotfiles', desc:'Windows 11 dotfiles and config - CSS.', tags:['Windows','Dotfiles','Config'], date:'2026' },
+        { icon:'☆', name:'Windots', path:'https://github.com/Niumination/Windots', desc:'Koleksi Windows dotfiles and configs pribadi.', tags:['Windows','Dotfiles','Config'], date:'2026' },
+        { icon:'☆', name:'.local dotfiles', path:'/Users/zaryu/.local/src/dotfiles/', desc:'Dotfiles lokal - mirror config symlinked dari berbagai proyek.', tags:['Dotfiles','Local','Config'], date:'2026' },
+        { icon:'☆', name:'zaryu-terminal-dotfiles', path:'/Users/zaryu/Desktop/rekap/zaryu-terminal-dotfiles/', desc:'Terminal dotfiles stow-managed — Zsh, Neovim, Tmux, Git, Starship, Node, Ruby, ASDF.', tags:['Terminal','Dotfiles','Zsh','Neovim','Stow'], date:'Jun 2026' },
+    ],
+    legacy: [
+        { icon:'◇', name:'Claude-Free-Project (LEAK)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Claude-Free-Project (LEAK)/', desc:'Static HTML website dari backup Windows - eksperimen Claude Free.', tags:['HTML','Backup','Legacy'], date:'2026' },
+        { icon:'◇', name:'Portal Pemdi (Desktop)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project PEMDI - Claude Desktop (FreeAccount)/Portal Pemdi/Portal-Pemdi/', desc:'Vite + React portal Pemdi versi awal - backup Windows.', tags:['React','Vite','Pemdi','Backup'], date:'2026' },
+        { icon:'◇', name:'DropBeam Flutter', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project DropBeam - Claude/dropbeam-production/dropbeam-flutter/', desc:'Flutter mobile app - project DropBeam (backup Windows).', tags:['Flutter','Mobile','Backup'], date:'2026' },
+        { icon:'◇', name:'DropBeam Server', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project DropBeam - Claude/dropbeam-production/dropbeam-server/', desc:'Node.js backend untuk DropBeam (backup Windows).', tags:['Node.js','Backend','Backup'], date:'2026' },
+        { icon:'◇', name:'jcode-docs', path:'/Users/zaryu/Desktop/jcode-docs/', desc:'Dokumentasi JCode - referensi coding agent framework.', tags:['Docs','JCode','Reference'], date:'2026' },
+        { icon:'◇', name:'Hermes-USB-Portable', path:'/Users/zaryu/Music/Devs/Hermes-USB-Portable-main/', desc:'Dokumentasi portable Hermes Agent USB.', tags:['Docs','Hermes','Portable'], date:'2026' },
+        { icon:'◇', name:'xero-dotfiles-docs', path:'/Users/zaryu/Desktop/xero-dotfiles-docs/', desc:'Dokumentasi Xero dotfiles - referensi tema/ricing.', tags:['Docs','Dotfiles','Xero','Reference'], date:'2026' },
+    ]
+};
+
+// ===== DEV META — rich data (history, plan, recommendations) from dev-tracker =====
+const DEV_META = {
+    'Flame-ADE':{
+        status:'active',
+        history:[
+            {date:'2026 — Q1',text:'Konsep awal: AI-native terminal emulator sub-10MB. Ide dari frustrasi dengan bloat IDE modern.'},
+            {date:'2026 — Q2',text:'Prototype Tauri 2 + Rust + React 19. BYOK AI, OS keychain, zero telemetry. Target macOS Tahoe 26.5.'},
+            {date:'2026 — Current',text:'Pengembangan core terminal emulator. Integrasi multi-provider LLM (OpenAI, Anthropic, OpenRouter).'},
         ],
-        // === DEV — Sedang aktif dikerjakan / prototyping ===
-        dev: [
-            // Aplikasi lokal
-            { icon:'☪', name:'Gayo Mengaji', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/Aplikasi Gayo Mengaji/', desc:'Aplikasi Al-Quran digital untuk ASN Aceh Tengah. Flutter + Node.js + PostgreSQL.', tags:['Flutter','Node.js','PostgreSQL','Mobile'], date:'5 Apr 2026' },
-            { icon:'⊚', name:'Niumination Portal (Fullstack)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/niumination-portal/', desc:'Portal React + Express. Dashboard IPD, task tracker, SPBE, arsip.', tags:['React','Express','Vite','Fullstack'], date:'28 Apr 2026' },
-            { icon:'⌘', name:'ClaudeCode / claw-code', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ClaudeLeak/claudecode/', desc:'AI coding agent Python/Rust. Multi-provider LLM, multi-agent system.', tags:['Python','Rust','CLI','AI','LLM'], date:'26 Apr 2026' },
-            // AI & Developer Tooling
-            { icon:'△', name:'Flame-ADE', path:'https://github.com/Niumination/Flame-ADE', desc:'AI-native terminal emulator 7MB. Tauri 2 + Rust + React 19. BYOK AI, no telemetry.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
-            { icon:'△', name:'terax-ai', path:'https://github.com/Niumination/terax-ai', desc:'Lightweight AI terminal emulator 7MB. Rust + Tauri + React.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
-            { icon:'△', name:'flame-code', path:'https://github.com/Niumination/flame-code', desc:'My First Build, Using AI - project eksperimen AI coding pertama.', tags:['AI','Code','Experiment','TypeScript'], date:'2026' },
-            { icon:'△', name:'jcode', path:'https://github.com/Niumination/jcode', desc:'Coding Agent Harness - framework AI coding agent.', tags:['AI','Agent','Framework'], date:'2026' },
-            { icon:'△', name:'skills', path:'https://github.com/Niumination/skills', desc:'Skills for Real Engineers - dari .claude directory langsung.', tags:['Skills','Claude','AI','Config'], date:'2026' },
-            { icon:'△', name:'G0DM0D3', path:'https://github.com/Niumination/G0DM0D3', desc:'LIBERATED AI CHAT - AI chat bebas tanpa batasan.', tags:['AI','Chat','Uncensored'], date:'2026' },
-            { icon:'△', name:'disunday', path:'https://github.com/Niumination/disunday', desc:'Kontrol opencode dari Discord. Kelola AI coding 24/7 via Discord.', tags:['Discord','AI','Bot','opencode'], date:'2026' },
-            { icon:'△', name:'free-vps', path:'https://github.com/Niumination/free-vps', desc:'Project VPS gratis. Setup cloud infrastructure free tier.', tags:['VPS','Cloud','DevOps'], date:'2026' },
-            { icon:'△', name:'Free-Claude-Opus', path:'https://github.com/Niumination/Free-Claude-Opus', desc:'Akses gratis Claude Opus - eksperimen free tier AI premium.', tags:['AI','Claude','Free'], date:'2026' },
-            { icon:'△', name:'Continue-Agent', path:'https://github.com/Niumination/Continue-Agent', desc:'Continue agent integration - AI coding assistant untuk editor.', tags:['AI','Continue','Agent'], date:'2026' },
-            { icon:'△', name:'cursor-free-vip', path:'https://github.com/Niumination/cursor-free-vip', desc:'Reset Cursor AI MachineID and Bypass Higher Token Limit.', tags:['Cursor','AI','VIP','Tool'], date:'2026' },
-            { icon:'△', name:'unlimited-claude-AI', path:'https://github.com/Niumination/unlimited-claude-AI', desc:'Claude AI unlimited - no backend, no server costs, 100% free.', tags:['AI','Claude','Free','Unlimited'], date:'2026' },
-            { icon:'△', name:'Activate-Office-365', path:'https://github.com/Niumination/Activate-Office-365-on-Windows-10-11', desc:'Leverage the cloud - aktivasi Office 365 di Windows.', tags:['Office','Windows','Tool'], date:'2026' },
-            { icon:'△', name:'docker-mcp-tutorial', path:'https://github.com/Niumination/docker-mcp-tutorial', desc:'Tutorial lengkap membangun MCP server dengan Docker - dari NetworkChuck.', tags:['Docker','MCP','Tutorial'], date:'2026' },
-            { icon:'△', name:'mcp-for-beginners', path:'https://github.com/Niumination/mcp-for-beginners-Microsoft', desc:'Open-source curriculum MCP fundamentals - dari Microsoft. 2GB.', tags:['MCP','Microsoft','Curriculum','AI'], date:'2026' },
-            // GovTech
-            { icon:'⎔', name:'Diskominfo-Web', path:'https://github.com/Niumination/Diskominfo-Web', desc:'Alternatif website Diskominfo Aceh Tengah.', tags:['Web','Kominfo','GovTech'], date:'2026' },
-            { icon:'⎔', name:'kms-spbe', path:'https://github.com/Niumination/kms-spbe', desc:'Knowledge Management System untuk SPBE.', tags:['KMS','SPBE','GovTech'], date:'2026' },
-            { icon:'⎔', name:'SPBE-DevOps-Academy', path:'https://github.com/Niumination/SPBE-DevOps-Academy', desc:'Akademi DevOps untuk SPBE - pembelajaran DevOps pemerintahan.', tags:['DevOps','SPBE','Academy'], date:'2026' },
-            { icon:'⎔', name:'Devs-Niu', path:'https://github.com/Niumination/Devs-Niu', desc:'Developer portfolio / hub untuk semua project Niumination.', tags:['Dev','Portfolio','Hub'], date:'2026' },
-            { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta - Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
-            { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Documents/Niu-Dash/index.html', desc:'Dark web glitch dashboard tracker - 90+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'3 Jun 2026' },
-            // NEW discovered
-            { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework.', tags:['Next.js','GovTech','AcehTengah','Portal'], date:'Jun 2026' },
-            { icon:'△', name:'VirtualAssistance', path:'https://github.com/Niumination/VirtualAssistance', desc:'Virtual Assistance web3 app - Next.js + TypeScript.', tags:['Next.js','Web3','TypeScript'], date:'Jun 2026' },
-            { icon:'△', name:'niu-studio', path:'/Users/zaryu/Desktop/niu-studio/', desc:'Tauri + React studio app - eksperimen desktop hybrid.', tags:['Tauri','React','Desktop','Studio'], date:'2026' },
-            { icon:'△', name:'NiuTUI', path:'/Users/zaryu/Documents/ZMP/NiuTUI/', desc:'Rust CLI/TUI app - terminal interface untuk Niu ecosystem.', tags:['Rust','CLI','TUI'], date:'2026' },
-            { icon:'△', name:'NiuTerm', path:'/Users/zaryu/Documents/ZMP/NiuTerm/', desc:'Tauri terminal emulator - niuterm v0.1.0.', tags:['Rust','Tauri','Terminal'], date:'2026' },
-            { icon:'△', name:'niude', path:'/Users/zaryu/Documents/ZMP/niude/', desc:'Tauri app v0.1.0 - desktop app eksperimental.', tags:['Rust','Tauri','Desktop'], date:'2026' },
-            // NEW 4 June 2026
-            { icon:'△', name:'Niu-Flow', path:'/Users/zaryu/Desktop/Niumination/Niu-Flow/', desc:'Multi-agent pipeline orchestration — integrasi Hermes + JCode + Codex. Parallel ThreadPoolExecutor, GitHub auto-sync.', tags:['Python','Pipeline','Orchestrator','AI'], date:'Jun 2026' },
-            { icon:'△', name:'JHermUSB-portable', path:'/Users/zaryu/Desktop/Niumination/JHermUSB-portable/', desc:'Hermes Agent USB portable variant — cross-platform launcher, docs, scripts. Varian dari Hermes-USB-Portable.', tags:['Hermes','USB','Portable','Cross-Platform'], date:'Jun 2026' },
-            { icon:'△', name:'Orchestrator', path:'/Users/zaryu/Documents/ZMP/Orchestrator/', desc:'Python task orchestrator — scheduler, task queue, config JSON, logging. Automation backbone.', tags:['Python','Scheduler','Orchestrator','Automation'], date:'Jun 2026' },
-            // NEW 4 Jun 2026
-            { icon:'△', name:'street-racer-offline', path:'/Users/zaryu/Desktop/Niumination/aistudio-google/street-racer-offline/', desc:'Android racing game — Kotlin, Jetpack Compose, Gradle. Dibuat dengan AI Studio Google.', tags:['Android','Kotlin','Game','Compose'], date:'Jun 2026' },
-        ],
-        // === IDEAS — Konsep, dokumentasi, referensi ===
-        ideas: [
-            { icon:'⎇', name:'Hackintosh ThinkPad X13', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Hackintosh-ThinkPad-X13-Yoga.md', desc:'Panduan optimasi Hackintosh ThinkPad X13 Yoga.', tags:['Hackintosh','OpenCore','macOS','Guide'], date:'7 Mei 2026' },
-            { icon:'⊞', name:'Windows 11 Optimasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Windows11-ThinkPad-X13.md', desc:'Panduan optimasi Windows 11 ThinkPad X13 - debloat, registry, power plan.', tags:['Windows','Optimasi','Guide'], date:'7 Mei 2026' },
-            { icon:'⏣', name:'MySystem - Dokumentasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/MySystem.md', desc:'Spesifikasi lengkap MacBook Pro dan perangkat lain.', tags:['Dokumentasi','Hardware','System'], date:'14 Mar 2026' },
-            { icon:'⌁', name:'OpenClaw - Setup Agent', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/git-clone/claw-code/', desc:'Setup OpenClaw AI agent untuk workflow coding.', tags:['AI','Agent','OpenClaw','Setup'], date:'26 Apr 2026' },
-            { icon:'⎔', name:'ASN Workspace - KB', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ASN_Workspace_Knowledge_Base.xlsx', desc:'Basis pengetahuan ASN - aplikasi, regulasi, workflow.', tags:['ASN','KB','Excel'], date:'11 Mei 2026' },
-            { icon:'△', name:'OpenCore EFI Configs', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/efi/', desc:'Koleksi EFI OpenCore Hackintosh - BACKUP-1574, READY-TO-UPDATE.', tags:['Hackintosh','OpenCore','EFI','Bootloader'], date:'14 Mei 2026' },
-            { icon:'⌂', name:'Baca - Repo GitHub', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/Baca/', desc:'Repo pribadi ryu-id/Baca. Satu commit awal.', tags:['GitHub','Repo','Idea'], date:'2 Apr 2026' },
-            { icon:'☆', name:'roboto_origin', path:'https://github.com/Niumination/roboto_origin', desc:'Fully Open-Source DIY Humanoid Robot - 750MB. Skala penuh, bilingual EN/CN.', tags:['Robot','Hardware','DIY','Open-Source'], date:'2026' },
-            { icon:'☆', name:'lmarena.github.io', path:'https://github.com/Niumination/lmarena.github.io', desc:'GitHub Pages untuk LM Arena - 320MB.', tags:['Pages','LM','Arena'], date:'2026' },
-            // NEW local ideas
-            { icon:'△', name:'Ultra Automation System', path:'/Users/zaryu/Documents/arena.ai/ultra-automation-system/', desc:'Node.js ultra automation system - arsitektur sistem otomatis.', tags:['Node.js','Automation','System'], date:'2026' },
-            { icon:'△', name:'obsidian-ai-os', path:'/Users/zaryu/Documents/obsidian-ai-os/', desc:'Obsidian plugin AI OS - integrasi AI dalam vault Obsidian.', tags:['Obsidian','Plugin','AI','OS'], date:'2026' },
-            { icon:'△', name:'Flame-ADE-Desain', path:'/Users/zaryu/Documents/ZMP/Flame-ADE-Desain/', desc:'Desain/template HTML untuk Flame ADE - mockup UI.', tags:['Design','HTML','Mockup','ADE'], date:'2026' },
-        ],
-        // === CONFIG — Dotfiles, ricing, desktop environment ===
-        config: [
-            { icon:'☆', name:'ryu-dots', path:'https://github.com/Niumination/ryu-dots', desc:'Arch Linux config lengkap - Hyprland + Illogical Impulse.', tags:['Arch','Hyprland','Dotfiles','Linux'], date:'2026' },
-            { icon:'☆', name:'dotfiles (1.6GB)', path:'https://github.com/Niumination/dotfiles', desc:'My Arch Dotfiles - 1.64GB full Arch config collection.', tags:['Arch','Dotfiles','Config'], date:'2026' },
-            { icon:'☆', name:'Zaryu-HyDE (1.3GB)', path:'https://github.com/Niumination/Zaryu-HyDE', desc:'Portable re-work hyprdots. Aesthetic, dynamic, minimal - 1.3GB.', tags:['Hyprland','Dotfiles','Zaryu','Config'], date:'2026' },
-            { icon:'☆', name:'hyprdots', path:'https://github.com/Niumination/hyprdots', desc:'Aesthetic dynamic dots untuk Arch Hyprland - 1GB.', tags:['Hyprland','Dotfiles','Aesthetic'], date:'2026' },
-            { icon:'☆', name:'ZaryuHive', path:'https://github.com/Niumination/ZaryuHive', desc:'Zaryu Hive - environment config.', tags:['Config','Zaryu','Hive'], date:'2026' },
-            { icon:'☆', name:'RyuDE', path:'https://github.com/Niumination/RyuDE', desc:'Personal Desktop Environment based on HyDE-Project - C++.', tags:['Hyprland','DE','C++','Ryu'], date:'2026' },
-            { icon:'☆', name:'ryuland', path:'https://github.com/Niumination/ryuland', desc:'Hyprland ecosystem dots - modern, useful, halal.', tags:['Hyprland','Dotfiles','Islamic','Config'], date:'2026' },
-            { icon:'☆', name:'ryuland-dotfiles', path:'https://github.com/Niumination/ryuland-dotfiles', desc:'Rice built for usability - Hyprland config.', tags:['Hyprland','Rice','Dotfiles'], date:'2026' },
-            { icon:'☆', name:'ryushell', path:'https://github.com/Niumination/ryushell', desc:'Shell config - No waybar here! - GPL-3.0.', tags:['Shell','Config','Waybar'], date:'2026' },
-            { icon:'☆', name:'AnachonisticHypr', path:'https://github.com/Niumination/AnachonisticHypr', desc:'Anachronistic Hyprland config - Shell.', tags:['Hyprland','Shell','Config'], date:'2026' },
-            { icon:'☆', name:'hive-dotfiles', path:'https://github.com/Niumination/hive-dotfiles', desc:'Hive dotfiles - CSS config.', tags:['Dotfiles','CSS','Config'], date:'2026' },
-            { icon:'☆', name:'Axenide-Dotfiles', path:'https://github.com/Niumination/Axenide-Dotfiles', desc:'Axenide dotfiles - 450MB.', tags:['Dotfiles','Config','Fork'], date:'2026' },
-            { icon:'☆', name:'Hyde-cli', path:'https://github.com/Niumination/Hyde-cli', desc:'HyDE CLI wrapper, tweaks, workarounds.', tags:['HyDE','CLI','Wrapper'], date:'2026' },
-            { icon:'☆', name:'hyprfloat', path:'https://github.com/Niumination/hyprfloat', desc:'Hyprland floating WM + workspace overview utility.', tags:['Hyprland','Floating','WM'], date:'2026' },
-            { icon:'☆', name:'hyprnix', path:'https://github.com/Niumination/hyprnix', desc:'Hyprland Nix config - Nix language.', tags:['Nix','Hyprland','Config'], date:'2026' },
-            { icon:'☆', name:'kaizen', path:'https://github.com/Niumination/kaizen', desc:'Productive desktop environment setup.', tags:['Desktop','Productivity','Config'], date:'2026' },
-            { icon:'☆', name:'matt-dotfiles', path:'https://github.com/Niumination/matt-dotfiles', desc:'Yet another aesthetic Hyprland Config.', tags:['Hyprland','Aesthetic','Dotfiles'], date:'2026' },
-            { icon:'☆', name:'agsv1-hyprpanel', path:'https://github.com/Niumination/agsv1-hyprpanel', desc:'AGS v1 Hyprpanel - TypeScript.', tags:['AGS','Hyprpanel','TypeScript'], date:'2026' },
-            { icon:'☆', name:'win11-dotfiles', path:'https://github.com/Niumination/win11-dotfiles', desc:'Windows 11 dotfiles and config - CSS.', tags:['Windows','Dotfiles','Config'], date:'2026' },
-            { icon:'☆', name:'Windots', path:'https://github.com/Niumination/Windots', desc:'Koleksi Windows dotfiles and configs pribadi.', tags:['Windows','Dotfiles','Config'], date:'2026' },
-            { icon:'☆', name:'.local dotfiles', path:'/Users/zaryu/.local/src/dotfiles/', desc:'Dotfiles lokal - mirror config symlinked dari berbagai proyek.', tags:['Dotfiles','Local','Config'], date:'2026' },
-            // NEW 4 June 2026
-            { icon:'☆', name:'zaryu-terminal-dotfiles', path:'/Users/zaryu/Desktop/rekap/zaryu-terminal-dotfiles/', desc:'Terminal dotfiles stow-managed — Zsh, Neovim, Tmux, Git, Starship, Node, Ruby, ASDF. Setup lengkap environment terminal.', tags:['Terminal','Dotfiles','Zsh','Neovim','Stow'], date:'Jun 2026' },
-        ],
-        // === LEGACY — Arsip, backup, proyek lama ===
-        legacy: [
-            { icon:'◇', name:'Claude-Free-Project (LEAK)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Claude-Free-Project (LEAK)/', desc:'Static HTML website dari backup Windows - eksperimen Claude Free.', tags:['HTML','Backup','Legacy'], date:'2026' },
-            { icon:'◇', name:'Portal Pemdi (Desktop)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project PEMDI - Claude Desktop (FreeAccount)/Portal Pemdi/Portal-Pemdi/', desc:'Vite + React portal Pemdi versi awal - backup Windows.', tags:['React','Vite','Pemdi','Backup'], date:'2026' },
-            { icon:'◇', name:'DropBeam Flutter', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project DropBeam - Claude/dropbeam-production/dropbeam-flutter/', desc:'Flutter mobile app - project DropBeam (backup Windows).', tags:['Flutter','Mobile','Backup'], date:'2026' },
-            { icon:'◇', name:'DropBeam Server', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project DropBeam - Claude/dropbeam-production/dropbeam-server/', desc:'Node.js backend untuk DropBeam (backup Windows).', tags:['Node.js','Backend','Backup'], date:'2026' },
-            { icon:'◇', name:'jcode-docs', path:'/Users/zaryu/Desktop/jcode-docs/', desc:'Dokumentasi JCode - referensi coding agent framework.', tags:['Docs','JCode','Reference'], date:'2026' },
-            { icon:'◇', name:'Hermes-USB-Portable', path:'/Users/zaryu/Music/Devs/Hermes-USB-Portable-main/', desc:'Dokumentasi portable Hermes Agent USB.', tags:['Docs','Hermes','Portable'], date:'2026' },
-            { icon:'◇', name:'xero-dotfiles-docs', path:'/Users/zaryu/Desktop/xero-dotfiles-docs/', desc:'Dokumentasi Xero dotfiles - referensi tema/ricing.', tags:['Docs','Dotfiles','Xero','Reference'], date:'2026' },
+        plan:['Selesaikan core terminal rendering (Rust + webview)','Plugin system untuk ekstensi AI custom','Multi-session tabs + session persistence','Package manager built-in (niupkg?)','Rilis alpha — public beta di GitHub Releases'],
+        recommendations:[
+            {text:'Fokus konsolidasi: Flame-ADE dan terax-ai punya overlap ~70%. Gabung atau bedakan use case secara tegas.',priority:'high'},
+            {text:'Gunakan GitHub Projects / Milestones untuk tracking progress publik — biar kontributor tertarik.',priority:'high'},
+            {text:'Siapkan documentation-first approach: ARCHITECTURE.md + CONTRIBUTING.md sebelum rilis publik.',priority:'mid'},
+            {text:'Benchmark performa vs Warp, Hyper, iTerm2 — publikasikan hasilnya sebagai blog post / dev.to.',priority:'low'},
         ]
-    };
+    },
+    'terax-ai':{
+        status:'paused',
+        history:[
+            {date:'2026 — Q1',text:'Terinspirasi dari proyek ADE open-source. Mulai sebagai eksperimen lightweight terminal.'},
+            {date:'2026 — Q2',text:'Berhasil mencapai ~7MB binary size. Stack Rust + Tauri + React. Fitur dasar typing + output rendering.'},
+            {date:'2026 — Current',text:'Ditunda — fokus dialihkan ke Flame-ADE yang lebih mature secara arsitektur.'},
+        ],
+        plan:['Keputusan: merge ke Flame-ADE atau jalan sendiri sebagai minimal edition','Jika jalan sendiri: fokus sebagai lightweight demo / POC untuk ADE concept','Jika merge: port fitur unik (jika ada) ke Flame-ADE'],
+        recommendations:[
+            {text:'Evaluasi make-or-break: 2 proyek ADE parallel menghabiskan energi. Dokumentasi perbedaan teknis, lalu ambil keputusan.',priority:'high'},
+            {text:'Jika dipertahankan, positioning sebagai "ADE lite" untuk resource-constrained environment (VPS, Raspberry Pi).',priority:'mid'}
+        ]
+    },
+    'flame-code':{
+        status:'active',
+        history:[
+            {date:'2026 — Q1',text:'"My First Build, Using AI" — proyek pertama yang fully dibangun dengan bantuan AI coding agent.'},
+            {date:'2026 — Q2',text:'Eksperimen dengan Cursor, Claude Code, dan ContinueDev. Belajar pattern AI-assisted development.'},
+            {date:'2026 — Current',text:'Iterasi cepat: terus bereksperimen dengan berbagai pendekatan AI coding.'},
+        ],
+        plan:['Dokumentasi perjalanan: write-up tentang apa yang berhasil vs tidak dalam AI-assisted coding','Template boilerplate untuk rapid prototyping dengan AI','Benchmark berbagai AI coding tools (Cursor, Claude Code, Copilot, Continue)'],
+        recommendations:[
+            {text:'Transformasi menjadi blog/series: "My First Build" punya nilai storytelling tinggi. Publikasikan sebagai artikel dev.to, Twitter thread.',priority:'high'},
+            {text:'Buat repo template dari hasil eksperimen — biar orang lain bisa reproduce learning path yang sama.',priority:'mid'}
+        ]
+    },
+    'jcode':{
+        status:'active',
+        history:[
+            {date:'2026 — Q1',text:'Ide Coding Agent Harness — framework untuk orchestrasi AI coding agents.'},
+            {date:'2026 — Q2',text:'Prototyping multi-agent workflow. Integrasi dengan local LLM + cloud API.'},
+        ],
+        plan:['Definisi API: agent input/output protocol','Plugin system untuk custom tools & MCP server integration','Integrasi langsung dengan Flame-ADE sebagai agent engine'],
+        recommendations:[
+            {text:'Aliansi dengan ClaudeCode/claw-code — jangan buat ulang yang sudah ada. Fork dan extend.',priority:'high'},
+            {text:'Gunakan MCP (Model Context Protocol) sebagai standard agent-tool communication.',priority:'mid'}
+        ]
+    },
+    'skills':{
+        status:'active',
+        history:[{date:'2026 — Q2',text:'Direktori skills Claude Code dari .claude — dibagikan sebagai open-source. Skills for Real Engineers.'}],
+        plan:['Kurasi skills yang benar-benar reusable','Dokumentasi cara pakai setiap skill','Integrasi dengan jcode sebagai skill registry default','Community contributions via PR'],
+        recommendations:[
+            {text:'Buat skill template + validator agar kontribusi community terstandarisasi.',priority:'high'},
+            {text:'Host GitHub Pages sebagai skill marketplace / searchable registry.',priority:'mid'}
+        ]
+    },
+    'ClaudeCode / claw-code':{
+        status:'staging',
+        history:[
+            {date:'26 Apr 2026',text:'Fork pertama dari claudecode (soongenwong) — eksplorasi multi-agent system.'},
+            {date:'2026 — Mei',text:'Clone kedua dari ultraworkers/claw-code — pendekatan berbeda, Rust-based.'},
+            {date:'2026 — Current',text:'Dua fork berbeda sumber. Eksplorasi multi-provider LLM, multi-agent Python.'},
+        ],
+        plan:['Pilih satu fork sebagai base code — atau merge feature dari keduanya','Dockerize untuk portabilitas lintas OS','Integrasi dengan disunday (Discord controller) untuk remote agent management'],
+        recommendations:[
+            {text:'Konsolidasi: dua fork claudecode/claw-code membingungkan. Pilih satu primary, archive yang lain.',priority:'high'},
+            {text:'Containerize + publish ke Docker Hub — biar bisa run di VPS / server manapun.',priority:'high'},
+            {text:'Integrasi dengan Niumination Portal sebagai backend agent manager.',priority:'mid'}
+        ]
+    },
+    'disunday':{
+        status:'active',
+        history:[{date:'2026 — Q2',text:'Fork dari disunday — Discord bridge untuk opencode. Kontrol AI coding via Discord.'}],
+        plan:['Bridge ke semua AI coding tool yang dipakai (Claude Code, Codex, OpenCode)','Multi-channel support untuk multi-project','Persistent session management'],
+        recommendations:[
+            {text:'Killer feature: jadwalkan AI task via Discord command + cron. "disunday run task-123 at 9am"',priority:'high'},
+            {text:'Integrasi dengan cron/automation sistem Hermes Agent untuk scheduled AI tasks.',priority:'mid'}
+        ]
+    },
+    'G0DM0D3':{
+        status:'active',
+        history:[{date:'2026',text:'Fork project — "LIBERATED AI CHAT". Eksperimen dengan mode AI chat unrestricted.'}],
+        plan:['Self-host option dengan local LLM (llama.cpp, Ollama)','Multi-model routing: uncensored local + censored cloud'],
+        recommendations:[{text:'Bedakan positioning dari AI chat mainstream — fokus ke developer use case (code generation tanpa filter).',priority:'mid'}]
+    },
+    'free-vps':{
+        status:'active',
+        history:[{date:'2026',text:'Project setup VPS menggunakan free tier cloud providers.'}],
+        plan:['Dokumentasi lengkap free tier: Oracle, GCP, AWS, Azure','Automation script provisioning (Terraform/Ansible)','Use case: hosting AI agents, Discord bots, portal apps'],
+        recommendations:[
+            {text:'Buat satu-click deployment script — siapa pun bisa deploy AI stack di free VPS dalam 5 menit.',priority:'high'},
+            {text:'Integrasi dengan jcode/ClaudeCode untuk remote agent hosting.',priority:'mid'}
+        ]
+    },
+    'Free-Claude-Opus':{
+        status:'paused',
+        history:[{date:'2026',text:'Fork — eksperimen akses gratis ke Claude Opus. Metode bypass / free tier.'}],
+        plan:['Evaluasi legalitas & sustainability metode','Alternatif: gunakan OpenRouter / API proxy yang legitimate'],
+        recommendations:[
+            {text:'Risiko tinggi — metode bypass API rentan terminator akun. Migrasi ke solusi legitimate (OpenRouter, self-host).',priority:'high'},
+            {text:'Dokumentasi sebagai "AI cost optimization guide" daripada "free hack".',priority:'mid'}
+        ]
+    },
+    'Continue-Agent':{
+        status:'paused',
+        history:[{date:'2026',text:'Project kosong (0KB) — ide awal untuk integrasi Continue agent.'}],
+        plan:['Definisi use case: Continue sebagai local AI coding assistant','Integrasi dengan custom MCP servers'],
+        recommendations:[{text:'Butuh kickstart — define satu use case konkret dulu sebelum scale.',priority:'high'}]
+    },
+    'cursor-free-vip':{
+        status:'active',
+        history:[{date:'2026',text:'Fork — tool reset MachineID Cursor AI. Bypass trial limit.'}],
+        plan:['Auto-update untuk mendeteksi versi Cursor terbaru','GUI wrapper (opsional) untuk non-tech users'],
+        recommendations:[
+            {text:'High risk — melanggar ToS Cursor. Dokumentasi sebagai "educational purposes only" jelas.',priority:'high'},
+            {text:'Buat alternatif legitimate: gunakan VSCode + Continue plugin sebagai free alternative.',priority:'mid'}
+        ]
+    },
+    'unlimited-claude-AI':{
+        status:'active',
+        history:[{date:'2026',text:'Fork — "Claude AI unlimited, no backend, no server costs, 100% free".'}],
+        plan:['Evaluasi metode yang digunakan (frontend-only bypass?)','Dokumentasi limitations & risks'],
+        recommendations:[{text:'Sama dengan Free-Claude-Opus — risiko terminator akun. Dokumentasi transparan.',priority:'high'}]
+    },
+    'Activate-Office-365':{
+        status:'active',
+        history:[{date:'2026',text:'Fork — aktivasi Office 365 di Windows. Tool utility.'}],
+        plan:['Update untuk Office 2026 compatibility','Auto-detection Office version + recommended activation method'],
+        recommendations:[{text:'Untuk penggunaan personal saja — tidak direkomendasikan untuk production/enterprise.',priority:'mid'}]
+    },
+    'docker-mcp-tutorial':{
+        status:'active',
+        history:[{date:'2026',text:'Fork tutorial membangun MCP server dengan Docker — dari NetworkChuck.'}],
+        plan:['Translate/Praktik langsung semua contoh','Buat versi yang sudah teruji + catatan pribadi','Kustomisasi: MCP server untuk Niumination stack'],
+        recommendations:[
+            {text:'Dokumentasi pengalaman belajar MCP — "My MCP Journey" jadi konten bagus untuk dev.to.',priority:'mid'},
+            {text:'Implementasi MCP nyata untuk project lain (jcode, Flame-ADE) sebagai use case konkret.',priority:'high'}
+        ]
+    },
+    'mcp-for-beginners':{
+        status:'active',
+        history:[{date:'2026',text:'Fork — open-source curriculum MCP fundamentals dari Microsoft. ~2GB full materials.'}],
+        plan:['Studi kurikulum secara sistematis — module per module','Implementasi output: MCP server untuk tools lokal','Integrasi dengan Hermes Agent MCP client'],
+        recommendations:[
+            {text:'Prioritas tinggi: MCP adalah standard masa depan AI-tool integration. Kuasai ini dan implementasi di project lain.',priority:'high'},
+            {text:'Buat ringkasan eksekutif dari kurikulum ini — biar bisa dipahami tanpa baca semua 2GB.',priority:'mid'}
+        ]
+    },
+    'Gayo Mengaji':{
+        status:'active',
+        history:[
+            {date:'5 Apr 2026',text:'Project dimulai. Dokumentasi resmi sistem dibuat.'},
+            {date:'14 Apr 2026',text:'Roadmap lengkap: Gayo Mengaji Roadmap — 4 Section.'},
+            {date:'20 Apr 2026',text:'Implementation plan selesai. Design screens di Figma.'},
+            {date:'Apr 2026',text:'Section 1 selesai: landing page, login, dan fitur dasar. Hosting di Vercel + Railway.'},
+            {date:'Mei 2026',text:'Workflow tracking aktif — development berjalan. Target: ASN Aceh Tengah sebagai user base.'},
+        ],
+        plan:[
+            'Section 2: Dashboard utama + tilawah harian + setoran hafalan',
+            'Section 3: Fitur peringkat, laporan, notifikasi',
+            'Section 4: Admin dashboard, monitoring, ekspor data',
+            'Integrasi dengan SPBE Aceh Tengah (SSO, data ASN)',
+            'Deploy ke Play Store + App Store untuk ASN',
+            'Mode offline untuk daerah tanpa sinyal'
+        ],
+        recommendations:[
+            {text:'Prioritas #1: ini project paling konkret dengan user real (ASN Aceh Tengah). Alokasi waktu terbanyak.',priority:'high'},
+            {text:'Integrasi SPBE SSO harus dari awal — jangan retrofit. Biar terintegrasi dengan ekosistem Diskominfo.',priority:'high'},
+            {text:'Flutter untuk cross-platform (Android+iOS) — pastikan build untuk dua platform sekaligus.',priority:'high'},
+            {text:'Gamification: leaderboard ASN, badge tilawah, streak — boost engagement.',priority:'mid'},
+            {text:'Backup data offline dengan SQLite sync ke PostgreSQL — untuk daerah pelosok Aceh Tengah.',priority:'high'},
+        ]
+    },
+    'Niumination Portal (Fullstack)':{
+        status:'active',
+        history:[
+            {date:'28 Apr 2026',text:'Project dimulai. Frontend React+Vite, backend Node.js/Express.'},
+            {date:'Apr-Mei 2026',text:'Dashboard IPD, task tracker, SPBE module. NiuDesign system (DESIGN-linear.app.md).'},
+            {date:'Current',text:'Lanjut development — perlu penyelesaian fitur core.'},
+        ],
+        plan:[
+            'Complete dashboard IPD dengan real data',
+            'User management + role-based access control (RBAC)',
+            'Task management dengan assignee + deadline',
+            'SPBE module: evaluasi, rekap, laporan',
+            'Arsip dokumen + search',
+            'Responsive untuk mobile'
+        ],
+        recommendations:[
+            {text:'Prioritas #2: portal ini jadi wajah digital Diskominfo. Selesaikan fitur inti sebelum tambah fitur baru.',priority:'high'},
+            {text:'Gunakan React Query / TanStack Query untuk state management — kurangi boilerplate.',priority:'mid'},
+            {text:'Implementasi role-based access (Admin, OPD, ASN) dari awal — retrofit RBAC itu sakit.',priority:'high'},
+            {text:'Dockerize untuk deployment mudah ke VPS / server Diskominfo.',priority:'mid'}
+        ]
+    },
+    'kms-spbe':{
+        status:'active',
+        history:[{date:'2026',text:'Knowledge Management System untuk SPBE. TypeScript + React.'}],
+        plan:['Knowledge base artikel & dokumentasi SPBE','Search full-text dengan tagging system','Version control untuk dokumen kebijakan','Integrasi dengan Niumination Portal'],
+        recommendations:[
+            {text:'Gunakan dokumentasi dari ASN Workspace Knowledge Base.xlsx sebagai seed data.',priority:'high'},
+            {text:'Integrasi SSO dengan portal utama — satu login untuk semua.',priority:'high'}
+        ]
+    },
+    'SPBE-DevOps-Academy':{
+        status:'paused',
+        history:[{date:'2026',text:'Akademi DevOps untuk implementasi SPBE. Materi pembelajaran.'}],
+        plan:['Kurikulum DevOps untuk instansi pemerintah','Panduan praktis: Git, CI/CD, Docker, monitoring','Integrasi dengan kms-spbe sebagai LMS'],
+        recommendations:[
+            {text:'Konten bagus untuk capacity building ASN. Kolaborasi dengan Diskominfo untuk internal training.',priority:'mid'},
+            {text:'Buat module singkat (30 menit per module) — ASN sibuk, waktu belajar terbatas.',priority:'mid'}
+        ]
+    },
+    'Diskominfo-Web':{
+        status:'paused',
+        history:[{date:'2026',text:'Alternatif website Diskominfo Aceh Tengah. HTML + CSS.'}],
+        plan:['Keputusan: lanjut sebagai redesign atau merge ke Niumination Portal','Jika lanjut: modern UI, informasi publik, berita, layanan'],
+        recommendations:[
+            {text:'Konsolidasi dengan Niumination Portal — jangan duplikasi effort. Portal bisa serve sebagai dashboard internal sekaligus public website.',priority:'high'}
+        ]
+    },
+    'Devs-Niu':{
+        status:'active',
+        history:[{date:'2026',text:'Developer portfolio hub untuk semua project Niumination. Mulai dari 0KB.'}],
+        plan:['Landing page untuk portfolio developer','Showcase semua project dari dashboard Niu-Dash','Integrasi GitHub API untuk live stats'],
+        recommendations:[
+            {text:'Ini bisa jadi "front door" untuk semua project — yang nge-link ke Niu-Dash, Portal, Gayo Mengaji, dll.',priority:'high'},
+            {text:'Gunakan data dari Niu-Dash sebagai CMS — jangan duplikasi data manual.',priority:'mid'}
+        ]
+    },
+    'Automata':{
+        status:'active',
+        history:[{date:'2026',text:'Website Otomisasi Manajemen Talenta — Pranata Komputer Terampil Diskominfo.'}],
+        plan:['Sistem manajemen talenta ASN Pranata Komputer','Tracking kompetensi, sertifikasi, dan pengembangan karir','Integrasi dengan portal SPBE'],
+        recommendations:[
+            {text:'Beda dari Niu-LKH: ini untuk talent management, bukan daily report. Jelas bedakan scope.',priority:'high'},
+            {text:'Kolaborasi dengan BKPSDM Aceh Tengah untuk data riil kebutuhan ASN.',priority:'high'}
+        ]
+    },
+    'Niu-Dash':{
+        status:'active',
+        history:[
+            {date:'3 Jun 2026',text:'Proyek dimulai: dashboard dark web glitch theme untuk inventarisasi 75+ project Niumination.'},
+            {date:'3 Jun 2026',text:'DEV TRACKER dibuat — history, plan, rekomendasi untuk 25 project dev.'},
+            {date:'Current',text:'Three-panel nexus v2.0 — redesign total jadi 3 panel (sidebar | feed | detail).'},
+        ],
+        plan:[
+            'Hosting di GitHub Pages untuk akses online',
+            'Integrasi GitHub API untuk live stats repo (star, fork, last commit)',
+            'Auto-update project list dari GitHub API secara real-time',
+            'Filter & sort: by status, tech stack, tanggal',
+            'Mobile responsive — dashboard harus nyaman di layar HP',
+            'Search & filter: tambah filter tech stack dan status'
+        ],
+        recommendations:[
+            {text:'Integrasi GitHub API agar project list auto-sync dengan repo — tidak perlu update manual tiap tambah repo.',priority:'high'},
+            {text:'Mobile responsive — dashboard harus nyaman di layar HP karena user akses via Telegram.',priority:'high'},
+            {text:'Search & filter: tambah filter tech stack dan status — biar cepat nemu project spesifik.',priority:'mid'},
+            {text:'Animation performance: optimasi particle canvas untuk device dengan GPU lemah.',priority:'low'}
+        ]
+    },
+};
 
-/* ========== RENDER ========== */
-    function renderProjects() {
-        ['ready', 'dev', 'ideas', 'config', 'legacy'].forEach(cat => {
-            const grid = document.getElementById(cat + '-grid');
-            const countEl = document.getElementById(cat + '-count');
-            grid.innerHTML = '';
-            PROJECTS[cat].forEach((p, i) => {
-                const card = document.createElement('div');
-                card.className = 'project-card ' + cat;
-                card.style.animationDelay = (i * 0.08) + 's';
-                let statusTag = cat === 'ready' ? '▸ ready' : cat === 'dev' ? '⟐ dev' : cat === 'ideas' ? '◇ idea' : cat === 'config' ? '⚙ config' : '◫ legacy';
-                card.innerHTML = `
-                    <div class="card-glow"></div>
-                    <div class="card-header">
-                        <div class="icon">${p.icon}</div>
-                        <span class="status-tag">${statusTag}</span>
-                    </div>
-                    <div class="card-body">
-                        <h3>${p.name}</h3>
-                        <div class="path">${p.path}</div>
-                        <div class="desc">${p.desc}</div>
-                        <div class="card-tags">
-                            ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
-                        </div>
-                        <div class="card-footer">
-                            ${p.date ? `<span class="date">${p.date}</span>` : ''}
-                            <button class="open-btn spring-btn" onclick="window.open('${p.path}','_blank')">↗ OPEN</button>
-                        </div>
-                    </div>
-                `;
-                countEl.textContent = PROJECTS[cat].length;
+// ===== STATE =====
+let currentFilter = 'all';
+let currentStatus = 'all';
+let selectedIndex = -1;
+let flatProjects = [];
+
+// ===== BUILD FLAT LIST =====
+function buildFlatList() {
+    flatProjects = [];
+    const order = ['ready','dev','ideas','config','legacy'];
+    const labels = {ready:'Ready',dev:'Development',ideas:'Ideas/Planning',config:'Config/Dotfiles',legacy:'Legacy/Arsip'};
+    order.forEach(cat => {
+        PROJECTS[cat].forEach(p => {
+            const meta = DEV_META[p.name];
+            flatProjects.push({
+                ...p,
+                category: cat,
+                categoryLabel: labels[cat],
+                status: meta ? meta.status : null,
+                history: meta ? meta.history : null,
+                plan: meta ? meta.plan : null,
+                recommendations: meta ? meta.recommendations : null,
+                repo: meta ? (p.path.startsWith('http') ? p.path : null) : null,
             });
-        });
-        // Update stats
-        const total = PROJECTS.ready.length + PROJECTS.dev.length + PROJECTS.ideas.length + PROJECTS.config.length + PROJECTS.legacy.length;
-        document.getElementById('sb-ready').textContent = PROJECTS.ready.length;
-        document.getElementById('sb-dev').textContent = PROJECTS.dev.length;
-        document.getElementById('sb-ideas').textContent = PROJECTS.ideas.length;
-        document.getElementById('sb-config').textContent = PROJECTS.config.length;
-        document.getElementById('sb-legacy').textContent = PROJECTS.legacy.length;
-        document.getElementById('sb-total').textContent = total;
-        document.getElementById('sb-st-ready').textContent = PROJECTS.ready.length;
-        document.getElementById('sb-st-dev').textContent = PROJECTS.dev.length;
-        document.getElementById('sb-st-ideas').textContent = PROJECTS.ideas.length;
-        document.getElementById('sb-st-config').textContent = PROJECTS.config.length;
-        document.getElementById('sb-st-legacy').textContent = PROJECTS.legacy.length;
-        document.getElementById('sb-st-total').textContent = total;
-    }
-
-    /* ========== SIDEBAR TOGGLE ========== */
-    function toggleSidebar() {
-        const sb = document.getElementById('sidebar');
-        const overlay = document.getElementById('sb-overlay');
-        const btn = document.getElementById('sb-toggle');
-        sb.classList.toggle('open');
-        overlay.classList.toggle('show');
-        btn.classList.toggle('active');
-    }
-
-    /* ========== SIDEBAR FILTER ========== */
-    let currentFilter = 'all';
-    function setFilter(filter) {
-        currentFilter = filter;
-        // Update button states
-        document.querySelectorAll('#sb-filter button').forEach(b => b.classList.remove('active'));
-        document.querySelector(`#sb-filter button[data-filter="${filter}"]`).classList.add('active');
-        // Close sidebar
-        toggleSidebar();
-        // Apply filter
-        applyFilter(filter);
-    }
-    function applyFilter(filter) {
-        const grids = ['ready', 'dev', 'ideas', 'config', 'legacy'];
-        let visible = 0;
-        grids.forEach(cat => {
-            const grid = document.getElementById(cat + '-grid');
-            const cards = grid.querySelectorAll('.project-card');
-            const showSection = (filter === 'all' || filter === cat);
-            cards.forEach(card => {
-                const match = showSection;
-                card.style.display = match ? '' : 'none';
-                if (match) visible++;
-            });
-        });
-        document.getElementById('no-results').style.display = visible ? 'none' : 'block';
-    }
-
-    /* ========== SEARCH FILTER ========== */
-    function filterProjects() {
-        const q = document.getElementById('search-input').value.toLowerCase().trim();
-        let visible = 0;
-        
-        ['ready', 'dev', 'ideas', 'config', 'legacy'].forEach(cat => {
-            const grid = document.getElementById(cat + '-grid');
-            const cards = grid.querySelectorAll('.project-card');
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                const match = !q || text.includes(q);
-                card.style.display = match ? '' : 'none';
-                if (match) visible++;
-            });
-        });
-
-        document.getElementById('no-results').style.display = visible ? 'none' : 'block';
-    }
-
-    /* ========== PARTICLE SYSTEM ========== */
-    function initParticles() {
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let w, h, particles = [];
-        const COUNT = 60;
-
-        function resize() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Particle {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * w;
-                this.y = Math.random() * h;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.r = Math.random() * 2 + 0.5;
-                this.alpha = Math.random() * 0.5 + 0.2;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > w) this.vx *= -1;
-                if (this.y < 0 || this.y > h) this.vy *= -1;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(0, 255, 242, ${this.alpha * 0.6})`;
-                ctx.fill();
-            }
-        }
-
-        for (let i = 0; i < COUNT; i++) particles.push(new Particle());
-
-        function drawLines() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 180) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        const alpha = (1 - dist / 180) * 0.15;
-                        ctx.strokeStyle = `rgba(0, 255, 242, ${alpha})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, w, h);
-            particles.forEach(p => { p.update(); p.draw(); });
-            drawLines();
-            requestAnimationFrame(animate);
-        }
-        animate();
-    }
-
-    /* ========== CLOCK ========== */
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('clock').textContent = 
-            String(now.getHours()).padStart(2,'0') + ':' +
-            String(now.getMinutes()).padStart(2,'0') + ':' +
-            String(now.getSeconds()).padStart(2,'0');
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    /* ========== UPTIME SIM ========== */
-    const bootTime = Date.now();
-    setInterval(() => {
-        const elapsed = Math.floor((Date.now() - bootTime) / 1000);
-        const h = String(Math.floor(elapsed / 3600)).padStart(2,'0');
-        const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2,'0');
-        const s = String(elapsed % 60).padStart(2,'0');
-        document.getElementById('uptime').textContent = `${h}:${m}:${s}`;
-    }, 1000);
-
-    /* ========== FOOTER YEAR ========== */
-    document.getElementById('footer-year').textContent = new Date().getFullYear();
-
-    /* ========== GAMING HUD — INIT ========== */
-    window.addEventListener('DOMContentLoaded', () => {
-        renderProjects();
-        initParticles();
-
-        // ===== BOOT SEQUENCE =====
-        const bootMsgs = [
-            ['mounting volumes...', 10],
-            ['loading database...', 28],
-            ['scanning nodes...', 45],
-            ['linking subsystems...', 62],
-            ['calibrating nexus...', 78],
-            ['initializing HUD...', 90],
-            ['system online.', 100]
-        ];
-        const bootOverlay = document.getElementById('boot-overlay');
-        const bootBar = document.getElementById('boot-bar');
-        const bootStatus = document.getElementById('boot-status');
-        let step = 0;
-        const bootInterval = setInterval(() => {
-            if (step < bootMsgs.length) {
-                const [msg, pct] = bootMsgs[step];
-                bootBar.style.width = pct + '%';
-                bootStatus.textContent = '[' + String(pct).padStart(3) + '%] ' + msg;
-                step++;
-            } else {
-                clearInterval(bootInterval);
-                setTimeout(() => {
-                    bootOverlay.classList.add('hidden');
-                    // Start staggered entrance
-                    document.querySelectorAll('.stagger-in').forEach(el => {
-                        el.classList.add('visible');
-                    });
-                    // Start count-up after stagger
-                    setTimeout(startCountUp, 300);
-                }, 400);
-            }
-        }, 180);
-
-        // ===== STAGGERED ENTRANCE =====
-        document.querySelectorAll('.project-card, .logo-section, .search-bar').forEach(el => {
-            if (!el.classList.contains('stagger-in')) el.classList.add('stagger-in');
-        });
-
-        // ===== COUNT-UP ANIMATION =====
-        function startCountUp() {
-            document.querySelectorAll('.count-up').forEach(el => {
-                const target = parseInt(el.dataset.target) || 0;
-                const duration = 1200;
-                const start = performance.now();
-                function tick(now) {
-                    const t = Math.min((now - start) / duration, 1);
-                    const eased = 1 - Math.pow(1 - t, 3);
-                    el.textContent = Math.floor(eased * target);
-                    if (t < 1) requestAnimationFrame(tick);
-                }
-                requestAnimationFrame(tick);
-            });
-        }
-
-        // ===== 3D TILT ON CARDS =====
-        document.querySelectorAll('.project-card').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const cx = rect.width / 2;
-                const cy = rect.height / 2;
-                const rx = ((y - cy) / cy) * -8;
-                const ry = ((x - cx) / cx) * 8;
-                card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02,1.02,1.02)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)';
-            });
-        });
-
-        // ===== SIDEBAR CLICK FLASH =====
-        document.querySelectorAll('.sb-filter button, .sb-nav-link').forEach(el => {
-            el.addEventListener('click', function() {
-                const flash = document.createElement('div');
-                flash.className = 'sidebar-flash flash';
-                this.style.position = 'relative';
-                this.style.overflow = 'hidden';
-                this.appendChild(flash);
-                setTimeout(() => flash.remove(), 200);
-            });
-        });
-
-        // ===== WEB AUDIO API =====
-        let audioCtx = null;
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        function playClick() {
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.frequency.value = 800;
-                osc.type = 'square';
-                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.06);
-            } catch(_) {}
-        }
-        function playHover() {
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.frequency.value = 1200;
-                osc.type = 'sine';
-                gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.04);
-            } catch(_) {}
-        }
-        document.querySelectorAll('button, .sb-nav-link, .open-btn, .dev-link').forEach(el => {
-            el.addEventListener('click', () => playClick());
-            el.addEventListener('mouseenter', () => playHover());
-        });
-        // Init audio on first user interaction
-        document.addEventListener('click', () => initAudio(), { once: true });
-
-        // ===== SPRING BUTTON CLASSES =====
-        document.querySelectorAll('.open-btn, .sidebar-toggle, .sb-filter button, .sb-nav-link').forEach(el => {
-            el.classList.add('spring-btn');
-        });
-
-        // ===== COUNT-UP ATTRIBUTES =====
-        document.querySelectorAll('.stat-card .number, #sidebar .num').forEach(el => {
-            const txt = el.textContent.trim();
-            const num = parseInt(txt);
-            if (!isNaN(num)) {
-                el.dataset.target = num;
-                el.textContent = '0';
-                el.classList.add('count-up');
-            }
         });
     });
-</script>
+    return flatProjects;
+}
 
+// ===== RENDER FEED =====
+function renderFeed(filter, statusFilter) {
+    const list = document.getElementById('feed-list');
+    const noRes = document.getElementById('no-results');
+    const statsEl = document.getElementById('feed-stats');
+    const filterInfo = document.getElementById('filter-info');
+    
+    filter = filter || currentFilter;
+    statusFilter = statusFilter || currentStatus;
+    
+    let items = flatProjects;
+    
+    // Apply category filter
+    if (filter !== 'all') {
+        items = items.filter(p => p.category === filter);
+    }
+    
+    // Apply status filter (only for dev projects)
+    if (statusFilter !== 'all') {
+        items = items.filter(p => p.category === 'dev' && p.status === statusFilter);
+    }
+    
+    // Update filter info
+    filterInfo.innerHTML = statusFilter !== 'all'
+        ? `⟐ <em>${statusFilter}</em> · <em>${filter}</em>`
+        : `◈ <em>${filter}</em> projects`;
+    
+    // Update stats
+    const total = flatProjects.length;
+    const visible = items.length;
+    statsEl.innerHTML = `<span class="fs-item"><strong style="color:var(--cyan)">${visible}</strong> visible</span><span class="fs-item">of <strong style="color:var(--text-secondary)">${total}</strong> total</span>`;
+    
+    if (items.length === 0) {
+        list.innerHTML = '';
+        noRes.style.display = 'block';
+        return;
+    }
+    noRes.style.display = 'none';
+    
+    let html = '';
+    items.forEach((p, i) => {
+        const catColor = {ready:'green',dev:'cyan',ideas:'amber',config:'magenta',legacy:'dim'}[p.category] || 'cyan';
+        let statusHtml = '';
+        if (p.category === 'dev' && p.status) {
+            const st = p.status === 'active' ? '▶ ACTIVE' : p.status === 'staging' ? '⟐ STAGING' : '◌ PAUSED';
+            const stColor = p.status === 'active' ? 'color:var(--green);border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.12)' :
+                p.status === 'staging' ? 'color:var(--cyan);border-color:rgba(0,255,242,.2);background:rgba(0,255,242,.12)' :
+                'color:#ffd000;border-color:rgba(255,208,0,.15);background:rgba(255,255,0,.08)';
+            statusHtml = `<span class="fc-status" style="${stColor}">${st}</span>`;
+        }
+        const idx = flatProjects.indexOf(p);
+        html += `
+            <div class="feed-card ${p.category}${selectedIndex === idx ? ' selected' : ''}" onclick="selectProject(${idx})" style="animation-delay:${(i * 0.03)}s" data-index="${idx}">
+                <div class="fc-strip"></div>
+                <div class="fc-icon">${p.icon}</div>
+                <div class="fc-body">
+                    <h3>${p.name} ${p.date ? `<span class="fc-date">${p.date}</span>` : ''}</h3>
+                    <div class="fc-desc">${p.desc}</div>
+                    <div class="fc-tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+                </div>
+                ${statusHtml}
+            </div>
+        `;
+    });
+    list.innerHTML = html;
+}
+
+// ===== SELECT PROJECT =====
+function selectProject(idx) {
+    selectedIndex = idx;
+    // Highlight card
+    document.querySelectorAll('.feed-card').forEach(c => c.classList.remove('selected'));
+    const card = document.querySelector(`.feed-card[data-index="${idx}"]`);
+    if (card) card.classList.add('selected');
+    
+    const p = flatProjects[idx];
+    if (!p) return;
+    
+    const panel = document.getElementById('detail-panel');
+    const content = document.getElementById('dp-content');
+    let catColor = 'cyan';
+    if (p.category === 'ready') catColor = 'green';
+    else if (p.category === 'ideas') catColor = 'amber';
+    else if (p.category === 'config') catColor = 'magenta';
+    else if (p.category === 'legacy') catColor = 'dim';
+    
+    // Status badge
+    let statusBadge = '';
+    if (p.category === 'dev' && p.status) {
+        const stCls = p.status === 'active' ? 'dp-status-active' : p.status === 'staging' ? 'dp-status-staging' : 'dp-status-paused';
+        const stLbl = p.status === 'active' ? '▶ ACTIVE' : p.status === 'staging' ? '⟐ STAGING' : '◌ PAUSED';
+        statusBadge = `<span class="dp-status ${stCls}">${stLbl}</span>`;
+    }
+    
+    // Detail sections
+    let sectionsHtml = '';
+    
+    // Description
+    sectionsHtml += `<div class="dp-section"><h4><span class="hl hl-cyan"></span>DESKRIPSI</h4><p>${p.desc}</p></div>`;
+    
+    // Tags
+    if (p.tags && p.tags.length) {
+        sectionsHtml += `<div class="dp-tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>`;
+    }
+    
+    // History
+    if (p.history && p.history.length) {
+        let tlHtml = '<div class="dp-section"><h4><span class="hl hl-cyan"></span>HISTORY</h4><div class="dp-timeline">';
+        p.history.forEach(h => {
+            tlHtml += `<div class="dp-tl-item"><div class="tl-date">${h.date}</div><div class="tl-text">${h.text}</div></div>`;
+        });
+        tlHtml += '</div></div>';
+        sectionsHtml += tlHtml;
+    }
+    
+    // Plan
+    if (p.plan && p.plan.length) {
+        let planHtml = '<div class="dp-section"><h4><span class="hl hl-green"></span>PLAN / ROADMAP</h4><ul>';
+        p.plan.forEach(pl => { planHtml += `<li>${pl}</li>`; });
+        planHtml += '</ul></div>';
+        sectionsHtml += planHtml;
+    }
+    
+    // Recommendations
+    if (p.recommendations && p.recommendations.length) {
+        let recHtml = '<div class="dp-section"><h4><span class="hl hl-red"></span>REKOMENDASI</h4><div class="dp-rec-grid">';
+        p.recommendations.forEach(r => {
+            const prio = r.priority === 'high' ? 'prio-high' : r.priority === 'mid' ? 'prio-mid' : 'prio-low';
+            const prioLabel = r.priority === 'high' ? '⚠ PRIORITAS' : r.priority === 'mid' ? '◆ PENTING' : '▸ SARAN';
+            recHtml += `<div class="dp-rec-item ${prio}"><div class="rec-prio">${prioLabel}</div>${r.text}</div>`;
+        });
+        recHtml += '</div></div>';
+        sectionsHtml += recHtml;
+    }
+    
+    // Path/button
+    const path = p.path || (p.repo || '#');
+    const isRepo = path.startsWith('http');
+    
+    content.innerHTML = `
+        <div class="dp-item">
+            <div class="dp-top">
+                <div class="dp-icon" style="background:rgba(0,255,242,.12)">${p.icon}</div>
+                <div class="dp-info">
+                    <h2>${p.name}</h2>
+                    <div class="dp-sub">${p.categoryLabel}${p.date ? ' · ' + p.date : ''}</div>
+                </div>
+                ${statusBadge}
+            </div>
+            <div class="dp-path">${path}</div>
+            ${sectionsHtml}
+            <hr class="dp-divider">
+            <a href="${path}" target="_blank" class="dp-open-btn spring-btn">↗ ${isRepo ? 'OPEN REPO' : 'OPEN'}</a>
+        </div>
+    `;
+    
+    // Open panel on mobile/tablet
+    if (window.innerWidth <= 1024) {
+        panel.classList.add('open');
+    }
+}
+
+// ===== CLOSE DETAIL =====
+function closeDetail() {
+    document.getElementById('detail-panel').classList.remove('open');
+    document.querySelectorAll('.feed-card').forEach(c => c.classList.remove('selected'));
+    selectedIndex = -1;
+}
+
+// ===== SIDEBAR TOGGLE =====
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sb-overlay').classList.toggle('show');
+}
+
+// ===== FILTERS =====
+function setFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('#sb-nav button').forEach(b => b.classList.remove('active'));
+    document.querySelector(`#sb-nav button[data-filter="${filter}"]`).classList.add('active');
+    if (window.innerWidth <= 768) toggleSidebar();
+    renderFeed(filter, currentStatus);
+    updateStats();
+}
+
+function setStatusFilter(status) {
+    currentStatus = status;
+    document.querySelectorAll('#sb-status button').forEach(b => b.classList.remove('active'));
+    document.querySelector(`#sb-status button[data-status="${status}"]`).classList.add('active');
+    renderFeed(currentFilter, status);
+}
+
+function filterProjects() {
+    const q = document.getElementById('search-input').value.toLowerCase().trim();
+    const list = document.getElementById('feed-list');
+    const items = list.querySelectorAll('.feed-card');
+    let visible = 0;
+    items.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const match = !q || text.includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
+    });
+    document.getElementById('no-results').style.display = visible ? 'none' : 'block';
+}
+
+// ===== STATS =====
+function updateStats() {
+    const cats = ['ready','dev','ideas','config','legacy'];
+    const total = flatProjects.length;
+    cats.forEach(cat => {
+        const count = PROJECTS[cat].length;
+        document.getElementById('sb-' + cat).textContent = count;
+        document.getElementById('sb-st-' + cat).textContent = count;
+    });
+    document.getElementById('sb-total').textContent = total;
+    document.getElementById('sb-st-total').textContent = total;
+    document.getElementById('total-projects').textContent = total;
+}
+
+// ===== PARTICLES =====
+function initParticles() {
+    const canvas = document.getElementById('particle-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, particles = [];
+    const COUNT = 50;
+    function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+    class Particle {
+        constructor() { this.reset(); }
+        reset() { this.x = Math.random() * w; this.y = Math.random() * h; this.vx = (Math.random() - 0.5) * 0.4; this.vy = (Math.random() - 0.5) * 0.4; this.r = Math.random() * 2 + 0.5; this.alpha = Math.random() * 0.5 + 0.2; }
+        update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > w) this.vx *= -1; if (this.y < 0 || this.y > h) this.vy *= -1; }
+        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(0,255,242,${this.alpha * 0.5})`; ctx.fill(); }
+    }
+    for (let i = 0; i < COUNT; i++) particles.push(new Particle());
+    function drawLines() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 180) { ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); const alpha = (1 - dist / 180) * 0.12; ctx.strokeStyle = `rgba(0,255,242,${alpha})`; ctx.lineWidth = 0.5; ctx.stroke(); }
+            }
+        }
+    }
+    function animate() { ctx.clearRect(0, 0, w, h); particles.forEach(p => { p.update(); p.draw(); }); drawLines(); requestAnimationFrame(animate); }
+    animate();
+}
+
+// ===== CLOCK =====
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ===== BOOT =====
+function runBoot() {
+    const msgs = [['mounting volumes...',10],['loading database...',28],['scanning nodes...',45],['linking subsystems...',62],['calibrating nexus...',78],['initializing HUD...',90],['system online.',100]];
+    const overlay = document.getElementById('boot-overlay');
+    const bar = document.getElementById('boot-bar');
+    const status = document.getElementById('boot-status');
+    let step = 0;
+    const iv = setInterval(() => {
+        if (step < msgs.length) {
+            const [m, p] = msgs[step];
+            bar.style.width = p + '%';
+            status.textContent = '[' + String(p).padStart(3) + '%] ' + m;
+            step++;
+        } else {
+            clearInterval(iv);
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                document.querySelectorAll('.stagger-in').forEach(el => el.classList.add('visible'));
+            }, 400);
+        }
+    }, 180);
+}
+
+// ===== AUDIO =====
+let audioCtx = null;
+function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function playClick() { try { initAudio(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.frequency.value = 800; o.type = 'square'; g.gain.setValueAtTime(0.04, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06); o.start(audioCtx.currentTime); o.stop(audioCtx.currentTime + 0.06); } catch(_){} }
+function playHover() { try { initAudio(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.frequency.value = 1200; o.type = 'sine'; g.gain.setValueAtTime(0.015, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04); o.start(audioCtx.currentTime); o.stop(audioCtx.currentTime + 0.04); } catch(_){} }
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', () => {
+    buildFlatList();
+    renderFeed('all', 'all');
+    updateStats();
+    initParticles();
+    runBoot();
+    
+    // Audio
+    document.querySelectorAll('button, .dp-open-btn, .sidebar-toggle').forEach(el => {
+        el.addEventListener('click', () => playClick());
+        el.addEventListener('mouseenter', () => playHover());
+    });
+    document.addEventListener('click', () => initAudio(), { once: true });
+    
+    // Spring buttons
+    document.querySelectorAll('.sidebar-toggle, .sb-nav button, .sb-status button, .dp-close, .dp-open-btn').forEach(el => el.classList.add('spring-btn'));
+    
+    // Footer year
+    const fy = document.querySelector('.feed-body footer-year, #footer-year');
+    if (fy) fy.textContent = new Date().getFullYear();
+});
+</script>
 </body>
 </html>
