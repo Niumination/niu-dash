@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="32" fill="#050508"/>
+  <rect x="8" y="8" width="176" height="176" rx="28" fill="none" stroke="#00fff2" stroke-width="1.5" opacity=".3"/>
+  <text x="96" y="112" font-family="monospace" font-size="64" font-weight="bold" fill="#00fff2" text-anchor="middle" dominant-baseline="middle">N⚡D</text>
+  <circle cx="160" cy="40" r="4" fill="#ff2244" opacity=".6"/>
+  <line x1="20" y1="172" x2="172" y2="20" stroke="#00fff2" stroke-width=".3" opacity=".12"/>
+</svg>

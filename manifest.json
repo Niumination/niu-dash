@@ -1,0 +1,25 @@
+{
+  "name": "Niu-Dash — Three-Panel Nexus",
+  "short_name": "Niu-Dash",
+  "description": "Three-Panel Nexus — dark web glitch project dashboard untuk 90+ project Niumination",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#050508",
+  "theme_color": "#050508",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "developer-tools", "utilities"],
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
