@@ -110,6 +110,8 @@
         .feed .topbar .logo-text span{color:var(--red)}
         .feed .topbar .filter-info{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:1px}
         .feed .topbar .filter-info em{color:var(--cyan);font-style:normal}
+        .theme-btn{background:none;border:1px solid var(--border);color:var(--text-secondary);width:30px;height:28px;border-radius:var(--rad);cursor:pointer;font-size:13px;transition:all .3s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .theme-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,242,.08)}
         .feed-body{padding:20px 24px 40px}
         .feed-body .page-header{margin-bottom:20px}
         .feed-body .page-header h1{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;color:var(--cyan);letter-spacing:-1px;line-height:1.1;text-shadow:0 0 40px rgba(0,255,242,.12)}
@@ -275,6 +277,45 @@
             #particle-canvas{display:none}
         }
 
+        /* ===== LIGHT THEME ===== */
+        [data-theme="light"]{
+            --bg-primary:#f2f4f8;--bg-secondary:#ffffff;--bg-card:#ffffff;--bg-card-hover:#f0f2f5;
+            --border:#d0d5dd;--border-subtle:rgba(0,0,0,.06);
+            --cyan:#0d7377;--cyan-dim:rgba(13,115,119,.2);--red:#d6336c;--red-dim:rgba(214,51,108,.2);
+            --magenta:#7c3aed;--magenta-dim:rgba(124,58,237,.2);--green:#059669;
+            --neon-purple:#7c3aed;--amber:#d97706;--glitch-blue:#2563eb;
+            --text-primary:#1a1a2e;--text-secondary:#5a5a7a;--text-muted:#8888aa;
+            --glow-cyan:0 0 7px rgba(13,115,119,.35),0 0 20px rgba(13,115,119,.12);
+            --glow-box-cyan:0 0 10px rgba(13,115,119,.08);
+        }
+        [data-theme="light"] .grid-overlay{background-image:linear-gradient(rgba(13,115,119,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(13,115,119,.04) 1px,transparent 1px)}
+        [data-theme="light"] .glitch-overlay{background:linear-gradient(90deg,rgba(214,51,108,.015) 0%,transparent 2%,transparent 98%,rgba(13,115,119,.015) 100%)}
+        [data-theme="light"] body::before{background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(13,115,119,.006) 2px,rgba(13,115,119,.006) 4px)}
+        [data-theme="light"] .feed .topbar{background:rgba(255,255,255,.85);border-bottom:1px solid var(--border);}
+        [data-theme="light"] .sidebar{background:rgba(255,255,255,.97);}
+        [data-theme="light"] .detail-panel{background:rgba(255,255,255,.95);}
+        [data-theme="light"] .dp-header{background:rgba(255,255,255,.95);}
+        [data-theme="light"] .feed-card{background:linear-gradient(145deg,rgba(255,255,255,.95) 0%,rgba(245,247,250,.92) 100%);}
+        [data-theme="light"] .feed-card:hover{border-color:rgba(13,115,119,.2);}
+        [data-theme="light"] .search-bar input{background:rgba(255,255,255,.9);}
+        [data-theme="light"] #particle-canvas{opacity:.25}
+        [data-theme="light"] .sb-overlay{background:rgba(0,0,0,.25)}
+        [data-theme="light"] .dp-rec-item{background:rgba(245,247,250,.9);border-color:rgba(0,0,0,.06)}
+        [data-theme="light"] .feed-card .fc-body h3{color:#1a1a2e}
+        [data-theme="light"] .feed-card .fc-desc{color:#5a5a7a}
+        [data-theme="light"] .dp-item .dp-top .dp-info h2{color:#1a1a2e}
+        [data-theme="light"] .dp-item .dp-desc{color:#4a4a6a}
+        [data-theme="light"] .dp-section p{color:#4a4a6a}
+        [data-theme="light"] .dp-section ul li{color:#4a4a6a}
+        [data-theme="light"] .dp-tl-item .tl-text{color:#5a5a7a}
+        [data-theme="light"] .dp-rec-item{color:#4a4a6a}
+        [data-theme="light"] .sidebar .sb-nav button{background:rgba(0,0,0,.02);}
+        [data-theme="light"] .sidebar .sb-nav button:hover{background:rgba(13,115,119,.06);}
+        [data-theme="light"] .sidebar .clock-widget{background:rgba(13,115,119,.04);border-color:rgba(13,115,119,.12);}
+        [data-theme="light"] .sidebar .sb-stat{background:rgba(0,0,0,.02);}
+        [data-theme="light"] .feed-card .fc-tags .tag{background:rgba(13,115,119,.06);color:#5a5a7a;border-color:rgba(13,115,119,.1);}
+        [data-theme="light"] .dp-item .dp-tags span{background:rgba(13,115,119,.06);color:#5a5a7a;border-color:rgba(13,115,119,.1);}
+
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar{width:4px}
         ::-webkit-scrollbar-track{background:transparent}
@@ -299,9 +340,10 @@
 <canvas id="particle-canvas"></canvas>
 <div class="grid-overlay"></div>
 
-<div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
-
 <div class="app-layout" id="app">
+
+    <!-- Overlay — INSIDE app-layout agar setara stacking context dengan sidebar -->
+    <div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
 
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar" id="sidebar">
@@ -349,6 +391,7 @@
             <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
             <span class="logo-text">NIU<span>⚡</span>DASH</span>
             <span class="filter-info" id="filter-info">◈ <em>all</em> projects</span>
+            <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
         </div>
         <div class="feed-body">
             <div class="page-header stagger-in" data-delay="1">
@@ -392,9 +435,9 @@ const PROJECTS = {
         { icon:'⎔', name:'zhtop', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/zhtop/', desc:'Tool terminal Node.js untuk monitoring and visualisasi data via CLI.', tags:['Node.js','CLI','Terminal'], date:'10 Mei 2026' },
         { icon:'⊚', name:'Niumination Portal - Diskominfo', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Rekomendasi-Aplikasi-ASN-Daerah.html', desc:'Portal Dinas Kominfo Aceh Tengah. Tailwind CSS, tracker IPD, SPBE, sidebar menu.', tags:['HTML','Tailwind','Portal','ASN'], date:'11 Mei 2026' },
         { icon:'⌁', name:'CPUFriendFriend', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/CPUFriendFriend/', desc:'Python script optimasi power management Hackintosh.', tags:['Python','Hackintosh','CPU','Kext'], date:'14 Mei 2026' },
-        { icon:'☆', name:'Niu-Startpage', path:'https://github.com/Niumination/Niu-Startpage', desc:'Gateway pribadi ke internet. Startpage minimal + search + bookmark.', tags:['HTML','Startpage','GitHub'], date:'2026' },
-        { icon:'☆', name:'zaryu.startpage', path:'https://github.com/Niumination/zaryu.startpage', desc:'Aesthetic startpage Catppuccin style, clean minimal, hosted GitHub Pages.', tags:['HTML','CSS','Catppuccin','Pages'], date:'2026' },
-        { icon:'☆', name:'NiuHomePage', path:'https://github.com/Niumination/NiuHomePage', desc:'Homepage personal karena pengen punya homepage sendiri.', tags:['HTML','CSS','Homepage'], date:'2026' },
+        { icon:'☆', name:'Niu-Startpage', path:'https://github.com/Niumination/Niu-Startpage', desc:'Gateway pribadi ke internet. Startpage minimal + search + bookmark.', tags:['HTML','Startpage','GitHub'], date:'2026', website:'https://niumination.github.io/Niu-Startpage' },
+        { icon:'☆', name:'zaryu.startpage', path:'https://github.com/Niumination/zaryu.startpage', desc:'Aesthetic startpage Catppuccin style, clean minimal, hosted GitHub Pages.', tags:['HTML','CSS','Catppuccin','Pages'], date:'2026', website:'https://niumination.github.io/zaryu.startpage' },
+        { icon:'☆', name:'NiuHomePage', path:'https://github.com/Niumination/NiuHomePage', desc:'Homepage personal karena pengen punya homepage sendiri.', tags:['HTML','CSS','Homepage'], date:'2026', website:'https://niumination.github.io/NiuHomePage' },
         { icon:'☆', name:'SilentSDDM', path:'https://github.com/Niumination/SilentSDDM', desc:'SDDM theme highly customizable untuk Arch / Hyprland.', tags:['SDDM','Theme','Linux','QML'], date:'2026' },
         { icon:'☆', name:'Maze-3D-Game', path:'https://github.com/Niumination/Maze-3D-Game---Web-Based', desc:'Game maze 3D berbasis web. Labyrinth interaktif dalam 3D.', tags:['Web','3D','Game','Maze'], date:'2026' },
         { icon:'☆', name:'Niu-Cyber-Search-Engine', path:'https://github.com/Niumination/Niu-Cyber-Search-Engine', desc:'Cyber search engine app pertama. Tema cyber/dark.', tags:['Search','Web','Cyber'], date:'2026' },
@@ -406,7 +449,7 @@ const PROJECTS = {
         { icon:'☆', name:'Rekapitulasi-SPBE', path:'https://github.com/Niumination/Rekapitulasi-SPBE', desc:'Aplikasi rekap SPBE (Sistem Pemerintahan Berbasis Elektronik).', tags:['SPBE','GovTech','Rekap'], date:'2026' },
         { icon:'☆', name:'AuditTI-AT', path:'https://github.com/Niumination/AuditTI-AT', desc:'IT Procurement Audit Kabupaten Aceh Tengah pakai AI. Sumber dari LPSE.', tags:['Audit','LPSE','AI','GovTech'], date:'2026' },
         { icon:'☆', name:'Prakom-Surgawi', path:'https://github.com/Niumination/Prakom-Surgawi', desc:'Anything you want - project Pranata Komputer.', tags:['Project','ASN','Prakom'], date:'2026' },
-        { icon:'☆', name:'cyb3rgh0u1.github.io', path:'https://github.com/Niumination/cyb3rgh0u1.github.io', desc:'GitHub Pages - cyber/ghoul themed.', tags:['Pages','Cyber','GitHub'], date:'2026' },
+        { icon:'☆', name:'cyb3rgh0u1.github.io', path:'https://github.com/Niumination/cyb3rgh0u1.github.io', desc:'GitHub Pages - cyber/ghoul themed.', tags:['Pages','Cyber','GitHub'], date:'2026', website:'https://cyb3rgh0u1.github.io' },
         { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project - PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
         { icon:'☆', name:'acehtengah-web', path:'/Users/zaryu/Documents/GitHub/zen-/acehtengah-web/', desc:'Website statis multi-halaman Aceh Tengah - HTML murni, berita, layanan publik.', tags:['HTML','CSS','Website','AcehTengah'], date:'2026' },
     ],
@@ -435,7 +478,7 @@ const PROJECTS = {
         { icon:'⎔', name:'Devs-Niu', path:'https://github.com/Niumination/Devs-Niu', desc:'Developer portfolio / hub untuk semua project Niumination.', tags:['Dev','Portfolio','Hub'], date:'2026' },
         { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta - Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
         { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Documents/Niu-Dash/index.html', desc:'Dark web glitch dashboard tracker - 90+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'3 Jun 2026' },
-        { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework.', tags:['Next.js','GovTech','AcehTengah','Portal'], date:'Jun 2026' },
+        { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework.', tags:['Next.js','GovTech','AcehTengah','Portal'], date:'Jun 2026', website:'https://pemdi-aceh-tengah.vercel.app' },
         { icon:'△', name:'VirtualAssistance', path:'https://github.com/Niumination/VirtualAssistance', desc:'Virtual Assistance web3 app - Next.js + TypeScript.', tags:['Next.js','Web3','TypeScript'], date:'Jun 2026' },
         { icon:'△', name:'niu-studio', path:'/Users/zaryu/Desktop/niu-studio/', desc:'Tauri + React studio app - eksperimen desktop hybrid.', tags:['Tauri','React','Desktop','Studio'], date:'2026' },
         { icon:'△', name:'NiuTUI', path:'/Users/zaryu/Documents/ZMP/NiuTUI/', desc:'Rust CLI/TUI app - terminal interface untuk Niu ecosystem.', tags:['Rust','CLI','TUI'], date:'2026' },
@@ -934,6 +977,11 @@ function selectProject(idx) {
     const path = p.path || (p.repo || '#');
     const isRepo = path.startsWith('http');
     
+    let buttonsHtml = `<a href="${path}" target="_blank" class="dp-open-btn spring-btn">↗ ${isRepo ? 'OPEN REPO' : 'OPEN'}</a>`;
+    if (p.website) {
+        buttonsHtml += ` <a href="${p.website}" target="_blank" class="dp-open-btn spring-btn" style="border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.08);color:var(--green)">🌐 VISIT WEBSITE</a>`;
+    }
+    
     content.innerHTML = `
         <div class="dp-item">
             <div class="dp-top">
@@ -947,7 +995,7 @@ function selectProject(idx) {
             <div class="dp-path">${path}</div>
             ${sectionsHtml}
             <hr class="dp-divider">
-            <a href="${path}" target="_blank" class="dp-open-btn spring-btn">↗ ${isRepo ? 'OPEN REPO' : 'OPEN'}</a>
+            ${buttonsHtml}
         </div>
     `;
     
@@ -1052,6 +1100,29 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 updateClock();
+
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById('theme-btn');
+    if (html.getAttribute('data-theme') === 'light') {
+        html.removeAttribute('data-theme');
+        btn.textContent = '☀';
+        localStorage.setItem('niu-dash-theme', 'dark');
+    } else {
+        html.setAttribute('data-theme', 'light');
+        btn.textContent = '☾';
+        localStorage.setItem('niu-dash-theme', 'light');
+    }
+}
+// Restore saved theme
+(function() {
+    const saved = localStorage.getItem('niu-dash-theme');
+    if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('theme-btn').textContent = '☾';
+    }
+})();
 
 // ===== BOOT =====
 function runBoot() {
