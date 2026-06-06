@@ -570,43 +570,6 @@ const PROJECTS = {
         { icon:'◇', name:'Hermes-USB-Portable', path:'/Users/zaryu/Music/Devs/Hermes-USB-Portable-main/', desc:'Dokumentasi portable Hermes Agent USB.', tags:['Docs','Hermes','Portable'], date:'2026' },
         { icon:'◇', name:'xero-dotfiles-docs', path:'/Users/zaryu/Desktop/xero-dotfiles-docs/', desc:'Dokumentasi Xero dotfiles - referensi tema/ricing.', tags:['Docs','Dotfiles','Xero','Reference'], date:'2026' },
     ]
-    'TEDEO':{
-        status:'active',
-        history:[
-            {date:'Jun 2026',text:'Delivery Service lokal Aceh Tengah — Expo monorepo dimulai. Backend Prisma, mobile Expo, web Vite.'},
-            {date:'Current',text:'Pengembangan aktif: multi-role system (konsumen, kurir, admin), real-time tracking, pembayaran.'},
-        ],
-        plan:[
-            'Selesaikan MVP: multi-delivery (makanan, dokumen, paket, belanja)',
-            'Integrasi payment gateway untuk transaksi',
-            'Real-time tracking kurir dengan WebSocket/Map',
-            'Admin dashboard dengan laporan revenue',
-            'Deploy ke Play Store + App Store',
-            'Integrasi dengan SPBE Aceh Tengah SSO'
-        ],
-        recommendations:[
-            {text:'Prioritas tinggi — ini project real dengan target ASN/lokal Aceh Tengah. Selesaikan MVP sebelum scale.',priority:'high'},
-            {text:'Gunakan Expo EAS untuk CI/CD build mobile — automate release ke Play Store.',priority:'high'},
-            {text:'Multi-role system harus solid dari awal: konsumen, kurir, admin — bedain akses dan view.',priority:'mid'},
-            {text:'Fitur offline mode penting — daerah Aceh Tengah banyak blank spot sinyal.',priority:'high'},
-        ]
-    },
-    'TEDEO-Kanban':{
-        status:'active',
-        history:[
-            {date:'Jun 2026',text:'Kanban Board untuk tracking development TEDEO — Next.js PWA, drag-and-drop dengan @dnd-kit.'},
-        ],
-        plan:[
-            'Integrasi real-time sync dengan GitHub Projects / Issues',
-            'Export/Import board sebagai backup',
-            'Multi-board support untuk multi-project',
-            'Kolaborasi: share board dengan tim'
-        ],
-        recommendations:[
-            {text:'Gunakan sebagai tool utama tracking TEDEO development — lebih visual daripada GitHub Projects.',priority:'high'},
-            {text:'Integrasi webhook: update otomatis saat ada push/PR ke repo TEDEO.',priority:'mid'},
-        ]
-    },
 };
 
 // ===== DEV META — rich data (history, plan, recommendations) from dev-tracker =====
@@ -876,6 +839,43 @@ const DEV_META = {
             {text:'Mobile responsive — dashboard harus nyaman di layar HP karena user akses via Telegram.',priority:'high'},
             {text:'Search & filter: tambah filter tech stack dan status — biar cepat nemu project spesifik.',priority:'mid'},
             {text:'Animation performance: optimasi particle canvas untuk device dengan GPU lemah.',priority:'low'}
+        ]
+    },
+    'TEDEO':{
+        status:'active',
+        history:[
+            {date:'Jun 2026',text:'Delivery Service lokal Aceh Tengah — Expo monorepo dimulai. Backend Prisma, mobile Expo, web Vite.'},
+            {date:'Current',text:'Pengembangan aktif: multi-role system (konsumen, kurir, admin), real-time tracking, pembayaran.'},
+        ],
+        plan:[
+            'Selesaikan MVP: multi-delivery (makanan, dokumen, paket, belanja)',
+            'Integrasi payment gateway untuk transaksi',
+            'Real-time tracking kurir dengan WebSocket/Map',
+            'Admin dashboard dengan laporan revenue',
+            'Deploy ke Play Store + App Store',
+            'Integrasi dengan SPBE Aceh Tengah SSO'
+        ],
+        recommendations:[
+            {text:'Prioritas tinggi — ini project real dengan target ASN/lokal Aceh Tengah. Selesaikan MVP sebelum scale.',priority:'high'},
+            {text:'Gunakan Expo EAS untuk CI/CD build mobile — automate release ke Play Store.',priority:'high'},
+            {text:'Multi-role system harus solid dari awal: konsumen, kurir, admin — bedain akses dan view.',priority:'mid'},
+            {text:'Fitur offline mode penting — daerah Aceh Tengah banyak blank spot sinyal.',priority:'high'},
+        ]
+    },
+    'TEDEO-Kanban':{
+        status:'active',
+        history:[
+            {date:'Jun 2026',text:'Kanban Board untuk tracking development TEDEO — Next.js PWA, drag-and-drop dengan @dnd-kit.'},
+        ],
+        plan:[
+            'Integrasi real-time sync dengan GitHub Projects / Issues',
+            'Export/Import board sebagai backup',
+            'Multi-board support untuk multi-project',
+            'Kolaborasi: share board dengan tim'
+        ],
+        recommendations:[
+            {text:'Gunakan sebagai tool utama tracking TEDEO development — lebih visual daripada GitHub Projects.',priority:'high'},
+            {text:'Integrasi webhook: update otomatis saat ada push/PR ke repo TEDEO.',priority:'mid'},
         ]
     },
 };
