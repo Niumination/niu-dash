@@ -483,6 +483,7 @@ const PROJECTS = {
         { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project - PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
         { icon:'☆', name:'acehtengah-web', path:'/Users/zaryu/Documents/GitHub/zen-/acehtengah-web/', desc:'Website statis multi-halaman Aceh Tengah - HTML murni, berita, layanan publik.', tags:['HTML','CSS','Website','AcehTengah'], date:'2026' },
         { icon:'☆', name:'HermesV-Github', path:'https://github.com/Niumination/HermesV-Github', desc:'Hermes Agent Portable on Github Codespace.', tags:['Hermes','Codespace','Portable'], date:'6 Jun 2026' }  // NEW 6 Jun 2026,
+        { icon:'☆', name:'niu-private', path:'https://github.com/Niumination/niu-private', desc:'Niu Private — Document Vault & Kanban Project Board untuk dokumentasi pribadi + project tracking.', tags:['TypeScript','Vault','Kanban','Document'], date:'6 Jun 2026', website:'https://niumination.github.io/niu-private' }  // NEW 6 Jun 2026,
     ],
     dev: [
         { icon:'☪', name:'Gayo Mengaji', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/Aplikasi Gayo Mengaji/', desc:'Aplikasi Al-Quran digital untuk ASN Aceh Tengah. Flutter + Node.js + PostgreSQL.', tags:['Flutter','Node.js','PostgreSQL','Mobile'], date:'5 Apr 2026' },
@@ -521,6 +522,7 @@ const PROJECTS = {
         { icon:'△', name:'street-racer-offline', path:'/Users/zaryu/Desktop/Niumination/aistudio-google/street-racer-offline/', desc:'Android racing game — Kotlin, Jetpack Compose, Gradle. AI Studio Google.', tags:['Android','Kotlin','Game','Compose'], date:'Jun 2026' },
         { icon:'△', name:'TEDEO', path:'/Users/zaryu/Desktop/Niumination/TEDEO/', desc:'Delivery Service lokal Kabupaten Aceh Tengah — Expo monorepo (mobile, web, backend, Prisma).', tags:['Expo','React Native','Monorepo','Prisma','Delivery','AcehTengah'], date:'Jun 2026' },
         { icon:'△', name:'TEDEO-Kanban', path:'/Users/zaryu/Desktop/Niumination/TEDEO-Kanban/', desc:'Kanban Board untuk tracking progress TEDEO Delivery Service — Next.js PWA, drag-and-drop.', tags:['Next.js','PWA','Kanban','React','AcehTengah'], date:'Jun 2026' }  // NEW Jun 2026,
+        { icon:'△', name:'kune-ya.com', path:'https://github.com/Niumination/kune-ya.com', desc:'Situs pribadi kune-ya.com — Next.js 15 full-stack dengan auth (next-auth), database (Prisma+PostgreSQL), middleware, dan Prisma ORM.', tags:['Next.js','Prisma','Fullstack','TypeScript','Web'], date:'6 Jun 2026' }  // NEW 6 Jun 2026,
     ],
     ideas: [
         { icon:'⎇', name:'Hackintosh ThinkPad X13', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Hackintosh-ThinkPad-X13-Yoga.md', desc:'Panduan optimasi Hackintosh ThinkPad X13 Yoga.', tags:['Hackintosh','OpenCore','macOS','Guide'], date:'7 Mei 2026' },
@@ -876,6 +878,41 @@ const DEV_META = {
         recommendations:[
             {text:'Gunakan sebagai tool utama tracking TEDEO development — lebih visual daripada GitHub Projects.',priority:'high'},
             {text:'Integrasi webhook: update otomatis saat ada push/PR ke repo TEDEO.',priority:'mid'},
+        ]
+    },
+    'kune-ya.com':{
+        status:'active',
+        history:[
+            {date:'6 Jun 2026',text:'Project dimulai — Next.js 15 full-stack dengan Prisma + PostgreSQL. Fitur auth (next-auth), middleware routing, dan landing page.'},
+            {date:'Current',text:'Pengembangan aktif: roadmap (00-ROADMAP.md), multi-page app structure, database schema dengan Prisma.'},
+        ],
+        plan:[
+            'Selesaikan fitur inti: authentication, user profiles, content management',
+            'Integrasi dengan domain kune-ya.com — deployment ke Vercel / Railway',
+            'Mobile responsive design — PWA support',
+            'SEO optimization + Open Graph metadata'
+        ],
+        recommendations:[
+            {text:'Prioritas #1: fitur auth + database harus solid sebelum deploy publik. Keamanan data user adalah fondasi.',priority:'high'},
+            {text:'Gunakan Prisma migration untuk version control database — jangan edit schema manual.',priority:'high'},
+            {text:'Dokumentasi struktur app dan architecture decision records (ADR) di repo README.',priority:'mid'},
+            {text:'Roadmap sudah bagus — maintain transparansi progress lewat GitHub Projects.',priority:'mid'}
+        ]
+    },
+    'niu-private':{
+        status:'active',
+        history:[
+            {date:'6 Jun 2026',text:'Project dimulai — document vault & kanban project board untuk dokumentasi pribadi. TypeScript, deployment GH Pages.'},
+        ],
+        plan:[
+            'Dokumentasi vault: struktur folder, template, workflow untuk semua project Niumination',
+            'Kanban board: tracking task & progress per project',
+            'Integrasi dengan Niu-Dash sebagai data source',
+            'Search + tagging system untuk dokumentasi'
+        ],
+        recommendations:[
+            {text:'Jadikan sebagai single source of truth untuk dokumentasi — semua project punya entry di sini.',priority:'high'},
+            {text:'Kanban bisa integrasi dengan GitHub Projects via API — auto-sync task dari repo.',priority:'mid'}
         ]
     },
 };
