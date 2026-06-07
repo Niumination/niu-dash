@@ -10,7 +10,8 @@
 >
 > *Technology never stops — faster, deeper*
 
-![NIU-DASH Preview](https://niumination.github.io/niu-dash/icon-512.svg)
+![NIU-DASH Dashboard Preview](screenshots/dashboard-full.png)
+> *Tampilan three-panel dashboard — sidebar navigasi, feed proyek, detail panel*
 
 Dashboard three-panel **dark cyber** untuk menginventarisasi dan memonitoring seluruh proyek — dari aplikasi web, AI tools, config dotfiles, hingga GovTech SPBE. Dibangun dengan vanilla HTML/CSS/JS, 100% client-side, di-deploy via GitHub Pages.
 
