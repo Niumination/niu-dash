@@ -44,7 +44,7 @@
         .boot-title:hover .bt-glitch{opacity:.15;animation:glitchBoot .4s infinite}
         @keyframes glitchBoot{0%{transform:translate(0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-2px)}80%{transform:translate(1px,2px)}100%{transform:translate(0)}}
         .boot-progress-wrap{width:320px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-bottom:16px}
-        .boot-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--magenta));transition:width .15s linear}
+        .boot-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--magenta));transition:width .15s linear;will-change:width}
         .boot-status{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:2px;min-height:20px}
 
         /* ===== GRID OVERLAY ===== */
@@ -115,7 +115,7 @@
         .feed{flex:1;overflow-y:auto;overflow-x:hidden;min-width:0;height:100vh;position:relative}
         .feed .topbar{
             position:sticky;top:0;z-index:50;
-            background:rgba(5,5,8,.85);backdrop-filter:blur(20px) saturate(1.2);
+            background:rgba(5,5,8,.85);backdrop-filter:blur(20px) saturate(1.2);will-change:backdrop-filter;
             border-bottom:1px solid var(--border-subtle);padding:8px 24px;
             display:flex;align-items:center;gap:12px;height:50px;
         }
@@ -177,10 +177,10 @@
             border:1px solid var(--border);border-radius:12px;padding:16px 20px;
             transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;
             cursor:pointer;display:flex;align-items:flex-start;gap:14px;
-            animation:cardFade .4s ease forwards;opacity:0;
+            animation:cardFade .4s ease forwards;opacity:0;will-change:transform;
         }
         .feed-card:hover{transform:translateY(-2px);border-color:rgba(0,255,242,.15);box-shadow:0 4px 24px rgba(0,0,0,.3)}
-        .feed-card.selected{background:rgba(0,255,242,.06);border-color:var(--cyan);box-shadow:0 0 20px rgba(0,255,242,.1)}
+        .feed-card.selected{background:rgba(0,255,242,.06);border-color:var(--cyan);box-shadow:0 0 20px rgba(0,255,242,.1);overflow-anchor:none}
         .feed-card .fc-icon{
             width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
             font-size:20px;flex-shrink:0;background:rgba(0,255,242,.12);
@@ -1243,38 +1243,53 @@ function renderUnlisted(){
 function addUnlistedRepo(idx){
     var r=unlistedRepos[idx];
     if(!r)return;
-    // Build the PROJECTS entry text for manual paste or auto-add
+    // Copy to clipboard for reference
     var entry='    \''+r.repoName+'\':{\n        icon:\''+r.icon+'\',\n        name:\''+r.name+'\',\n        path:\''+r.path+'\',\n        desc:\''+(r.desc||'')+'\',\n        tags:[\'new\'],\n        date:\''+(r.date||'')+'\',\n    },';
-    // Copy to clipboard
     try{navigator.clipboard.writeText(entry);}catch(e){}
-    // Remove from unlisted and show confirmation
+    // Inject langsung ke PROJECTS.dev
+    PROJECTS.dev.push({
+        icon:r.icon,
+        name:r.name,
+        path:r.path,
+        desc:r.desc||'Repo baru dari auto-detect.',
+        tags:r.tags.length?r.tags.slice(0):['new'],
+        date:r.date||new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),
+    });
+    // Remove from unlisted
     unlistedRepos.splice(idx,1);
-    // Update sidebar count
+    // Rebuild + re-render
+    buildFlatList();buildTagFilterBar();updateStats();
+    // Update sidebar unlisted section
     var sec=document.getElementById('sb-unlisted-section');
     var countEl=document.getElementById('sb-unlisted-count');
     if(unlistedRepos.length){
         countEl.textContent=unlistedRepos.length;
+        renderUnlisted();
     }else{
         sec.style.display='none';
         currentFilter='all';
         renderFeed('all','all');
         return;
     }
-    renderUnlisted();
     // Flash feedback
-    var btn=event&&event.target;if(btn){btn.textContent='✓ Copied!';setTimeout(function(){btn.textContent='+ ADD ke PROJECTS';},1500);}
+    var btn=event&&event.target;if(btn){btn.textContent='✓ Added!';setTimeout(function(){btn.textContent='+ ADD ke PROJECTS';},2000);}
 }
 
 function addAllUnlisted(){
-    var sb=[];
     unlistedRepos.forEach(function(r){
-        sb.push('    \''+r.repoName+'\':{icon:\''+r.icon+'\',name:\''+r.name+'\',path:\''+r.path+'\',desc:\''+(r.desc||'')+'\',tags:[\'new\'],date:\''+(r.date||'')+'\'}');
+        PROJECTS.dev.push({
+            icon:r.icon,
+            name:r.name,
+            path:r.path,
+            desc:r.desc||'Repo baru dari auto-detect.',
+            tags:r.tags.length?r.tags.slice(0):['new'],
+            date:r.date||new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),
+        });
     });
-    var text=sb.join(',\n');
-    try{navigator.clipboard.writeText(text);}catch(e){}
     unlistedRepos=[];
     document.getElementById('sb-unlisted-section').style.display='none';
     currentFilter='all';
+    buildFlatList();buildTagFilterBar();updateStats();
     renderFeed('all','all');
 }
 
@@ -1405,21 +1420,26 @@ function runBoot() {
     const overlay = document.getElementById('boot-overlay');
     const bar = document.getElementById('boot-bar');
     const status = document.getElementById('boot-status');
-    let step = 0;
-    const iv = setInterval(() => {
+    let step = 0, lastT = 0;
+    function tick(ts) {
+        if (!lastT) lastT = ts;
         if (step < msgs.length) {
-            const [m, p] = msgs[step];
-            bar.style.width = p + '%';
-            status.textContent = '[' + String(p).padStart(3) + '%] ' + m;
-            step++;
+            if (ts - lastT >= 180) {
+                const [m, p] = msgs[step];
+                bar.style.width = p + '%';
+                status.textContent = '[' + String(p).padStart(3) + '%] ' + m;
+                step++;
+                lastT = ts;
+            }
+            requestAnimationFrame(tick);
         } else {
-            clearInterval(iv);
             setTimeout(() => {
                 overlay.classList.add('hidden');
                 document.querySelectorAll('.stagger-in').forEach(el => el.classList.add('visible'));
             }, 400);
         }
-    }, 180);
+    }
+    requestAnimationFrame(tick);
 }
 
 // ===== AUDIO =====
