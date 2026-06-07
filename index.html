@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIU-DASH // THREE-PANEL NEXUS</title>
+    <title>NIU⚡DASH // DARK NEXUS</title>
+    <meta name="description" content="Dark Nexus — Project portfolio dashboard. 105+ proyek terinventarisasi dengan live GitHub stats, auto-detection, dan DEV TRACKER.">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#050508">
     <link rel="manifest" href="manifest.json">
@@ -33,7 +34,15 @@
         /* ===== BOOT OVERLAY ===== */
         .boot-overlay{position:fixed;inset:0;z-index:99999;background:var(--bg-primary);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;transition:opacity .8s,visibility .8s}
         .boot-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
-        .boot-overlay .boot-title{font-size:18px;font-weight:700;color:var(--cyan);letter-spacing:6px;margin-bottom:30px}
+        .boot-title{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:24px}
+        .boot-title .bt-line1{font-size:32px;font-weight:900;color:var(--cyan);letter-spacing:2px;text-shadow:0 0 30px rgba(0,255,242,.3),0 0 60px rgba(0,255,242,.1);position:relative}
+        .boot-title .bt-line1 .bt-bolt{color:var(--amber);text-shadow:0 0 20px rgba(255,170,0,.4)}
+        .boot-title .bt-line1 .bt-dash{color:var(--text-primary);letter-spacing:6px;font-weight:300}
+        .boot-title .bt-underline{width:280px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent);margin:6px 0}
+        .boot-title .bt-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-muted);letter-spacing:6px;text-transform:uppercase;font-weight:400}
+        .boot-title .bt-glitch{position:absolute;top:0;left:0;font-size:32px;font-weight:900;color:var(--red);opacity:0;pointer-events:none}
+        .boot-title:hover .bt-glitch{opacity:.15;animation:glitchBoot .4s infinite}
+        @keyframes glitchBoot{0%{transform:translate(0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-2px)}80%{transform:translate(1px,2px)}100%{transform:translate(0)}}
         .boot-progress-wrap{width:320px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-bottom:16px}
         .boot-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--magenta));transition:width .15s linear}
         .boot-status{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:2px;min-height:20px}
@@ -371,7 +380,14 @@
 <body>
 
 <div class="boot-overlay" id="boot-overlay">
-    <div class="boot-title">⟐ THREE-PANEL NEXUS ⟐</div>
+    <div class="boot-title">
+        <div class="bt-line1">
+            <span class="bt-bolt">⚡</span>NIU<span class="bt-dash">— —</span>DASH
+            <span class="bt-glitch">⚡NIU— —DASH</span>
+        </div>
+        <div class="bt-underline"></div>
+        <div class="bt-sub">Dark Nexus v2.6</div>
+    </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
 </div>
@@ -389,7 +405,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sb-pad">
             <div class="sb-logo">NIU<span>⚡</span>DASH</div>
-            <div class="sb-sub">three-panel nexus v2.0</div>
+            <div class="sb-sub">dark nexus v2.6</div>
             <div class="clock-widget">
                 <span class="cw-dot"></span>
                 <span class="cw-time" id="clock">--:--:--</span>
@@ -441,7 +457,7 @@
         <div class="feed-body">
             <div class="page-header stagger-in" data-delay="1">
                 <h1>NIU<span class="slash">⚡</span>DASH</h1>
-                <p class="sub">three-panel nexus // <em id="total-projects">0</em> projects tracked</p>
+                <p class="sub">dark nexus // <em id="total-projects">0</em> projects tracked</p>
             </div>
             <div class="search-bar stagger-in" data-delay="2">
                 <span class="icon">⌕</span>
@@ -1385,7 +1401,7 @@ function toggleTheme() {
 
 // ===== BOOT =====
 function runBoot() {
-    const msgs = [['mounting volumes...',10],['loading database...',28],['scanning nodes...',45],['linking subsystems...',62],['calibrating nexus...',78],['initializing HUD...',90],['system online.',100]];
+    const msgs = [['mounting encrypted volumes...',8],['loading core subsystems...',22],['scanning nexus nodes...',38],['linking dashboard engine...',55],['calibrating dark matrix...',70],['initializing HUD overlay...',85],['deploying interface grid...',93],['system online.',100]];
     const overlay = document.getElementById('boot-overlay');
     const bar = document.getElementById('boot-bar');
     const status = document.getElementById('boot-status');
