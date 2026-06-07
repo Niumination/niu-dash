@@ -999,8 +999,8 @@ function buildFlatList() {
 // ===== RENDER FEED =====
 function getSortFn(mode) {
     var m = {
-        newest: function(a,b){ return parseSmart(b.date)-parseSmart(a.date); },
-        oldest: function(a,b){ return parseSmart(a.date)-parseSmart(b.date); },
+        newest: function(a,b){ return getRepoDateValue(b)-getRepoDateValue(a); },
+        oldest: function(a,b){ return getRepoDateValue(a)-getRepoDateValue(b); },
         az: function(a,b){ return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); },
         za: function(a,b){ return b.name.toLowerCase().localeCompare(a.name.toLowerCase()); },
         status: function(a,b){
@@ -1042,11 +1042,23 @@ function renderFeed(filter,statusFilter,searchText){
         if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];var pts=[];if(g.language)pts.push('<span class="lang" style="background:'+langColor(g.language)+'"></span> '+g.language);if(g.stars>0)pts.push('<span class="star">★</span> '+g.stars);if(g.forks>0)pts.push('<span class="fork">₂</span> '+g.forks);if(pts.length)gh='<div class="fc-meta"><span class="fc-gh">'+pts.join(' · ')+'</span></div>';}
         var idx=flatProjects.indexOf(p);
         var th='';if(p.tags&&p.tags.length){for(var ti=0;ti<p.tags.length;ti++){var t=p.tags[ti];th+='<span class="tag'+(activeTag===t?' active-tag':'')+'" data-tag="'+t.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+t+'</span>';}}
-        html+='<div class="feed-card '+p.category+(selectedIndex===idx?' selected':'')+'" onclick="selectProject('+idx+')" style="animation-delay:'+(i*0.03)+'s" data-index="'+idx+'"><div class="fc-strip"></div><div class="fc-icon">'+p.icon+'</div><div class="fc-body"><h3>'+p.name+(p.date?'<span class="fc-date">'+p.date+'</span>':'')+'</h3><div class="fc-desc">'+p.desc+'</div><div class="fc-tags">'+th+'</div>'+gh+'</div>'+sh+'</div>';
+        html+='<div class="feed-card '+p.category+(selectedIndex===idx?' selected':'')+'" onclick="selectProject('+idx+')" style="animation-delay:'+(i*0.03)+'s" data-index="'+idx+'"><div class="fc-strip"></div><div class="fc-icon">'+p.icon+'</div><div class="fc-body"><h3>'+p.name+(getRepoDate(p)?'<span class="fc-date">'+getRepoDate(p)+'</span>':'')+'</h3><div class="fc-desc">'+p.desc+'</div><div class="fc-tags">'+th+'</div>'+gh+'</div>'+sh+'</div>';
     });
     list.innerHTML=html;
 }
 function langColor(lang){var cc={'JavaScript':'#f1e05a','TypeScript':'#3178c6','Python':'#3572a5','Rust':'#dea584','HTML':'#e34c26','CSS':'#563d7c','Shell':'#89e051','C++':'#f34b7d','C':'#555555','Nix':'#7e7eff','Kotlin':'#A97BFF','Dart':'#00b4ab','Vue':'#41b883','Svelte':'#ff3e00','Ruby':'#701516','Swift':'#ffac45','Java':'#b07219','Go':'#00add8','MDX':'#fcb32c','SCSS':'#c6538c','Less':'#1d365d','TeX':'#3d6117','Perl':'#0298c3','Lua':'#000080','Dockerfile':'#384d54','Makefile':'#427819'};return cc[lang]||'#8b8b8b';}
+function getRepoDate(p){
+    if(p.repoName&&githubData[p.repoName.toLowerCase()]&&githubData[p.repoName.toLowerCase()].updated_at){
+        try{var d=new Date(githubData[p.repoName.toLowerCase()].updated_at);return d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear();}catch(e){}
+    }
+    return p.date||'';
+}
+function getRepoDateValue(p){
+    if(p.repoName&&githubData[p.repoName.toLowerCase()]&&githubData[p.repoName.toLowerCase()].updated_at){
+        try{return new Date(githubData[p.repoName.toLowerCase()].updated_at).getTime();}catch(e){}
+    }
+    return parseSmart(p.date).getTime();
+}
 // ===== SELECT PROJECT =====
 function selectProject(idx) {
     selectedIndex = idx;
@@ -1140,7 +1152,7 @@ function selectProject(idx) {
                 <div class="dp-icon" style="background:rgba(0,255,242,.12)">${p.icon}</div>
                 <div class="dp-info">
                     <h2>${p.name}</h2>
-                    <div class="dp-sub">${p.categoryLabel}${p.date ? ' · ' + p.date : ''}</div>
+                    <div class="dp-sub">${p.categoryLabel}${getRepoDate(p) ? ' · ' + getRepoDate(p) : ''}</div>
                 </div>
                 ${statusBadge}
             </div>
