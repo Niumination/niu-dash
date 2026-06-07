@@ -125,6 +125,17 @@
         .feed .topbar .filter-info em{color:var(--cyan);font-style:normal}
         .theme-btn{background:none;border:1px solid var(--border);color:var(--text-secondary);width:30px;height:28px;border-radius:var(--rad);cursor:pointer;font-size:13px;transition:all .3s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
         .theme-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,242,.08)}
+        .refresh-btn{background:none;border:1px solid var(--border);color:var(--text-secondary);width:30px;height:28px;border-radius:var(--rad);cursor:pointer;font-size:13px;transition:all .3s;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:4px}
+        .refresh-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,242,.08)}
+        .refresh-btn.loading{color:var(--cyan);border-color:var(--cyan-dim);animation:spin 1s linear infinite;pointer-events:none}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .sync-status{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-muted);margin-left:6px;white-space:nowrap;letter-spacing:.5px;transition:opacity .4s}
+        .sync-status .dot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:4px;vertical-align:middle}
+        .sync-status .dot.ok{background:var(--green);box-shadow:0 0 6px rgba(0,255,136,.4)}
+        .sync-status .dot.stale{background:var(--amber);box-shadow:0 0 6px rgba(255,170,0,.3)}
+        .sync-status .dot.syncing{background:var(--cyan);animation:pulse-dot .6s ease-in-out infinite}
+        @keyframes pulse-dot{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+        .topbar-right{display:flex;align-items:center;gap:0;margin-left:auto}
         .feed-body{padding:20px 24px 40px}
         .feed-body .page-header{margin-bottom:20px}
         .feed-body .page-header h1{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;color:var(--cyan);letter-spacing:-1px;line-height:1.1;text-shadow:0 0 40px rgba(0,255,242,.12)}
@@ -452,7 +463,11 @@
             <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
             <span class="logo-text">NIU<span>⚡</span>DASH</span>
             <span class="filter-info" id="filter-info">◈ <em>all</em> projects</span>
-            <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
+            <div class="topbar-right">
+                <span class="sync-status" id="sync-status"></span>
+                <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()" title="Refresh GitHub data">⟳</button>
+                <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
+            </div>
         </div>
         <div class="feed-body">
             <div class="page-header stagger-in" data-delay="1">
@@ -966,6 +981,7 @@ let activeTag = null;
 let githubData = {};
 let unlistedRepos = [];
 let tagCounts = {};
+let lastSyncTime = null;
 
 // ===== BUILD FLAT LIST =====
 function buildFlatList() {
@@ -1170,15 +1186,39 @@ function selectProject(idx) {
 }
 
 
+// ===== SYNC STATUS =====
+function updateSyncStatus(){
+    var el=document.getElementById('sync-status');
+    if(!lastSyncTime){
+        el.innerHTML='<span class="dot syncing"></span> sync...';
+        return;
+    }
+    var diff=Date.now()-lastSyncTime;
+    var mins=Math.floor(diff/60000);
+    var secs=Math.floor(diff/1000);
+    var txt=mins>0?mins+'m ago':secs+'s ago';
+    var stale=mins>15;
+    el.innerHTML='<span class="dot '+(stale?'stale':'ok')+'"></span>'+txt;
+}
+function manualRefresh(){
+    localStorage.removeItem('niu-gh-cache');
+    var btn=document.getElementById('refresh-btn');
+    btn.classList.add('loading');
+    var el=document.getElementById('sync-status');
+    el.innerHTML='<span class="dot syncing"></span> sync...';
+    fetchGitHubData(true);
+}
+
 // ===== GITHUB API =====
-async function fetchGitHubData(){
+async function fetchGitHubData(isManual){
     var c2=localStorage.getItem('niu-gh-cache');
-    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;applyAutoPages();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);return;}}catch(e){}}
+    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
     try{
         var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated');
         var repos=await r.json();
-        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,created_at:rr.created_at||null};});localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:Date.now()}));applyAutoPages();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}
-    }catch(e){var o=localStorage.getItem('niu-gh-cache');if(o){try{githubData=JSON.parse(o).data;applyAutoPages();detectUnlistedRepos();renderFeed();}catch(_){}}}
+        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}
+    }catch(e){var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();detectUnlistedRepos();renderFeed();}catch(_){}}}
+    if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
 }
 function applyAutoPages(){flatProjects.forEach(function(p){if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];if(g.has_pages&&!p.website)p.website='https://niumination.github.io/'+p.repoName;}});}
 
@@ -1476,6 +1516,8 @@ window.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', () => initAudio(), { once: true });
     document.querySelectorAll('.sidebar-toggle, .sb-nav button, .sb-status button, .dp-close, .dp-open-btn').forEach(el => el.classList.add('spring-btn'));
     fetchGitHubData();
+    updateSyncStatus();
+    setInterval(updateSyncStatus, 30000);
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(function(r){console.log('[Niu-Dash] SW registered');}).catch(function(e){console.warn('[Niu-Dash] SW failed:',e);});
     }
