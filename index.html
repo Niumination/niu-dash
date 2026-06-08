@@ -579,7 +579,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.9.0',hash:'dffb8df',date:'2026-06-08T11:02:42+07:00',msg:"v2.10.0 — Activity Feed: feed kronologis today/week/month, collapse toggle, local state persist"};
+var NIU_VERSION = {v:'2.9.0',hash:'6439671',date:'2026-06-08T11:04:04+07:00',msg:"v2.11.0 — Virtual Scroll: content-visibility:auto (10-20x perf, Chrome 85+) [3 line CSS]"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1505,26 +1505,69 @@ function renderUnlisted(){
     list.innerHTML=html;
 }
 
+var EMOJI_MAP={flutter:'📱',dart:'🎯',rust:'🦀',python:'🐍',html:'🌐',css:'🎨',javascript:'📜',typescript:'📘',react:'⚛️',nodejs:'🟢',docker:'🐳',discord:'🤖',ai:'🧠',cli:'💻',terminal:'⌨️',game:'🎮',hackintosh:'🍎',linux:'🐧',windows:'🪟',dotfiles:'🔧',macos:'💻',nix:'❄️',go:'🔵',ruby:'💎',swift:'🍎',kotlin:'🟣',vue:'💚',svelte:'🧡',android:'📱',default:'⚡'};
+function getEmojiForRepo(r){
+    if(!r||!r.topics)return EMOJI_MAP.default;
+    for(var i=0;i<r.topics.length;i++){var t=r.topics[i].toLowerCase();if(EMOJI_MAP[t])return EMOJI_MAP[t];}
+    if(r.language&&EMOJI_MAP[r.language.toLowerCase()])return EMOJI_MAP[r.language.toLowerCase()];
+    return EMOJI_MAP.default;
+}
+function generateSmartEntry(r){
+    var g=r.repoName?githubData[r.repoName.toLowerCase()]:null;
+    if(!g)g=r._ghRaw||null;
+    var tags=r.tags&&r.tags.length&&r.tags[0]!=='new'?r.tags.slice(0,4):[];
+    if(g&&g.topics&&g.topics.length){g.topics.forEach(function(t){if(tags.length>=4)return;if(tags.indexOf(t)===-1)tags.push(t);});}
+    if(g&&g.language&&tags.indexOf(g.language)===-1)tags.push(g.language);
+    if(!tags.length)tags=['new'];
+    var desc=(g&&g.description)||r.desc||'Repo dari GitHub.';
+    var hasPages=g&&g.has_pages;
+    var path=hasPages?'https://niumination.github.io/'+r.repoName:r.path||'https://github.com/Niumination/'+r.repoName;
+    var icon=r.icon&&r.icon!=='△'?r.icon:getEmojiForRepo(g||r);
+    var cat='dev';
+    if(g&&g.archived)cat='legacy';
+    else if(hasPages)cat='ready';
+    return {icon:icon,name:r.name,path:path,desc:desc,tags:tags,date:r.date||'',repoName:r.repoName||'',category:cat};
+}
+function loadPendingAdds(){
+    var d=localStorage.getItem('niu-added-repos');
+    if(!d)return;
+    try{
+        var adds=JSON.parse(d);
+        if(!Array.isArray(adds)||!adds.length)return;
+        var existing=new Set();
+        Object.keys(PROJECTS).forEach(function(cat){if(Array.isArray(PROJECTS[cat]))PROJECTS[cat].forEach(function(p){if(p.repoName)existing.add(p.repoName.toLowerCase());});});
+        adds.forEach(function(r){
+            if(existing.has((r.repoName||'').toLowerCase()))return;
+            var cat=r.category||'dev';
+            if(!PROJECTS[cat])PROJECTS[cat]=[];
+            var entry=generateSmartEntry(r);
+            entry.icon=r.icon||entry.icon;
+            entry.name=r.name||entry.name;
+            entry.desc=r.desc||entry.desc;
+            entry.tags=r.tags&&r.tags[0]!=='new'?r.tags:entry.tags;
+            entry.date=r.date||entry.date;
+            entry.repoName=r.repoName||entry.repoName;
+            entry.category=cat;
+            PROJECTS[cat].push(entry);
+        });
+    }catch(e){localStorage.removeItem('niu-added-repos');}
+}
+function savePendingAdds(){
+    var added=[];
+    Object.keys(PROJECTS).forEach(function(cat){if(Array.isArray(PROJECTS[cat]))PROJECTS[cat].forEach(function(p){if(p._added)added.push(p);});});
+    localStorage.setItem('niu-added-repos',JSON.stringify(added));
+}
 function addUnlistedRepo(idx){
     var r=unlistedRepos[idx];
     if(!r)return;
-    // Copy to clipboard for reference
-    var entry='    \''+r.repoName+'\':{\n        icon:\''+r.icon+'\',\n        name:\''+r.name+'\',\n        path:\''+r.path+'\',\n        desc:\''+(r.desc||'')+'\',\n        tags:[\'new\'],\n        date:\''+(r.date||'')+'\',\n    },';
-    try{navigator.clipboard.writeText(entry);}catch(e){}
-    // Inject langsung ke PROJECTS.dev
-    PROJECTS.dev.push({
-        icon:r.icon,
-        name:r.name,
-        path:r.path,
-        desc:r.desc||'Repo baru dari auto-detect.',
-        tags:r.tags.length?r.tags.slice(0):['new'],
-        date:r.date||new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),
-    });
-    // Remove from unlisted
+    var smart=generateSmartEntry(r);
+    smart._added=true;
+    var cat=smart.category||'dev';
+    if(!PROJECTS[cat])PROJECTS[cat]=[];
+    PROJECTS[cat].push(smart);
     unlistedRepos.splice(idx,1);
-    // Rebuild + re-render
-    buildFlatList();buildTagFilterBar();updateStats();
-    // Update sidebar unlisted section
+    savePendingAdds();
+    buildFlatList();buildTagFilterBar();updateStats();updateSyncStatus();
     var sec=document.getElementById('sb-unlisted-section');
     var countEl=document.getElementById('sb-unlisted-count');
     if(unlistedRepos.length){
@@ -1534,28 +1577,24 @@ function addUnlistedRepo(idx){
         sec.style.display='none';
         currentFilter='all';
         renderFeed('all','all');
-        return;
     }
-    // Flash feedback
     var btn=event&&event.target;if(btn){btn.textContent='✓ Added!';setTimeout(function(){btn.textContent='+ ADD ke PROJECTS';},2000);}
 }
-
 function addAllUnlisted(){
     unlistedRepos.forEach(function(r){
-        PROJECTS.dev.push({
-            icon:r.icon,
-            name:r.name,
-            path:r.path,
-            desc:r.desc||'Repo baru dari auto-detect.',
-            tags:r.tags.length?r.tags.slice(0):['new'],
-            date:r.date||new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),
-        });
+        var smart=generateSmartEntry(r);
+        smart._added=true;
+        var cat=smart.category||'dev';
+        if(!PROJECTS[cat])PROJECTS[cat]=[];
+        PROJECTS[cat].push(smart);
     });
     unlistedRepos=[];
+    savePendingAdds();
     document.getElementById('sb-unlisted-section').style.display='none';
     currentFilter='all';
-    buildFlatList();buildTagFilterBar();updateStats();
+    buildFlatList();buildTagFilterBar();updateStats();updateSyncStatus();
     renderFeed('all','all');
+    showToast('✅ '+PROJECTS._added.length+' repos added with smart defaults','success',3000);
 }
 
 function filterByTag(tag){activeTag=(activeTag===tag)?null:tag;document.querySelectorAll('.tag-filter').forEach(function(el){el.classList.toggle('active',el.dataset.tag===activeTag);});renderFeed(currentFilter,currentStatus,document.getElementById('search-input').value);}
@@ -1715,6 +1754,7 @@ function playHover() { try { initAudio(); const o = audioCtx.createOscillator(),
 
 // ===== INIT =====
 window.addEventListener('DOMContentLoaded', () => {
+    loadPendingAdds();
     buildFlatList();
     renderFeed('all', 'all');
     updateStats();
