@@ -207,6 +207,7 @@
         .feed-card .fc-desc{font-size:12px;color:#a0a0c0;line-height:1.5;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
         .feed-card .fc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
         .feed-card .fc-tags .tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(80,80,160,.15);color:#9090b8;border:1px solid rgba(80,80,160,.2)}
+        .feed-card .fc-tags .tag.gh-topic{background:rgba(176,0,255,.1);color:#bb88ee;border-color:rgba(176,0,255,.25)}
         .feed-card .fc-strip{width:3px;align-self:stretch;border-radius:2px;flex-shrink:0}
         .feed-card.ready .fc-strip{background:var(--green)}
         .feed-card.dev .fc-strip{background:var(--cyan)}
@@ -264,6 +265,8 @@
         .dp-item .dp-desc{font-size:12px;color:#b0b0d0;line-height:1.7;margin-bottom:12px}
         .dp-item .dp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:20px}
         .dp-item .dp-tags span{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 10px;border-radius:4px;background:rgba(80,80,160,.15);color:#9090b8;border:1px solid rgba(80,80,160,.2)}
+        .dp-item .dp-tags span.gh-topic{background:rgba(176,0,255,.1);color:#bb88ee;border-color:rgba(176,0,255,.25)}
+        .dp-archived-badge{display:inline-block;font-size:10px;padding:2px 10px;border-radius:4px;background:rgba(255,60,60,.12);color:#ff6666;border:1px solid rgba(255,60,60,.25);margin-left:8px;vertical-align:middle;font-family:'JetBrains Mono',monospace}
         .dp-item .dp-open-btn{
             font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
             padding:8px 20px;border-radius:7px;border:1px solid rgba(0,255,242,.25);
@@ -355,7 +358,9 @@
         [data-theme="dim"] .sidebar .clock-widget{background:rgba(0,204,191,.05);border-color:rgba(0,204,191,.12);}
         [data-theme="dim"] .sidebar .sb-stat{background:rgba(255,255,255,.03);}
         [data-theme="dim"] .feed-card .fc-tags .tag{background:rgba(0,204,191,.08);color:#9999bb;border-color:rgba(0,204,191,.12);}
+        [data-theme="dim"] .feed-card .fc-tags .tag.gh-topic{background:rgba(136,0,204,.12);color:#bb88ee;border-color:rgba(136,0,204,.2);}
         [data-theme="dim"] .dp-item .dp-tags span{background:rgba(0,204,191,.08);color:#9999bb;border-color:rgba(0,204,191,.12);}
+        [data-theme="dim"] .dp-item .dp-tags span.gh-topic{background:rgba(136,0,204,.12);color:#bb88ee;border-color:rgba(136,0,204,.2);}
         [data-theme="dim"] .detail-panel .dp-header .dp-close:hover{border-color:var(--red);color:var(--red);background:rgba(224,48,96,.1);}
 
         /* ===== SCROLLBAR ===== */
@@ -1057,8 +1062,8 @@ function renderFeed(filter,statusFilter,searchText){
         var gh='';
         if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];var pts=[];if(g.language)pts.push('<span class="lang" style="background:'+langColor(g.language)+'"></span> '+g.language);if(g.stars>0)pts.push('<span class="star">★</span> '+g.stars);if(g.forks>0)pts.push('<span class="fork">₂</span> '+g.forks);if(pts.length)gh='<div class="fc-meta"><span class="fc-gh">'+pts.join(' · ')+'</span></div>';}
         var idx=flatProjects.indexOf(p);
-        var th='';if(p.tags&&p.tags.length){for(var ti=0;ti<p.tags.length;ti++){var t=p.tags[ti];th+='<span class="tag'+(activeTag===t?' active-tag':'')+'" data-tag="'+t.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+t+'</span>';}}
-        html+='<div class="feed-card '+p.category+(selectedIndex===idx?' selected':'')+'" onclick="selectProject('+idx+')" style="animation-delay:'+(i*0.03)+'s" data-index="'+idx+'"><div class="fc-strip"></div><div class="fc-icon">'+p.icon+'</div><div class="fc-body"><h3>'+p.name+(getRepoDate(p)?'<span class="fc-date">'+getRepoDate(p)+'</span>':'')+'</h3><div class="fc-desc">'+p.desc+'</div><div class="fc-tags">'+th+'</div>'+gh+'</div>'+sh+'</div>';
+        var th='';if(p.tags&&p.tags.length){for(var ti=0;ti<p.tags.length;ti++){var t=p.tags[ti];th+='<span class="tag'+(activeTag===t?' active-tag':'')+'" data-tag="'+t.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+t+'</span>';}}if(p._ghTopics){for(var gi=0;gi<p._ghTopics.length;gi++){var gt=p._ghTopics[gi];th+='<span class="tag gh-topic" data-tag="'+gt.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+gt+'</span>';}}
+        html+='<div class="feed-card '+p.category+(selectedIndex===idx?' selected':'')+'" onclick="selectProject('+idx+')" style="animation-delay:'+(i*0.03)+'s" data-index="'+idx+'"><div class="fc-strip"></div><div class="fc-icon">'+p.icon+'</div><div class="fc-body"><h3>'+p.name+(getRepoDate(p)?'<span class="fc-date">'+getRepoDate(p)+'</span>':'')+'</h3><div class="fc-desc">'+(p._ghDesc||p.desc)+'</div><div class="fc-tags">'+th+'</div>'+gh+'</div>'+sh+'</div>';
     });
     list.innerHTML=html;
 }
@@ -1106,11 +1111,14 @@ function selectProject(idx) {
     let sectionsHtml = '';
     
     // Description
-    sectionsHtml += `<div class="dp-section"><h4><span class="hl hl-cyan"></span>DESKRIPSI</h4><p>${p.desc}</p></div>`;
+    sectionsHtml += `<div class="dp-section"><h4><span class="hl hl-cyan"></span>DESKRIPSI</h4><p>${p._ghDesc||p.desc}</p></div>`;
     
     // Tags
     if (p.tags && p.tags.length) {
         sectionsHtml += `<div class="dp-tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>`;
+    }
+    if (p._ghTopics && p._ghTopics.length) {
+        sectionsHtml += `<div class="dp-tags" style="margin-top:-12px">${p._ghTopics.map(t => `<span class="gh-topic" title="GitHub topic">⌘ ${t}</span>`).join('')}</div>`;
     }
     
     // History
@@ -1154,7 +1162,7 @@ function selectProject(idx) {
         if(items.length)ghStatsHtml='<div class="dp-gh">'+items.join('')+'</div>';
     }
     // Path/button
-    const path = p.path || (p.repo || '#');
+    const path = p.path || (p.repoName ? 'https://github.com/Niumination/'+p.repoName : (p.repo || '#'));
     const isRepo = path.startsWith('http');
     
     let buttonsHtml = `<a href="${path}" target="_blank" class="dp-open-btn spring-btn">↗ ${isRepo ? 'OPEN REPO' : 'OPEN'}</a>`;
@@ -1168,7 +1176,7 @@ function selectProject(idx) {
                 <div class="dp-icon" style="background:rgba(0,255,242,.12)">${p.icon}</div>
                 <div class="dp-info">
                     <h2>${p.name}</h2>
-                    <div class="dp-sub">${p.categoryLabel}${getRepoDate(p) ? ' · ' + getRepoDate(p) : ''}</div>
+                    <div class="dp-sub">${p.categoryLabel}${getRepoDate(p) ? ' · ' + getRepoDate(p) : ''}${p._archived ? '<span class="dp-archived-badge">📦 Archived</span>' : ''}</div>
                 </div>
                 ${statusBadge}
             </div>
@@ -1212,15 +1220,30 @@ function manualRefresh(){
 // ===== GITHUB API =====
 async function fetchGitHubData(isManual){
     var c2=localStorage.getItem('niu-gh-cache');
-    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
+    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
     try{
         var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated');
         var repos=await r.json();
-        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}
-    }catch(e){var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();detectUnlistedRepos();renderFeed();}catch(_){}}}
+        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}
+    }catch(e){var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();detectUnlistedRepos();renderFeed();}catch(_){}}}
     if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
 }
 function applyAutoPages(){flatProjects.forEach(function(p){if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];if(g.has_pages&&!p.website)p.website='https://niumination.github.io/'+p.repoName;}});}
+function enrichFromGitHub(){
+    flatProjects.forEach(function(p){
+        if(!p.repoName)return;
+        var g=githubData[p.repoName.toLowerCase()];
+        if(!g)return;
+        if(g.description)p._ghDesc=g.description;
+        if(g.topics&&g.topics.length){
+            var ex=new Set((p.tags||[]).map(function(x){return x.toLowerCase();}));
+            var gt=g.topics.filter(function(t){return!ex.has(t.toLowerCase());});
+            if(gt.length)p._ghTopics=gt;
+        }
+        if(g.homepage&&!p.website)p.website=g.homepage;
+        if(g.archived)p._archived=true;
+    });
+}
 
 // ===== UNLISTED REPO DETECTION =====
 function detectUnlistedRepos(){
