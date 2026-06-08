@@ -588,7 +588,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.9.0',hash:'c5af00d',date:'2026-06-08T12:08:10+07:00',msg:"v2.13.1 — Fix setVersionDisplay ReferenceError, move commit data to top of detail panel, scale UI 110% base font-size"};
+var NIU_VERSION = {v:'v2.13.2',hash:'e875b2b',date:'2026-06-08T12:22:14+07:00',msg:"v2.13.2 — Fix commit fetch stuck: error handling in fetchCommitData, clear commitCache on manual refresh, re-fetch selected project after sync"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1373,9 +1373,9 @@ function showToast(msg,type,dur){
 function setVersionDisplay(){
     var el=document.getElementById('sb-version');
     if(!el)return;
-    var txt='dark nexus ';
-    if(window.NIU_VERSION&&window.NIU_VERSION.hash)txt+='v2.9.0 ('+window.NIU_VERSION.hash.slice(0,7)+')';
-    else txt+='v2.9.0';
+    var ver=(window.NIU_VERSION&&window.NIU_VERSION.v)||'v2.9.0';
+    var txt='dark nexus '+ver;
+    if(window.NIU_VERSION&&window.NIU_VERSION.hash)txt+=' ('+window.NIU_VERSION.hash.slice(0,7)+')';
     el.textContent=txt;
     el.title=window.NIU_VERSION?window.NIU_VERSION.msg||'':'';
 }
