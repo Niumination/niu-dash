@@ -551,7 +551,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sb-pad">
             <div class="sb-logo">NIU<span>⚡</span>DASH</div>
-            <div class="sb-sub" id="sb-version">dark nexus v2.9.0</div>
+            <div class="sb-sub" id="sb-version">dark nexus —</div>
             <div class="clock-widget">
                 <span class="cw-dot"></span>
                 <span class="cw-time" id="clock">--:--:--</span>
@@ -655,7 +655,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.14.6',hash:'346b380',date:'2026-06-08T18:34:34+07:00',msg:"v2.14.6 — bump version number"};
+var NIU_VERSION = {v:'2.14.6',hash:'99c8db2',date:'2026-06-08T18:52:02+07:00',msg:"v2.14.6 — dokumentasi final: PLAN ✅, README updated, NIU-DASH di released.json"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1457,7 +1457,7 @@ function showToast(msg,type,dur){
 function setVersionDisplay(){
     var el=document.getElementById('sb-version');
     if(!el)return;
-    var ver=(window.NIU_VERSION&&window.NIU_VERSION.v)||'v2.9.0';
+    var ver=(window.NIU_VERSION&&window.NIU_VERSION.v)||'—';
     var txt='dark nexus '+ver;
     if(window.NIU_VERSION&&window.NIU_VERSION.hash)txt+=' ('+window.NIU_VERSION.hash.slice(0,7)+')';
     el.textContent=txt;
