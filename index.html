@@ -655,7 +655,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.14.1',hash:'a86b3c9',date:'2026-06-08T14:56:17+07:00',msg:"v2.14.1 — Pindah Released ke atas sidebar, fix +Tambah selalu muncul"};
+var NIU_VERSION = {v:'2.14.1',hash:'7f726a0',date:'2026-06-08T14:56:26+07:00',msg:"v2.14.1 — bump version"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1532,6 +1532,18 @@ function buildActivityFeed(){
         if(p._createdAt&&(now-p._createdAt)<WEEK){type='🆕';label='new repo';}
         items.push({name:p.name,type:type,label:label,time:p._pushedAt,age:age,new:p._autoCat==='new'});
     });
+    // Also add released activity entries
+    loadReleasedActivityLog();
+    var TWO_MONTHS=60*DAY;
+    releasedActivityLog.forEach(function(r){
+        var age=now-r.timestamp;
+        if(age>TWO_MONTHS)return;
+        var type='✅',label='→ completed';
+        if(r.status==='production'){type='🚀';label='→ production ready';}
+        else if(r.method==='suggestion-bulk'){type='📦';label='→ bulk import';}
+        if(r.method==='suggestion')label+=' (auto)';
+        items.push({name:r.projectName,type:type,label:label,time:r.timestamp,age:age,new:false});
+    });
     // Sort by time descending
     items.sort(function(a,b){return b.time-a.time;});
     // Limit to 20 items
@@ -1541,7 +1553,7 @@ function buildActivityFeed(){
         if(info)info.textContent='—';
         return;
     }
-    info.textContent=items.length+' update'+(items.length!==1?'s':'')+' this month';
+    info.textContent=items.length+' item'+(items.length!==1?'s':'')+' • latest activity';
     var html='',lastGroup='';
     items.forEach(function(it){
         var group;
@@ -1812,6 +1824,8 @@ function showReleased(){
     if(tb)tb.style.display='none';
     var si=document.getElementById('search-input');
     if(si)si.parentElement.style.display='none';
+    var af=document.getElementById('activity-feed');
+    if(af)af.style.display='none';
     if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open'),document.getElementById('sb-overlay').classList.remove('show');
     renderReleased();
 }
@@ -1932,6 +1946,7 @@ function saveReleasedForm(){
         _autoDetected:false
     });
     saveReleased();
+    addReleasedActivityLog(name||repoName,repoName,status,'manual');
     closeReleasedForm();
     updateReleasedBadge();
     renderReleased();
@@ -1997,6 +2012,7 @@ function addReleasedSuggestion(idx){
     });
     releasedSuggestions.splice(idx,1);
     saveReleased();
+    addReleasedActivityLog(s.name||s.repoName,s.repoName,s.status,'suggestion');
     updateReleasedBadge();
     if(releasedSuggestions.length)showReleasedSuggestions();else showReleased();
     showToast('✅ '+(s.name||s.repoName)+' ditambahkan','success',2000);
@@ -2025,9 +2041,35 @@ function addAllReleasedSuggestions(){
     });
     releasedSuggestions=[];
     saveReleased();
+    addReleasedActivityLog('Bulk import','','','suggestion-bulk');
     updateReleasedBadge();
     showReleased();
     showToast('✅ Semua saran ditambahkan ke Released','success',3000);
+}
+
+// ===== RELEASED ACTIVITY LOG =====
+var releasedActivityLog=[];
+function loadReleasedActivityLog(){
+    releasedActivityLog=[];
+    try{
+        var d=localStorage.getItem('niu-released-activity');
+        if(d)releasedActivityLog=JSON.parse(d);
+    }catch(_){}
+}
+function saveReleasedActivityLog(){
+    try{localStorage.setItem('niu-released-activity',JSON.stringify(releasedActivityLog));}catch(_){}
+}
+function addReleasedActivityLog(projectName,repoName,status,method){
+    releasedActivityLog.push({
+        projectName:projectName,
+        repoName:repoName,
+        status:status,
+        method:method,
+        timestamp:Date.now()
+    });
+    // Keep last 100 entries max
+    if(releasedActivityLog.length>100)releasedActivityLog=releasedActivityLog.slice(-100);
+    saveReleasedActivityLog();
 }
 
 function filterByTag(tag){activeTag=(activeTag===tag)?null:tag;document.querySelectorAll('.tag-filter').forEach(function(el){el.classList.toggle('active',el.dataset.tag===activeTag);});renderFeed(currentFilter,currentStatus,document.getElementById('search-input').value);}
@@ -2058,6 +2100,7 @@ function setFilter(filter) {
     var sb=document.getElementById('sort-bar');if(sb)sb.style.display='';
     var tb=document.getElementById('tag-filter-bar');if(tb)tb.style.display='';
     var si=document.getElementById('search-input');if(si)si.parentElement.style.display='';
+    var af=document.getElementById('activity-feed');if(af)af.style.display='';
     document.querySelectorAll('#sb-nav button').forEach(b => b.classList.remove('active'));
     document.querySelector(`#sb-nav button[data-filter="${filter}"]`).classList.add('active');
     if (window.innerWidth <= 768) toggleSidebar();
