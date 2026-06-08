@@ -393,6 +393,72 @@
             #particle-canvas{display:none}
         }
 
+        /* ===== RELEASED PROJECTS ===== */
+        .rl-card{
+            background:linear-gradient(145deg,rgba(18,18,38,.92) 0%,rgba(12,12,28,.85) 100%);
+            border:1px solid var(--border);border-radius:12px;padding:16px 20px;
+            transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;
+            display:block;animation:cardFade .4s ease forwards;opacity:0;
+            margin-bottom:10px;
+        }
+        .rl-card.production{border-left:3px solid var(--green)}
+        .rl-card.completed{border-left:3px solid var(--cyan)}
+        .rl-card:hover{transform:translateY(-2px);box-shadow:0 4px 24px rgba(0,0,0,.3)}
+        .rl-card .rl-body{min-width:0}
+        .rl-card .rl-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+        .rl-card .rl-top h3{font-size:14px;font-weight:700;color:#f0f0f8;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0}
+        .rl-card .rl-desc{font-size:12px;color:#a0a0c0;line-height:1.5;margin-bottom:6px}
+        .rl-card .rl-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+        .rl-card .rl-actions{display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border-subtle);padding-top:10px}
+        .rl-badge{
+            font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;
+            letter-spacing:.8px;padding:2px 10px;border-radius:4px;font-weight:600;flex-shrink:0;white-space:nowrap
+        }
+        .rl-badge.production{background:rgba(0,255,136,.12);color:var(--green);border:1px solid rgba(0,255,136,.2)}
+        .rl-badge.completed{background:rgba(0,255,242,.1);color:var(--cyan);border:1px solid rgba(0,255,242,.18)}
+        .rl-form-overlay{
+            position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.7);
+            display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;
+            backdrop-filter:blur(4px)
+        }
+        .rl-form-overlay.show{opacity:1;pointer-events:auto}
+        .rl-form{
+            background:var(--bg-card);border:1px solid var(--border);border-radius:12px;
+            padding:24px;max-width:400px;width:90%;font-family:'JetBrains Mono',monospace;
+            transform:translateY(20px);transition:transform .3s
+        }
+        .rl-form-overlay.show .rl-form{transform:translateY(0)}
+        .rl-form h3{font-size:16px;color:var(--cyan);margin-bottom:16px}
+        .rl-form label{display:block;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;margin-top:12px}
+        .rl-form select,.rl-form input[type="text"],.rl-form input[type="number"]{
+            width:100%;padding:8px 12px;background:rgba(13,13,26,.8);border:1px solid var(--border);
+            border-radius:6px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;
+            transition:border-color .2s
+        }
+        .rl-form select:focus,.rl-form input:focus{border-color:var(--cyan)}
+        .rl-form .rl-form-buttons{display:flex;gap:8px;margin-top:16px}
+        .rl-form .rl-form-buttons button{flex:1;padding:8px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+        .rl-form .rl-form-buttons .rl-save{background:rgba(0,255,242,.1);border:1px solid var(--cyan);color:var(--cyan)}
+        .rl-form .rl-form-buttons .rl-save:hover{background:rgba(0,255,242,.2)}
+        .rl-form .rl-form-buttons .rl-cancel{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text-muted)}
+        .rl-form .rl-form-buttons .rl-cancel:hover{border-color:var(--red);color:var(--red)}
+        .rl-suggestion-card{
+            background:rgba(255,170,0,.06);border:1px solid rgba(255,170,0,.15);border-radius:8px;
+            padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap
+        }
+        .rl-suggestion-card .rl-sg-name{font-size:13px;font-weight:600;color:#f0f0f8;flex:1;min-width:0}
+        .rl-suggestion-card .rl-sg-reason{font-size:10px;color:var(--amber);font-family:'JetBrains Mono',monospace}
+        .rl-suggestion-card .rl-sg-actions{display:flex;gap:6px}
+        .rl-suggestion-card .rl-sg-actions button{font-family:'JetBrains Mono',monospace;font-size:9px;padding:4px 10px;border-radius:4px;border:1px solid;cursor:pointer;transition:all .2s}
+        .rl-suggestion-card .rl-sg-actions .sg-add{background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.2);color:var(--green)}
+        .rl-suggestion-card .rl-sg-actions .sg-add:hover{background:rgba(0,255,136,.2)}
+        .rl-suggestion-card .rl-sg-actions .sg-dismiss{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--text-muted)}
+        .rl-suggestion-card .rl-sg-actions .sg-dismiss:hover{border-color:var(--red);color:var(--red)}
+        .rl-suggestion-card .rl-sg-actions .sg-add-all{
+            background:rgba(0,255,242,.08);border-color:rgba(0,255,242,.15);color:var(--cyan)
+        }
+        .rl-suggestion-card .rl-sg-actions .sg-add-all:hover{background:rgba(0,255,242,.15)}
+
         /* ===== CYBER DIM — tetap dark vibe, lebih terang ===== */
         [data-theme="dim"]{
             --bg-primary:#12121e;--bg-secondary:#18182a;--bg-card:#1c1c32;--bg-card-hover:#222240;
@@ -466,7 +532,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub">Dark Nexus v2.13.3</div>
+        <div class="bt-sub">Dark Nexus v2.13.4</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -500,6 +566,10 @@
             <button data-filter="ideas" onclick="setFilter('ideas')"><span>◇</span> Ideas <span class="sb-badge amber" id="sb-ideas">0</span></button>
             <button data-filter="config" onclick="setFilter('config')"><span>⚙</span> Config <span class="sb-badge purple" id="sb-config">0</span></button>
             <button data-filter="legacy" onclick="setFilter('legacy')"><span>◫</span> Legacy <span class="sb-badge dim" id="sb-legacy">0</span></button>
+        </div>
+
+        <div class="sb-nav" style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
+            <button data-filter="released" id="sb-released-btn" onclick="showReleased()"><span>🏁</span> Released <span class="sb-badge dim" id="sb-released">0</span></button>
         </div>
 
         <div class="sb-section">◆ Status (Dev)</div>
@@ -588,7 +658,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.13.3',hash:'194e112',date:'2026-06-08T12:29:16+07:00',msg:"v2.13.3 — Strip v prefix in auto-version, fix double-v bug"};
+var NIU_VERSION = {v:'2.13.4',hash:'fb4332b',date:'2026-06-08T13:13:33+07:00',msg:"v2.13.4 — Fix boot screen version sync with auto-version hook"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1063,6 +1133,12 @@ let unlistedRepos = [];
 let tagCounts = {};
 let lastSyncTime = null;
 
+// ===== RELEASED PROJECTS STATE =====
+let releasedProjects = [];
+let releasedSuggestions = [];
+let releasedFilter = 'all';
+let currentView = 'categories';
+
 // ===== BUILD FLAT LIST =====
 function buildFlatList() {
     flatProjects = [];
@@ -1392,7 +1468,7 @@ function manualRefresh(){
 // ===== GITHUB API =====
 async function fetchGitHubData(isManual){
     var c2=localStorage.getItem('niu-gh-cache');
-    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');if(selectedIndex>=0&&flatProjects[selectedIndex]&&flatProjects[selectedIndex].repoName)fetchCommitData(flatProjects[selectedIndex].repoName);return;}}catch(e){}}
+    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');if(selectedIndex>=0&&flatProjects[selectedIndex]&&flatProjects[selectedIndex].repoName)fetchCommitData(flatProjects[selectedIndex].repoName);return;}}catch(e){}}
     try{
         var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated');
         var rl=r.headers&&r.headers.get('X-RateLimit-Remaining');
@@ -1400,14 +1476,14 @@ async function fetchGitHubData(isManual){
             var reset=r.headers.get('X-RateLimit-Reset');
             var wait=reset?Math.ceil((reset*1000-Date.now())/60000):'?';
             showToast('⚠ GitHub API rate limited. Reset in '+wait+'m','error',6000);
-            var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
+            var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
         }
         var repos=await r.json();
-        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,pushed_at:rr.pushed_at||null,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);}
+        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,pushed_at:rr.pushed_at||null,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);}
         else showToast('⚠ GitHub API returned unexpected data','warn',5000);
     }catch(e){
         showToast('⚠ GitHub API error — using cached data','warn',5000);
-        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed();}catch(_){}}}
+        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed();}catch(_){}}}
     if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
     if(selectedIndex>=0&&flatProjects[selectedIndex]&&flatProjects[selectedIndex].repoName)fetchCommitData(flatProjects[selectedIndex].repoName);
 }
@@ -1694,6 +1770,268 @@ function addAllUnlisted(){
     showToast('✅ '+PROJECTS._added.length+' repos added with smart defaults','success',3000);
 }
 
+// ===== RELEASED PROJECTS — DATA =====
+function loadReleased(){
+    try{var d=localStorage.getItem('niu-released');if(d)releasedProjects=JSON.parse(d);if(!Array.isArray(releasedProjects))releasedProjects=[];}catch(e){releasedProjects=[];}
+}
+function saveReleased(){localStorage.setItem('niu-released',JSON.stringify(releasedProjects));}
+function detectReleasedFromGitHub(){
+    releasedSuggestions=[];
+    var existing=new Set(releasedProjects.map(function(p){return(p.repoName||'').toLowerCase();}));
+    var allProjs=flatProjects.concat(unlistedRepos);
+    allProjs.forEach(function(p){
+        var rn=(p.repoName||'').toLowerCase();
+        if(!rn||existing.has(rn))return;
+        var g=githubData[rn];
+        if(!g)return;
+        if(g.has_pages&&g.homepage&&!existing.has(rn)){
+            releasedSuggestions.push({repoName:rn,name:p.name||rn,status:'production',autoDetected:true,reason:'GitHub Pages + homepage',source:p});
+            existing.add(rn);
+        }else if(g.archived&&!existing.has(rn)){
+            releasedSuggestions.push({repoName:rn,name:p.name||rn,status:'completed',autoDetected:true,reason:'Archived repository',source:p});
+            existing.add(rn);
+        }
+    });
+    updateReleasedBadge();
+}
+function updateReleasedBadge(){
+    var el=document.getElementById('sb-released');
+    if(!el)return;
+    var count=releasedProjects.length;
+    el.textContent=count;
+    if(releasedSuggestions.length)el.className='sb-badge amber';
+    else el.className='sb-badge '+(count>0?'green':'dim');
+}
+// ===== RELEASED PROJECTS — VIEW =====
+function showReleased(){
+    currentView='released';
+    document.querySelectorAll('#sb-nav button').forEach(function(b){b.classList.remove('active');});
+    var btn=document.getElementById('sb-released-btn');
+    if(btn)btn.classList.add('active');
+    // Hide normal feed controls
+    var sb=document.getElementById('sort-bar');
+    if(sb)sb.style.display='none';
+    var tb=document.getElementById('tag-filter-bar');
+    if(tb)tb.style.display='none';
+    var si=document.getElementById('search-input');
+    if(si)si.parentElement.style.display='none';
+    if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open'),document.getElementById('sb-overlay').classList.remove('show');
+    renderReleased();
+}
+function renderReleased(){
+    var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
+    fi.innerHTML='🏁 <em>Released</em> projects';
+    var total=releasedProjects.length,prod=releasedProjects.filter(function(p){return p.status==='production';}).length,comp=releasedProjects.filter(function(p){return p.status==='completed';}).length;
+    statsEl.innerHTML='<span class="fs-item"><strong style="color:var(--green)">'+prod+'</strong> production</span><span class="fs-item"><strong style="color:var(--cyan)">'+comp+'</strong> completed</span><span class="fs-item">of <strong style="color:var(--text-secondary)">'+total+'</strong> total</span>';
+    if(!releasedProjects.length){
+        list.innerHTML='';noRes.style.display='block';
+        noRes.innerHTML='<div class="emoji">🏁</div><p>Belum ada project yang ditandai released.<br>Klik <strong style="color:var(--cyan)">+ Tambah</strong> di atas untuk mulai.</p>';
+        return;
+    }
+    noRes.style.display='none';
+    var html='<div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
+    html+='<button class="sort-btn'+(releasedFilter==='all'?' active':'')+'" onclick="setReleasedFilter(\'all\')">◈ All</button>';
+    html+='<button class="sort-btn'+(releasedFilter==='production'?' active':'')+'" onclick="setReleasedFilter(\'production\')">🚀 Production</button>';
+    html+='<button class="sort-btn'+(releasedFilter==='completed'?' active':'')+'" onclick="setReleasedFilter(\'completed\')">✅ Completed</button>';
+    html+='<button class="sort-btn" style="margin-left:auto;border-color:rgba(0,255,242,.2);color:var(--cyan)" onclick="showAddReleasedForm()">+ Tambah</button>';
+    if(releasedSuggestions.length){
+        html+='<button class="sort-btn" style="border-color:rgba(255,170,0,.2);color:var(--amber)" onclick="showReleasedSuggestions()">💡 '+releasedSuggestions.length+' saran</button>';
+    }
+    html+='</div>';
+    var items=releasedProjects.slice();
+    items.sort(function(a,b){return new Date(b.dateMarked||0)-new Date(a.dateMarked||0);});
+    if(releasedFilter==='production')items=items.filter(function(p){return p.status==='production';});
+    else if(releasedFilter==='completed')items=items.filter(function(p){return p.status==='completed';});
+    var prodItems=items.filter(function(p){return p.status==='production';});
+    var compItems=items.filter(function(p){return p.status==='completed';});
+    if(prodItems.length){
+        html+='<div style="margin-bottom:12px;margin-top:4px"><span style="font-family:\'Orbitron\',sans-serif;font-size:18px;font-weight:800;color:var(--green)">🚀 Production Ready</span></div>';
+        prodItems.forEach(function(p){html+=renderReleasedCard(p);});
+    }
+    if(compItems.length){
+        html+='<div style="margin-bottom:12px;margin-top:20px"><span style="font-family:\'Orbitron\',sans-serif;font-size:18px;font-weight:800;color:var(--cyan)">✅ Completed</span></div>';
+        compItems.forEach(function(p){html+=renderReleasedCard(p);});
+    }
+    list.innerHTML=html;
+}
+function renderReleasedCard(p){
+    var g=p.repoName?githubData[p.repoName.toLowerCase()]:null;
+    var name=p.name||p.repoName||'Unknown';
+    var desc=p.notes||(g?g.description:'')||'Tidak ada deskripsi';
+    var dateStr=p.dateMarked?new Date(p.dateMarked).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}):'';
+    var isProd=p.status==='production';
+    var badgeClass=isProd?'rl-badge production':'rl-badge completed';
+    var badgeText=isProd?'🚀 PRODUCTION':'✅ COMPLETED';
+    var cardClass=isProd?'rl-card production':'rl-card completed';
+    var langHtml='';
+    if(g&&g.language)langHtml='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--text-muted)"><span style="width:7px;height:7px;border-radius:50%;background:'+langColor(g.language)+';display:inline-block;flex-shrink:0"></span> '+g.language+'</span>';
+    var versionHtml='';
+    if(p.version)versionHtml='<span style="font-size:10px;color:var(--cyan);font-family:\'JetBrains Mono\',monospace">v'+p.version+'</span>';
+    var autoTag=p._autoDetected?'<span style="font-size:8px;padding:1px 6px;border-radius:3px;background:rgba(255,170,0,.12);color:#ffbb33;border:1px solid rgba(255,170,0,.25);font-family:\'JetBrains Mono\',monospace;text-transform:uppercase;letter-spacing:.5px;font-weight:600">auto</span>':'';
+    var key=(p.repoName||p.name||'').replace(/'/g,"\\'");
+    return '<div class="'+cardClass+'">'+
+        '<div class="rl-body">'+
+        '<div class="rl-top">'+
+        '<h3>'+name+' '+autoTag+'</h3>'+
+        '<span class="'+badgeClass+'">'+badgeText+'</span>'+
+        '</div>'+
+        '<div class="rl-desc">'+escapeHtml(desc)+'</div>'+
+        '<div class="rl-meta">'+langHtml+versionHtml+(dateStr?'<span style="font-size:10px;color:var(--text-muted)">📅 '+dateStr+'</span>':'')+'</div>'+
+        '<div class="rl-actions">'+
+        '<button class="ul-action-btn" onclick="removeReleasedProject(\''+key+'\')" style="color:var(--red);border-color:rgba(255,0,64,.2)">✕ Remove</button>'+
+        (g?'<a class="ul-action-btn" href="https://github.com/Niumination/'+p.repoName+'" target="_blank" style="margin-left:auto">↗ Repo</a>':'')+
+        '</div>'+
+        '</div>'+
+        '</div>';
+}
+// ===== RELEASED PROJECTS — MANAGEMENT =====
+function showAddReleasedForm(){
+    var overlay=document.getElementById('rl-overlay');
+    var select=document.getElementById('rl-repo-select');
+    var used=new Set(releasedProjects.map(function(p){return(p.repoName||'').toLowerCase();}));
+    select.innerHTML='<option value="">— Pilih project —</option>';
+    // Add from flatProjects
+    flatProjects.forEach(function(p){
+        var rn=(p.repoName||'').toLowerCase();
+        if(!rn||used.has(rn))return;
+        var opt=document.createElement('option');
+        opt.value=rn;opt.textContent=p.name+' ('+p.categoryLabel+')';
+        select.appendChild(opt);
+    });
+    // Add from unlisted
+    unlistedRepos.forEach(function(p){
+        var rn=(p.repoName||'').toLowerCase();
+        if(!rn||used.has(rn))return;
+        var opt=document.createElement('option');
+        opt.value=rn;opt.textContent=p.name+' (unlisted)';
+        select.appendChild(opt);
+    });
+    document.getElementById('rl-version-input').value='';
+    document.getElementById('rl-notes-input').value='';
+    overlay.classList.add('show');
+}
+function closeReleasedForm(){document.getElementById('rl-overlay').classList.remove('show');}
+function saveReleasedForm(){
+    var select=document.getElementById('rl-repo-select');
+    var repoName=select.value;
+    if(!repoName||repoName===''){showToast('⚠ Pilih project terlebih dahulu','warn',3000);return;}
+    var status=document.getElementById('rl-status-select').value;
+    var version=document.getElementById('rl-version-input').value.trim();
+    var notes=document.getElementById('rl-notes-input').value.trim();
+    // Find project name from flatProjects or unlisted
+    var name='';
+    var allP=flatProjects.concat(unlistedRepos);
+    allP.forEach(function(p){
+        if((p.repoName||'').toLowerCase()===repoName&&!name)name=p.name;
+    });
+    releasedProjects.push({
+        repoName:repoName,
+        name:name||repoName,
+        status:status,
+        version:version,
+        notes:notes,
+        dateMarked:new Date().toISOString(),
+        _autoDetected:false
+    });
+    saveReleased();
+    closeReleasedForm();
+    updateReleasedBadge();
+    renderReleased();
+    showToast('✅ '+(name||repoName)+' ditandai sebagai '+(status==='production'?'Production Ready':'Completed'),'success',3000);
+}
+function removeReleasedProject(key){
+    if(!key)return;
+    var idx=-1;
+    releasedProjects.forEach(function(p,i){
+        if((p.repoName||'')===key||(p.name||'')===key)idx=i;
+    });
+    if(idx<0)return;
+    var name=releasedProjects[idx].name||releasedProjects[idx].repoName;
+    releasedProjects.splice(idx,1);
+    saveReleased();
+    updateReleasedBadge();
+    renderReleased();
+    showToast('🗑 '+name+' dihapus dari released','info',2500);
+}
+function setReleasedFilter(filter){
+    releasedFilter=filter;
+    renderReleased();
+}
+// ===== RELEASED PROJECTS — SUGGESTIONS =====
+function showReleasedSuggestions(){
+    var html='<div style="margin-bottom:12px"><span style="font-size:14px;font-weight:700;color:var(--amber)">💡 Saran Auto-Deteksi</span></div>';
+    html+='<div style="margin-bottom:12px;font-size:10px;color:var(--text-muted)">Project berikut terdeteksi sebagai production-ready atau completed berdasarkan data GitHub.</div>';
+    html+='<div style="margin-bottom:16px"><button class="sort-btn" style="border-color:rgba(0,255,242,.2);color:var(--cyan)" onclick="addAllReleasedSuggestions()">+ Tambah Semua ('+releasedSuggestions.length+')</button></div>';
+    releasedSuggestions.forEach(function(s,i){
+        html+='<div class="rl-suggestion-card">'+
+            '<span class="rl-sg-name">'+(s.name||s.repoName)+'</span>'+
+            '<span class="rl-sg-reason">'+(s.status==='production'?'🚀 ':'✅ ')+s.reason+'</span>'+
+            '<div class="rl-sg-actions">'+
+            '<button class="sg-add" onclick="addReleasedSuggestion('+i+')">+ Add</button>'+
+            '<button class="sg-dismiss" onclick="dismissReleasedSuggestion('+i+')">✕</button>'+
+            '</div></div>';
+    });
+    var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
+    fi.innerHTML='💡 <em>'+releasedSuggestions.length+'</em> saran released';
+    statsEl.innerHTML='<span class="fs-item">Dari GitHub auto-detection</span>';
+    noRes.style.display='none';
+    list.innerHTML=html;
+}
+function addReleasedSuggestion(idx){
+    var s=releasedSuggestions[idx];
+    if(!s)return;
+    // Check if already in releasedProjects
+    var exists=releasedProjects.some(function(p){return(p.repoName||'').toLowerCase()===s.repoName.toLowerCase();});
+    if(exists){
+        releasedSuggestions.splice(idx,1);
+        showToast('⚠ Project sudah ada di daftar','warn',2000);
+        if(releasedSuggestions.length)showReleasedSuggestions();else showReleased();
+        return;
+    }
+    releasedProjects.push({
+        repoName:s.repoName,
+        name:s.name||s.repoName,
+        status:s.status,
+        version:'',
+        notes:'Auto-detected: '+s.reason,
+        dateMarked:new Date().toISOString(),
+        _autoDetected:true
+    });
+    releasedSuggestions.splice(idx,1);
+    saveReleased();
+    updateReleasedBadge();
+    if(releasedSuggestions.length)showReleasedSuggestions();else showReleased();
+    showToast('✅ '+(s.name||s.repoName)+' ditambahkan','success',2000);
+}
+function dismissReleasedSuggestion(idx){
+    releasedSuggestions.splice(idx,1);
+    updateReleasedBadge();
+    if(releasedSuggestions.length)showReleasedSuggestions();else{
+        releasedFilter='all';showReleased();
+        showToast('💡 Semua saran sudah diproses','info',2000);
+    }
+}
+function addAllReleasedSuggestions(){
+    releasedSuggestions.forEach(function(s){
+        var exists=releasedProjects.some(function(p){return(p.repoName||'').toLowerCase()===s.repoName.toLowerCase();});
+        if(exists)return;
+        releasedProjects.push({
+            repoName:s.repoName,
+            name:s.name||s.repoName,
+            status:s.status,
+            version:'',
+            notes:'Auto-detected: '+s.reason,
+            dateMarked:new Date().toISOString(),
+            _autoDetected:true
+        });
+    });
+    releasedSuggestions=[];
+    saveReleased();
+    updateReleasedBadge();
+    showReleased();
+    showToast('✅ Semua saran ditambahkan ke Released','success',3000);
+}
+
 function filterByTag(tag){activeTag=(activeTag===tag)?null:tag;document.querySelectorAll('.tag-filter').forEach(function(el){el.classList.toggle('active',el.dataset.tag===activeTag);});renderFeed(currentFilter,currentStatus,document.getElementById('search-input').value);}
 function buildTagCounts(){tagCounts={};flatProjects.forEach(function(p){if(p.tags)p.tags.forEach(function(t){tagCounts[t]=(tagCounts[t]||0)+1;});});}
 function buildTagFilterBar(){var b=document.getElementById('tag-filter-bar');if(!b)return;var s=Object.entries(tagCounts).sort(function(a,b){return b[1]-a[1];}).slice(0,15);if(!s.length){b.innerHTML='';return;}var h='<span class="tag-filter'+(!activeTag?' active':'')+'" onclick="filterByTag(null)" style="cursor:pointer">\u25c8 All</span>';s.forEach(function(e){var t=e[0],c=e[1];h+='<span class="tag-filter'+(activeTag===t?' active':'')+'" data-tag="'+t.replace(/"/g,'&quot;')+'" onclick="filterByTag(this.dataset.tag)">'+t+'<span class="count">'+c+'</span></span>';});b.innerHTML=h;}
@@ -1717,6 +2055,11 @@ function toggleSidebar() {
 // ===== FILTERS =====
 function setFilter(filter) {
     currentFilter = filter;
+    currentView = 'categories'; // Exit released view
+    // Restore normal feed controls (in case returning from released view)
+    var sb=document.getElementById('sort-bar');if(sb)sb.style.display='';
+    var tb=document.getElementById('tag-filter-bar');if(tb)tb.style.display='';
+    var si=document.getElementById('search-input');if(si)si.parentElement.style.display='';
     document.querySelectorAll('#sb-nav button').forEach(b => b.classList.remove('active'));
     document.querySelector(`#sb-nav button[data-filter="${filter}"]`).classList.add('active');
     if (window.innerWidth <= 768) toggleSidebar();
@@ -1852,6 +2195,7 @@ function playHover() { try { initAudio(); const o = audioCtx.createOscillator(),
 // ===== INIT =====
 window.addEventListener('DOMContentLoaded', () => {
     loadPendingAdds();
+    loadReleased();
     buildFlatList();
     renderFeed('all', 'all');
     updateStats();
@@ -1886,6 +2230,29 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <div class="toast-container" id="toast-container"></div>
+
+<!-- ===== RELEASED PROJECTS — FORM OVERLAY ===== -->
+<div class="rl-form-overlay" id="rl-overlay">
+    <div class="rl-form">
+        <h3>🏁 Tambah Released Project</h3>
+        <label>Project</label>
+        <select id="rl-repo-select"><option value="">— Pilih project —</option></select>
+        <label>Status</label>
+        <select id="rl-status-select">
+            <option value="production">🚀 Production Ready</option>
+            <option value="completed">✅ Completed</option>
+        </select>
+        <label>Version (opsional)</label>
+        <input type="text" id="rl-version-input" placeholder="mis: v2.14.0">
+        <label>Notes (opsional)</label>
+        <input type="text" id="rl-notes-input" placeholder="Deployment notes...">
+        <div class="rl-form-buttons">
+            <button class="rl-save" onclick="saveReleasedForm()">✓ Simpan</button>
+            <button class="rl-cancel" onclick="closeReleasedForm()">Batal</button>
+        </div>
+    </div>
+</div>
+
 <div class="kb-hint"><kbd>S</kbd> search · <kbd>1-6</kbd> filter · <kbd>Esc</kbd> close</div>
 </body>
 </html>
