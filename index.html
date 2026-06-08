@@ -655,7 +655,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.14.2',hash:'f8204c4',date:'2026-06-08T15:11:05+07:00',msg:"v2.14.2 — Released activity sync: activity feed merged with released log, hidden in released view"};
+var NIU_VERSION = {v:'2.14.2',hash:'872218d',date:'2026-06-08T15:11:19+07:00',msg:"v2.14.2 — bump version number"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1135,6 +1135,14 @@ let releasedProjects = [];
 let releasedSuggestions = [];
 let releasedFilter = 'all';
 let currentView = 'categories';
+
+// ===== RELEASED — GITHUB SYNC CONFIG =====
+var RELEASED_GH_TOKEN='';
+var RELEASED_GH_OWNER='Niumination';
+var RELEASED_GH_REPO='niu-dash';
+var RELEASED_GH_PATH='data/released.json';
+var releasedGitSha=null;
+var releasedSyncTimer=null;
 
 // ===== BUILD FLAT LIST =====
 function buildFlatList() {
@@ -1782,8 +1790,13 @@ function addAllUnlisted(){
 // ===== RELEASED PROJECTS — DATA =====
 function loadReleased(){
     try{var d=localStorage.getItem('niu-released');if(d)releasedProjects=JSON.parse(d);if(!Array.isArray(releasedProjects))releasedProjects=[];}catch(e){releasedProjects=[];}
+    // If localStorage is empty (e.g. after clearing cache), try GitHub
+    if(!releasedProjects.length)fetchReleasedFromGitHub();
 }
-function saveReleased(){localStorage.setItem('niu-released',JSON.stringify(releasedProjects));}
+function saveReleased(){
+    localStorage.setItem('niu-released',JSON.stringify(releasedProjects));
+    pushReleasedToGitHub();
+}
 function detectReleasedFromGitHub(){
     releasedSuggestions=[];
     var existing=new Set(releasedProjects.map(function(p){return(p.repoName||'').toLowerCase();}));
@@ -1840,6 +1853,7 @@ function renderReleased(){
     html+='<button class="sort-btn'+(releasedFilter==='production'?' active':'')+'" onclick="setReleasedFilter(\'production\')">🚀 Production</button>';
     html+='<button class="sort-btn'+(releasedFilter==='completed'?' active':'')+'" onclick="setReleasedFilter(\'completed\')">✅ Completed</button>';
     html+='<button class="sort-btn" style="margin-left:auto;border-color:rgba(0,255,242,.2);color:var(--cyan)" onclick="showAddReleasedForm()">+ Tambah</button>';
+    html+='<button class="sort-btn" style="border-color:rgba(255,255,255,.1);color:var(--text-muted)" onclick="showSyncConfig()" title="Konfigurasi GitHub Sync">⚙</button>';
     if(releasedSuggestions.length){
         html+='<button class="sort-btn" style="border-color:rgba(255,170,0,.2);color:var(--amber)" onclick="showReleasedSuggestions()">💡 '+releasedSuggestions.length+' saran</button>';
     }
@@ -2070,6 +2084,97 @@ function addReleasedActivityLog(projectName,repoName,status,method){
     // Keep last 100 entries max
     if(releasedActivityLog.length>100)releasedActivityLog=releasedActivityLog.slice(-100);
     saveReleasedActivityLog();
+}
+
+// ===== RELEASED — GITHUB SYNC =====
+function fetchReleasedFromGitHub(){
+    return fetch('https://raw.githubusercontent.com/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/main/'+RELEASED_GH_PATH)
+        .then(function(r){
+            if(!r.ok)throw new Error('Not found (file may be empty)');
+            return r.json();
+        })
+        .then(function(data){
+            if(data&&Array.isArray(data.projects)){
+                releasedProjects=data.projects;
+                releasedActivityLog=data.activityLog||[];
+                saveReleased();
+                saveReleasedActivityLog();
+                updateReleasedBadge();
+                if(typeof renderReleased==='function'&&currentView==='released')renderReleased();
+                console.log('[Released] GitHub sync: loaded',releasedProjects.length,'projects');
+                return true;
+            }
+            throw new Error('Invalid data format');
+        })
+        .catch(function(e){
+            // Fallback: localStorage already has the data from loadReleased()
+            console.log('[Released] GitHub sync fetch:',e.message);
+            return false;
+        });
+}
+function pushReleasedToGitHub(){
+    if(releasedSyncTimer)clearTimeout(releasedSyncTimer);
+    releasedSyncTimer=setTimeout(function(){
+        releasedSyncTimer=null;
+        _doPushReleased();
+    },2000); // debounce 2s
+}
+function getReleasedToken(){
+    var t=localStorage.getItem('niu-gh-released-token');
+    if(t&&t.length>10)return t;
+    // Check global var as fallback
+    if(RELEASED_GH_TOKEN&&RELEASED_GH_TOKEN.length>10)return RELEASED_GH_TOKEN;
+    return null;
+}
+function _doPushReleased(){
+    var token=getReleasedToken();
+    if(!token){console.warn('[Released] No GitHub token — data saved locally only');return;}
+    var content=JSON.stringify({projects:releasedProjects,activityLog:releasedActivityLog,updatedAt:new Date().toISOString()},null,2);
+    var base64=btoa(unescape(encodeURIComponent(content)));
+    // Get SHA first
+    fetch('https://api.github.com/repos/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/contents/'+RELEASED_GH_PATH,{
+        headers:{'Authorization':'token '+token}
+    })
+    .then(function(r){
+        if(r.status===404)return null; // file doesn't exist yet
+        return r.json();
+    })
+    .then(function(data){
+        var sha=data&&data.sha?data.sha:null;
+        return fetch('https://api.github.com/repos/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/contents/'+RELEASED_GH_PATH,{
+            method:'PUT',
+            headers:{
+                'Authorization':'token '+token,
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({
+                message:'sync released data [auto]',
+                content:base64,
+                sha:sha
+            })
+        });
+    })
+    .then(function(r){return r.json();})
+    .then(function(data){
+        if(data&&data.content&&data.content.sha)releasedGitSha=data.content.sha;
+        console.log('[Released] GitHub sync: push OK');
+    })
+    .catch(function(e){
+        console.error('[Released] GitHub sync push error:',e);
+    });
+}
+function showSyncConfig(){
+    var hasToken=getReleasedToken()?true:false;
+    var msg=hasToken?'GitHub Sync sudah aktif. Token: '+getReleasedToken().substring(0,6)+'...\n\nKlik OK untuk mengganti token.' : 'GitHub Sync belum dikonfigurasi.\n\nMasukkan GitHub Personal Access Token (PAT) dengan scope public_repo untuk menyimpan data released ke repository.\n\nToken bisa dibuat di: github.com/settings/tokens';
+    var input=prompt(msg,hasToken?getReleasedToken():'');
+    if(input&&input.length>10){
+        localStorage.setItem('niu-gh-released-token',input);
+        showToast('Token GitHub disimpan! Sync aktif','success',3000);
+        RELEASED_GH_TOKEN=input;
+        pushReleasedToGitHub();
+    }else if(input&&input.length>0){
+        showToast('Token tidak valid (min 10 karakter)','warn',3000);
+    }
 }
 
 function filterByTag(tag){activeTag=(activeTag===tag)?null:tag;document.querySelectorAll('.tag-filter').forEach(function(el){el.classList.toggle('active',el.dataset.tag===activeTag);});renderFeed(currentFilter,currentStatus,document.getElementById('search-input').value);}
