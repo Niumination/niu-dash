@@ -284,6 +284,7 @@
         .dp-item .dp-tags span{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 10px;border-radius:4px;background:rgba(80,80,160,.15);color:#9090b8;border:1px solid rgba(80,80,160,.2)}
         .dp-item .dp-tags span.gh-topic{background:rgba(176,0,255,.1);color:#bb88ee;border-color:rgba(176,0,255,.25)}
         .dp-archived-badge{display:inline-block;font-size:10px;padding:2px 10px;border-radius:4px;background:rgba(255,60,60,.12);color:#ff6666;border:1px solid rgba(255,60,60,.25);margin-left:8px;vertical-align:middle;font-family:'JetBrains Mono',monospace}
+        .dp-auto-badge{display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;background:rgba(255,170,0,.12);color:#ffbb33;border:1px solid rgba(255,170,0,.25);margin-left:4px;vertical-align:middle;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
         .dp-item .dp-open-btn{
             font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
             padding:8px 20px;border-radius:7px;border:1px solid rgba(0,255,242,.25);
@@ -1209,7 +1210,7 @@ function selectProject(idx) {
                 <div class="dp-icon" style="background:rgba(0,255,242,.12)">${p.icon}</div>
                 <div class="dp-info">
                     <h2>${p.name}</h2>
-                    <div class="dp-sub">${p.categoryLabel}${getRepoDate(p) ? ' · ' + getRepoDate(p) : ''}${p._archived ? '<span class="dp-archived-badge">📦 Archived</span>' : ''}</div>
+                    <div class="dp-sub">${p.categoryLabel}${p._autoCat?' <span class="dp-auto-badge">auto</span>':''}${getRepoDate(p) ? ' · ' + getRepoDate(p) : ''}${p._archived ? '<span class="dp-archived-badge">📦 Archived</span>' : ''}</div>
                 </div>
                 ${statusBadge}
             </div>
@@ -1263,7 +1264,7 @@ function manualRefresh(){
 // ===== GITHUB API =====
 async function fetchGitHubData(isManual){
     var c2=localStorage.getItem('niu-gh-cache');
-    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
+    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
     try{
         var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated');
         var rl=r.headers&&r.headers.get('X-RateLimit-Remaining');
@@ -1271,14 +1272,14 @@ async function fetchGitHubData(isManual){
             var reset=r.headers.get('X-RateLimit-Reset');
             var wait=reset?Math.ceil((reset*1000-Date.now())/60000):'?';
             showToast('⚠ GitHub API rate limited. Reset in '+wait+'m','error',6000);
-            var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
+            var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
         }
         var repos=await r.json();
-        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);}
+        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);}
         else showToast('⚠ GitHub API returned unexpected data','warn',5000);
     }catch(e){
         showToast('⚠ GitHub API error — using cached data','warn',5000);
-        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();updateGitHubAggStats();detectUnlistedRepos();renderFeed();}catch(_){}}}
+        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();detectUnlistedRepos();renderFeed();}catch(_){}}}
     if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
 }
 function applyAutoPages(){flatProjects.forEach(function(p){if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];if(g.has_pages&&!p.website)p.website='https://niumination.github.io/'+p.repoName;}});}
@@ -1304,6 +1305,30 @@ function updateGitHubAggStats(){
         if(langArr.length>5)parts[parts.length-1]+=' <span style="opacity:.6">+'+ (langArr.length-5) +'</span>';
     }
     el.innerHTML=parts.join('<span style="opacity:.2;margin:0 2px">·</span>')||'';
+}
+function autoCategorize(){
+    var labels={ready:'Ready',dev:'Development',ideas:'Ideas/Planning',config:'Config/Dotfiles',legacy:'Legacy/Arsip'};
+    var now=Date.now(),THREE=90*86400000,SIX=180*86400000;
+    flatProjects.forEach(function(p){
+        if(!p.repoName||p.category==='config'||p.category==='unlisted')return;
+        var g=githubData[p.repoName.toLowerCase()];
+        if(!g)return;
+        var t=new Date(g.updated_at).getTime();
+        if(isNaN(t))return;
+        var age=now-t,newCat;
+        if(g.archived)newCat='legacy';
+        else if(g.has_pages&&age<THREE)newCat='ready';
+        else if(age<THREE)newCat='dev';
+        else if(age>SIX)newCat='ideas';
+        else newCat='dev';
+        if(newCat!==p.category){
+            p._prevCategory=p.category;
+            p._prevCategoryLabel=p.categoryLabel;
+            p.category=newCat;
+            p.categoryLabel=labels[newCat];
+            p._autoCat=true;
+        }
+    });
 }
 function enrichFromGitHub(){
     flatProjects.forEach(function(p){
