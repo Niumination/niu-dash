@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        html{scroll-behavior:smooth;background:#050508}
+        html{scroll-behavior:smooth;background:#050508;font-size:110%}
         :root{
             --bg-primary:#050508;--bg-secondary:#0a0a14;--bg-card:#0d0d1a;
             --bg-card-hover:#12122a;--border:#1a1a3a;--border-subtle:rgba(255,255,255,.04);
@@ -588,7 +588,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.9.0',hash:'0970891',date:'2026-06-08T11:32:24+07:00',msg:"v2.12.2 — Fix Activity Feed readability: dark card bg, larger text, better contrast"};
+var NIU_VERSION = {v:'2.9.0',hash:'f5a76c4',date:'2026-06-08T11:49:53+07:00',msg:"v2.13.0 — Detail Panel enhanced: last commit fetch, auto health recommendations from GitHub data, commit activity timeline, descriptions with GitHub metadata"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1237,6 +1237,7 @@ function selectProject(idx) {
         if(gx.updated_at){var ux=Date.now()-new Date(gx.updated_at).getTime();ghUpdated='<div class="dp-desc-meta">Last updated '+Math.floor(ux/2592000000)+'mo ago on GitHub</div>';}
     }
     sectionsHtml+=`<div class="dp-section"><h4><span class="hl hl-cyan"></span>DESKRIPSI</h4><p>${p._ghDesc||p.desc}</p>${ghUpdated}</div>`;
+    sectionsHtml+='<div id="dp-commit-data"><div class="dp-loading-cmt">⟐ fetching latest commits...</div></div>';
     
     // Tags
     if (p.tags && p.tags.length) {
@@ -1318,7 +1319,6 @@ function selectProject(idx) {
             </div>
             <div class="dp-path">${path}</div>
             ${sectionsHtml}
-            <div id="dp-commit-data"><div class="dp-loading-cmt">⟐ fetching latest commits...</div></div>
             <hr class="dp-divider">
             ${buttonsHtml}
         </div>
@@ -1357,6 +1357,15 @@ function showToast(msg,type,dur){
     t.textContent=msg;
     c.appendChild(t);
     setTimeout(function(){t.classList.add('toast-hide');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},300);},dur);
+}
+function setVersionDisplay(){
+    var el=document.getElementById('sb-version');
+    if(!el)return;
+    var txt='dark nexus ';
+    if(window.NIU_VERSION&&window.NIU_VERSION.hash)txt+='v2.9.0 ('+window.NIU_VERSION.hash.slice(0,7)+')';
+    else txt+='v2.9.0';
+    el.textContent=txt;
+    el.title=window.NIU_VERSION?window.NIU_VERSION.msg||'':'';
 }
 function manualRefresh(){
     localStorage.removeItem('niu-gh-cache');
