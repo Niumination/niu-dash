@@ -302,6 +302,15 @@
         .dp-status-paused{background:rgba(255,255,0,.08);color:#ffd000;border:1px solid rgba(255,255,0,.15)}
         .dp-status-staging{background:rgba(0,255,242,.12);color:var(--cyan);border:1px solid rgba(0,255,242,.2)}
         .dp-item .dp-path{font-size:11px;color:rgba(150,150,200,.4);margin-bottom:8px;word-break:break-all}
+        .dp-loading-cmt{text-align:center;font-size:10px;color:rgba(0,255,242,.4);padding:16px 0;font-family:'JetBrains Mono',monospace}
+        .dp-last-commit{background:rgba(0,255,242,.03);border:1px solid rgba(0,255,242,.1);border-radius:6px;padding:10px 12px;margin-bottom:14px}
+        .dp-last-commit .lc-label{display:block;font-size:9px;color:var(--cyan);font-weight:600;letter-spacing:1px;margin-bottom:4px}
+        .dp-last-commit .lc-sha{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);margin-bottom:2px}
+        .dp-last-commit .lc-msg{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:4px;word-break:break-word;line-height:1.4}
+        .dp-last-commit .lc-meta{display:flex;gap:12px;font-size:10px;color:rgba(255,255,255,.35)}
+        .dp-desc-meta{font-size:10px;color:rgba(255,255,255,.3);margin-top:6px;font-style:italic}
+        .dp-tl-item .tl-sha{font-family:'JetBrains Mono',monospace;color:var(--green);font-size:10px}
+        .dp-commit-tl .tl-date{font-size:9px}
         .dp-item .dp-desc{font-size:12px;color:#b0b0d0;line-height:1.7;margin-bottom:12px}
         .dp-item .dp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:20px}
         .dp-item .dp-tags span{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 10px;border-radius:4px;background:rgba(80,80,160,.15);color:#9090b8;border:1px solid rgba(80,80,160,.2)}
@@ -579,7 +588,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.9.0',hash:'5292df6',date:'2026-06-08T11:08:09+07:00',msg:"v2.12.1 — Mark PLAN complete, final sync"};
+var NIU_VERSION = {v:'2.9.0',hash:'0970891',date:'2026-06-08T11:32:24+07:00',msg:"v2.12.2 — Fix Activity Feed readability: dark card bg, larger text, better contrast"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1147,6 +1156,51 @@ function getRepoDateValue(p){
     return parseSmart(p.date).getTime();
 }
 // ===== SELECT PROJECT =====
+var commitCache={};
+function fetchCommitData(repoName){
+    if(!repoName)return;
+    var key=repoName.toLowerCase();
+    if(commitCache[key]&&Date.now()-commitCache[key].ts<300000)return;
+    fetch('https://api.github.com/repos/Niumination/'+key+'/commits?per_page=5').then(function(r){return r.json();}).then(function(data){
+        if(!Array.isArray(data))return;
+        commitCache[key]={data:data,ts:Date.now()};
+        var p2=flatProjects[selectedIndex];
+        if(p2&&p2.repoName&&p2.repoName.toLowerCase()===key){
+            var el=document.getElementById('dp-commit-data');
+            if(el)el.innerHTML=buildCommitHtml(data,repoName);
+        }
+    }).catch(function(){});
+}
+function buildCommitHtml(commits,name){
+    if(!commits||!commits.length)return'';
+    var c=commits[0];
+    var sha=c.sha?c.sha.slice(0,7):'—';
+    var msg=c.commit?((c.commit.message||'').split('\\n')[0]||'—'):'—';
+    var author=c.commit&&c.commit.author?c.commit.author.name:'—';
+    var date=c.commit&&c.commit.committer?c.commit.committer.date:null;
+    var ago='';
+    if(date){var diff=Date.now()-new Date(date).getTime();if(diff<3600000)ago=Math.floor(diff/60000)+'m ago';else if(diff<86400000)ago=Math.floor(diff/3600000)+'h ago';else ago=Math.floor(diff/86400000)+'d ago';}
+    var html='<div class="dp-last-commit"><span class="lc-label">← LATEST COMMIT</span><div class="lc-sha">#'+sha+'</div><div class="lc-msg">'+escapeHtml(msg)+'</div><div class="lc-meta"><span class="lc-author">by '+escapeHtml(author)+'</span><span class="lc-time">'+ago+'</span></div></div>';
+    // Also build recent activity from last 5 commits
+    if(commits.length>1){
+        html+='<div class="dp-section"><h4><span class="hl hl-cyan"></span>RECENT ACTIVITY</h4><div class="dp-timeline dp-commit-tl">';
+        for(var i=0;i<Math.min(commits.length,5);i++){
+            var ci=commits[i];
+            var si=ci.sha?ci.sha.slice(0,7):'—';
+            var mi=ci.commit?((ci.commit.message||'').split('\\n')[0]||'—'):'—';
+            var di=ci.commit&&ci.commit.committer?ci.commit.committer.date:null;
+            var ai='';
+            if(di){var df=Date.now()-new Date(di).getTime();if(df<3600000)ai=Math.floor(df/60000)+'m';else if(df<86400000)ai=Math.floor(df/3600000)+'h';else ai=Math.floor(df/86400000)+'d';}
+            html+='<div class="dp-tl-item"><div class="tl-date">'+ai+' ago</div><div class="tl-text"><span class="tl-sha">#'+si+'</span> '+escapeHtml(mi)+'</div></div>';
+        }
+        html+='</div></div>';
+    }
+    return html;
+}
+function escapeHtml(s){
+    if(!s)return'';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 function selectProject(idx) {
     selectedIndex = idx;
     // Highlight card
@@ -1176,8 +1230,13 @@ function selectProject(idx) {
     // Detail sections
     let sectionsHtml = '';
     
-    // Description
-    sectionsHtml += `<div class="dp-section"><h4><span class="hl hl-cyan"></span>DESKRIPSI</h4><p>${p._ghDesc||p.desc}</p></div>`;
+    // Description — with GitHub update context
+    var ghUpdated='';
+    if(p.repoName&&githubData[p.repoName.toLowerCase()]){
+        var gx=githubData[p.repoName.toLowerCase()];
+        if(gx.updated_at){var ux=Date.now()-new Date(gx.updated_at).getTime();ghUpdated='<div class="dp-desc-meta">Last updated '+Math.floor(ux/2592000000)+'mo ago on GitHub</div>';}
+    }
+    sectionsHtml+=`<div class="dp-section"><h4><span class="hl hl-cyan"></span>DESKRIPSI</h4><p>${p._ghDesc||p.desc}</p>${ghUpdated}</div>`;
     
     // Tags
     if (p.tags && p.tags.length) {
@@ -1205,16 +1264,27 @@ function selectProject(idx) {
         sectionsHtml += planHtml;
     }
     
-    // Recommendations
-    if (p.recommendations && p.recommendations.length) {
-        let recHtml = '<div class="dp-section"><h4><span class="hl hl-red"></span>REKOMENDASI</h4><div class="dp-rec-grid">';
-        p.recommendations.forEach(r => {
-            const prio = r.priority === 'high' ? 'prio-high' : r.priority === 'mid' ? 'prio-mid' : 'prio-low';
-            const prioLabel = r.priority === 'high' ? '⚠ PRIORITAS' : r.priority === 'mid' ? '◆ PENTING' : '▸ SARAN';
-            recHtml += `<div class="dp-rec-item ${prio}"><div class="rec-prio">${prioLabel}</div>${r.text}</div>`;
+    // Recommendations — hardcoded + auto-generated health check
+    var recs=(p.recommendations&&p.recommendations.length)?p.recommendations.slice():[];
+    var g=p.repoName?githubData[p.repoName.toLowerCase()]:null;
+    // Auto-generate health recommendations from GitHub
+    if(g){
+        if(!g.description&&!p.desc&&!p._ghDesc)recs.push({text:'Repository tidak memiliki deskripsi GitHub — tambahkan README dengan deskripsi yang jelas.',priority:'mid'});
+        if(!g.topics||!g.topics.length)recs.push({text:'Tidak ada GitHub topics — tambahkan topics untuk kategorisasi otomatis yang lebih akurat.',priority:'low'});
+        if(g.archived)recs.push({text:'Repository telah diarsipkan. Pertimbangkan untuk membuat rilis final sebelum archive permanen.',priority:'high'});
+        if(g.updated_at){var mGap=(Date.now()-new Date(g.updated_at).getTime())/2592000000;if(mGap>6)recs.push({text:'Tidak ada aktivitas dalam '+Math.floor(mGap)+' bulan — repo membutuhkan perhatian atau pertimbangkan untuk arsipkan.',priority:'mid'});if(mGap>12)recs.push({text:'Repo tidak diupdate lebih dari 1 tahun — evaluasi apakah masih relevan atau needs final release.',priority:'high'});}
+        if(g.has_pages&&!p.website&&!p._ghPages)recs.push({text:'GitHub Pages tersedia tapi belum terdaftar — tambahkan link website untuk kemudahan akses.',priority:'low'});
+    }
+    if(!recs.length)recs.push({text:'Proyek dalam kondisi baik — pertahankan!',priority:'low'});
+    if(recs.length){
+        var recHtml='<div class="dp-section"><h4><span class="hl hl-red"></span>REKOMENDASI</h4><div class="dp-rec-grid">';
+        recs.forEach(function(r){
+            var prio=r.priority==='high'?'prio-high':r.priority==='mid'?'prio-mid':'prio-low';
+            var prioLabel=r.priority==='high'?'⚠ PRIORITAS':r.priority==='mid'?'◆ PENTING':'▸ SARAN';
+            recHtml+='<div class="dp-rec-item '+prio+'"><div class="rec-prio">'+prioLabel+'</div>'+r.text+'</div>';
         });
-        recHtml += '</div></div>';
-        sectionsHtml += recHtml;
+        recHtml+='</div></div>';
+        sectionsHtml+=recHtml;
     }
     
     var ghStatsHtml = '';
@@ -1248,10 +1318,14 @@ function selectProject(idx) {
             </div>
             <div class="dp-path">${path}</div>
             ${sectionsHtml}
+            <div id="dp-commit-data"><div class="dp-loading-cmt">⟐ fetching latest commits...</div></div>
             <hr class="dp-divider">
             ${buttonsHtml}
         </div>
     `;
+    
+    // Fetch latest commits (async, updates dp-commit-data when done)
+    if(p.repoName)fetchCommitData(p.repoName);
     
     // Open panel on mobile/tablet
     if (window.innerWidth <= 1024) {
