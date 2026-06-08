@@ -18,7 +18,7 @@ try {
     if (verMatch) currentVer = verMatch[1];
 } catch(_) {}
 
-const tag = tagMatch ? tagMatch[1] : currentVer;
+const tag = tagMatch ? tagMatch[1].replace(/^v/,'') : currentVer;
 
 const versionStr = `var NIU_VERSION = {v:'${tag}',hash:'${hash}',date:'${date}',msg:${JSON.stringify(msg)}};`;
 
