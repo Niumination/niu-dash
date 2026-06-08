@@ -1,5 +1,11 @@
 {
-  "projects": [],
+  "projects": [
+    {
+      "name": "Test",
+      "status": "completed",
+      "dateMarked": "2026-06-08T12:00:00Z"
+    }
+  ],
   "activityLog": [],
-  "updatedAt": "2026-06-08T11:20:45.730Z"
+  "updatedAt": "2026-06-08T12:00:00Z"
 }
