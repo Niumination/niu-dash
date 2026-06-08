@@ -1,73 +1,75 @@
-// Niu-Dash Service Worker — v1.0
-// Cache-first for static assets, network-first for API, offline fallback
+/* NIU⚡DASH — Service Worker v1.0 */
 const CACHE = 'niu-dash-v1';
 const ASSETS = [
   '.',
   'index.html',
   'manifest.json',
-  'icon-192.svg',
-  'icon-512.svg'
+  'icon.svg'
 ];
 
-// Install: cache app shell
+// Install — cache all static assets
 self.addEventListener('install', e => {
-  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE).then(cache => cache.addAll(ASSETS))
+    .then(() => self.skipWaiting())
   );
 });
 
-// Activate: clean old caches
+// Activate — clean old caches
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(k => k !== CACHE).map(k => caches.delete(k))
-    )).then(() => self.clients.claim())
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
   );
 });
 
-// Fetch: cache-first for assets, network-first for API, network-only for GitHub API
+// Fetch — cache-first for static, network-first for API, stale-while-revalidate for others
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-
-  // GitHub API — network-only (always fresh)
+  
+  // GitHub API — network-first (always want fresh data)
   if (url.hostname === 'api.github.com') {
-    e.respondWith(
-      fetch(e.request).catch(() => {
-        // If offline, try cache or return empty
-        return new Response(JSON.stringify([]), {
-          headers: { 'Content-Type': 'application/json' }
-        });
-      })
-    );
+    e.respondWith(networkFirst(e.request));
     return;
   }
-
-  // Same-origin assets — cache-first
-  if (url.origin === self.location.origin) {
-    e.respondWith(
-      caches.match(e.request).then(cached => {
-        const fetchAndCache = fetch(e.request).then(res => {
-          if (res.ok) {
-            const clone = res.clone();
-            caches.open(CACHE).then(cache => cache.put(e.request, clone));
-          }
-          return res;
-        });
-        return cached || fetchAndCache;
-      })
-    );
+  
+  // Static assets — cache-first
+  if (url.origin === location.origin) {
+    e.respondWith(cacheFirst(e.request));
     return;
   }
-
-  // External (fonts, etc.) — network-first with cache fallback
-  e.respondWith(
-    fetch(e.request).then(res => {
-      if (res.ok) {
-        const clone = res.clone();
-        caches.open(CACHE).then(cache => cache.put(e.request, clone));
-      }
-      return res;
-    }).catch(() => caches.match(e.request))
-  );
+  
+  // Everything else — network with fallback
+  e.respondWith(networkFirst(e.request));
 });
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const cache = await caches.open(CACHE);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (e) {
+    return new Response('Offline', { status: 503 });
+  }
+}
+
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request);
+    if (response.ok && request.method === 'GET') {
+      const cache = await caches.open(CACHE);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (e) {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    return new Response('Offline', { status: 503 });
+  }
+}
