@@ -202,6 +202,27 @@
 
         /* ===== FEED CARDS ===== */
         .feed-cards{display:flex;flex-direction:column;gap:10px}
+        
+        /* ===== ACTIVITY FEED ===== */
+        .activity-feed{background:rgba(0,255,242,.02);border:1px solid rgba(0,255,242,.08);border-radius:8px;margin-bottom:10px;overflow:hidden}
+        .act-header{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;user-select:none;transition:background .2s}
+        .act-header:hover{background:rgba(0,255,242,.04)}
+        .act-title{font-size:11px;font-weight:600;color:var(--cyan);letter-spacing:.5px}
+        .act-info{font-size:10px;color:var(--text-muted);flex:1}
+        .act-toggle{font-size:10px;color:var(--text-muted);transition:transform .2s}
+        .act-toggle.collapsed{transform:rotate(-90deg)}
+        .act-body{padding:0 12px 8px;font-size:11px}
+        .act-body.hidden{display:none}
+        .act-group{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin:6px 0 3px;opacity:.6}
+        .act-item{display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+        .act-item:last-child{border-bottom:none}
+        .act-icon{width:16px;text-align:center;flex-shrink:0}
+        .act-name{color:var(--cyan);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+        .act-action{color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0}
+        .act-time{margin-left:auto;color:var(--text-muted);font-size:9px;font-family:'JetBrains Mono',monospace;white-space:nowrap;flex-shrink:0}
+        .act-badge-new{display:inline-block;font-size:8px;padding:0 5px;border-radius:3px;background:rgba(0,255,0,.12);color:#00ff88;border:1px solid rgba(0,255,0,.2);margin-left:4px;font-weight:600;line-height:1.5}
+        .act-empty{color:var(--text-muted);text-align:center;padding:12px 0;font-size:10px;opacity:.5}
+        
         .feed-card{
             background:linear-gradient(145deg,rgba(18,18,38,.92) 0%,rgba(12,12,28,.85) 100%);
             border:1px solid var(--border);border-radius:12px;padding:16px 20px;
@@ -518,6 +539,14 @@
                 <span class="icon">⌕</span>
                 <input type="text" id="search-input" placeholder="Cari proyek..." autocomplete="off">
             </div>
+            <div class="activity-feed" id="activity-feed">
+                <div class="act-header" onclick="toggleActivity()">
+                    <span class="act-title">📰 Activity</span>
+                    <span class="act-info" id="act-info">...</span>
+                    <span class="act-toggle" id="act-toggle">▾</span>
+                </div>
+                <div class="act-body" id="act-body"></div>
+            </div>
             <div class="tag-filter-bar" id="tag-filter-bar"></div>
             <div class="sort-bar" id="sort-bar">
                 <span class="sort-label">Sort:</span>
@@ -550,7 +579,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.9.0',hash:'8854e35',date:'2026-06-08T10:48:15+07:00',msg:"v2.9.2 — Auto-version pre-commit hook: update-version.js runs before every commit, NIU_VERSION auto-sync"};
+var NIU_VERSION = {v:'2.9.0',hash:'7be8c03',date:'2026-06-08T10:50:49+07:00',msg:"v2.9.3 — Implementation plan: Activity Feed, Virtual Scroll, Unlisted Auto-Add"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1267,7 +1296,7 @@ function manualRefresh(){
 // ===== GITHUB API =====
 async function fetchGitHubData(isManual){
     var c2=localStorage.getItem('niu-gh-cache');
-    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
+    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
     try{
         var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated');
         var rl=r.headers&&r.headers.get('X-RateLimit-Remaining');
@@ -1275,14 +1304,14 @@ async function fetchGitHubData(isManual){
             var reset=r.headers.get('X-RateLimit-Reset');
             var wait=reset?Math.ceil((reset*1000-Date.now())/60000):'?';
             showToast('⚠ GitHub API rate limited. Reset in '+wait+'m','error',6000);
-            var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
+            var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
         }
         var repos=await r.json();
-        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);}
+        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,pushed_at:rr.pushed_at||null,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);}
         else showToast('⚠ GitHub API returned unexpected data','warn',5000);
     }catch(e){
         showToast('⚠ GitHub API error — using cached data','warn',5000);
-        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();detectUnlistedRepos();renderFeed();}catch(_){}}}
+        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed();}catch(_){}}}
     if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
 }
 function applyAutoPages(){flatProjects.forEach(function(p){if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];if(g.has_pages&&!p.website)p.website='https://niumination.github.io/'+p.repoName;}});}
@@ -1308,6 +1337,61 @@ function updateGitHubAggStats(){
         if(langArr.length>5)parts[parts.length-1]+=' <span style="opacity:.6">+'+ (langArr.length-5) +'</span>';
     }
     el.innerHTML=parts.join('<span style="opacity:.2;margin:0 2px">·</span>')||'';
+}
+function toggleActivity(){
+    var b=document.getElementById('act-body'),t=document.getElementById('act-toggle');
+    if(!b||!t)return;
+    var c=b.classList.toggle('hidden');
+    t.classList.toggle('collapsed',c);
+    localStorage.setItem('niu-act-collapsed',c?'1':'');
+}
+function buildActivityFeed(){
+    var el=document.getElementById('act-body'),info=document.getElementById('act-info'),toggle=document.getElementById('act-toggle');
+    if(!el)return;
+    var now=Date.now(),DAY=86400000,WEEK=7*DAY,MONTH=30*DAY;
+    var MIN_GAP=60000; // 1 minute — ignore sub-minute differences
+    var items=[];
+    flatProjects.forEach(function(p){
+        if(p.category==='unlisted'||p.category==='config')return;
+        var g=p.repoName?githubData[p.repoName.toLowerCase()]:null;
+        if(!g||!p._pushedAt)return;
+        var age=now-p._pushedAt;
+        if(age>MONTH)return; // only show repos active in last 30 days
+        var type='🔄',label='pushed';
+        // Check if it's a new repo (created < 7 days)
+        if(p._createdAt&&(now-p._createdAt)<WEEK){type='🆕';label='new repo';}
+        items.push({name:p.name,type:type,label:label,time:p._pushedAt,age:age,new:p._autoCat==='new'});
+    });
+    // Sort by time descending
+    items.sort(function(a,b){return b.time-a.time;});
+    // Limit to 20 items
+    items=items.slice(0,20);
+    if(!items.length){
+        el.innerHTML='<div class="act-empty">no recent activity</div>';
+        if(info)info.textContent='—';
+        return;
+    }
+    info.textContent=items.length+' update'+(items.length!==1?'s':'')+' this month';
+    var html='',lastGroup='';
+    items.forEach(function(it){
+        var group;
+        if(it.age<DAY)group='today';
+        else if(it.age<WEEK)group='this week';
+        else group='this month';
+        if(group!==lastGroup){html+='<div class="act-group">▸ '+group+'</div>';lastGroup=group;}
+        var timeAgo;
+        if(it.age<60000)timeAgo='now';
+        else if(it.age<3600000)timeAgo=Math.floor(it.age/60000)+'m';
+        else if(it.age<DAY)timeAgo=Math.floor(it.age/3600000)+'h';
+        else timeAgo=Math.floor(it.age/DAY)+'d';
+        html+='<div class="act-item"><span class="act-icon">'+it.type+'</span><span class="act-name">'+it.name+'</span><span class="act-action">'+it.label+'</span>'+(it.new?'<span class="act-badge-new">NEW</span>':'')+'<span class="act-time">'+timeAgo+' ago</span></div>';
+    });
+    el.innerHTML=html;
+    // Restore collapse state
+    if(localStorage.getItem('niu-act-collapsed')){
+        el.classList.add('hidden');
+        if(toggle)toggle.classList.add('collapsed');
+    }
 }
 function autoCategorize(){
     var labels={ready:'Ready',dev:'Development',ideas:'Ideas/Planning',config:'Config/Dotfiles',legacy:'Legacy/Arsip'};
@@ -1346,6 +1430,8 @@ function enrichFromGitHub(){
         }
         if(g.homepage&&!p.website)p.website=g.homepage;
         if(g.archived)p._archived=true;
+        p._pushedAt=g.pushed_at?new Date(g.pushed_at).getTime():0;
+        p._createdAt=g.created_at?new Date(g.created_at).getTime():0;
     });
 }
 
@@ -1643,6 +1729,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', () => initAudio(), { once: true });
     document.querySelectorAll('.sidebar-toggle, .sb-nav button, .sb-status button, .dp-close, .dp-open-btn').forEach(el => el.classList.add('spring-btn'));
     fetchGitHubData();
+    buildActivityFeed();
     updateSyncStatus();
     setInterval(updateSyncStatus, 30000);
     if ('serviceWorker' in navigator) {
