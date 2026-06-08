@@ -1,5 +1,23 @@
 {
-  "projects": [],
-  "activityLog": [],
-  "updatedAt": null
+  "projects": [
+    {
+      "repoName": "niu-private",
+      "name": "niu-private",
+      "status": "production",
+      "version": "",
+      "notes": "",
+      "dateMarked": "2026-06-08T11:32:32.599Z",
+      "_autoDetected": false
+    }
+  ],
+  "activityLog": [
+    {
+      "projectName": "niu-private",
+      "repoName": "niu-private",
+      "status": "production",
+      "method": "manual",
+      "timestamp": 1780918352599
+    }
+  ],
+  "updatedAt": "2026-06-08T11:32:34.604Z"
 }
