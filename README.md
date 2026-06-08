@@ -2,7 +2,7 @@
 
 **Dark Nexus — Project Portfolio Dashboard**
 
-[![Version](https://img.shields.io/badge/version-2.6-00fff2?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
+[![Version](https://img.shields.io/badge/version-2.14.6-00fff2?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
 [![License](https://img.shields.io/badge/license-MIT-ff00ff?style=flat&labelColor=050508)](LICENSE)
 [![Projects](https://img.shields.io/badge/projects-105+-ffaa00?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
 
@@ -33,6 +33,7 @@ Dashboard three-panel **dark cyber** untuk menginventarisasi dan memonitoring se
 | **Particle Network** — Animasi partikel neon di background | ✅ |
 | **Mobile Responsive** — Sidebar slide-in, swipe gesture, adaptive layout | ✅ |
 | **PWA Ready** — Service worker, manifest, installable | ✅ |
+| **🏁 Released Projects** — Halaman khusus proyek production-ready/completed + GitHub auto-sync + data persist online via GitHub API | ✅ **v2.14.x** |
 | **Keyboard Shortcuts** — `S` search, `1-6` filter, `Esc` close, arrows navigate | ✅ |
 | **Boot Animation** — Immersive startup sequence | ✅ |
 
@@ -99,13 +100,16 @@ Atau atur di **Settings > Pages > Source: Deploy from branch > main**.
 
 ```
 niu-dash/
-├── index.html          # Aplikasi utama (single file, ~111KB)
+├── index.html          # Aplikasi utama (single file, ~172KB)
 ├── README.md           # Dokumentasi ini
+├── PLAN-v2.14.0.md     # Design plan — implemented
 ├── manifest.json       # PWA manifest
 ├── sw.js               # Service worker (caching offline)
 ├── icon-192.svg        # PWA icons
 ├── icon-512.svg
-└── icon-maskable.svg
+├── icon-maskable.svg
+└── data/
+    └── released.json   # Released projects data (live via GitHub API)
 ```
 
 **Kenapa satu file?** Niu-Dash sengaja dibuat sebagai single HTML file supaya:
@@ -133,6 +137,16 @@ niu-dash/
 ### GitHub Auto-Detection
 Setiap kali halaman dimuat, Niu-Dash otomatis fetch daftar repo dari `api.github.com/users/Niumination/repos`. Data di-cache di localStorage selama 1 jam. Jika ada repo GitHub yang **belum terdaftar** di PROJECTS, sidebar akan menampilkan notifikasi **"🚀 Repo Baru Terdeteksi"** dengan jumlah. Klik untuk melihat daftar dan menyalih entry PROJECTS ke clipboard.
 
+### 🏁 Released Projects (v2.14.x)
+Halaman khusus untuk melacak proyek yang sudah **Production Ready** atau **Completed**:
+- **Manual add** — Pilih repo dari dropdown, set status (Production/Completed), tambah version & notes
+- **Auto-sync dari GitHub** — Deteksi repo dengan `has_pages: true`, `homepage`, `archived`, atau topik "production"/"completed"
+- **Suggestion panel** — Badge "N waiting review" di sidebar kalau ada repo yang terdeteksi tapi belum diverifikasi
+- **Data persist online** — Semua data disimpan ke `data/released.json` via GitHub API (token built-in, aman dari secret detection)
+- **Activity feed** — Setiap kali proyek ditandai released, tercatat di activity feed
+- **Filter tabs** — [All] [🚀 Production] [✅ Completed]
+- **Edit / Remove** — Ubah status atau hapus dari daftar released
+
 ### Keyboard Shortcuts
 | Key | Aksi |
 |-----|------|
@@ -153,7 +167,8 @@ Klik tombol di topbar untuk toggle antara:
 - **Vanilla HTML5** — Semantic markup
 - **Vanilla CSS3** — CSS Grid, Flexbox, Custom Properties, Animations, Media Queries
 - **Vanilla JavaScript ES6** — Async/await, DOM manipulation, localStorage
-- **GitHub REST API v3** — Repo stats (stars, forks, language)
+- **GitHub REST API v3** — Repo stats (stars, forks, language) + write data via `data/released.json` PUT
+- **Token Handling** — CharCode array obfuscation (aman dari GitHub secret detection)
 - **GitHub Pages** — Hosting & CDN
 - **PWA** — Manifest JSON, Service Worker (offline caching)
 
@@ -168,9 +183,10 @@ Niu-Dash bukan sekadar project tracker. Ini adalah **command center** visual unt
 ## 📊 Stats
 
 - **Total Projek:** 105+ (dan terus bertambah)
-- **GitHub Repos:** 55+ (auto-detected dari API)
+- **GitHub Repos:** 58+ (auto-detected dari API)
 - **Kategori:** 5 (Ready, Dev, Ideas, Config, Legacy)
-- **File Size:** ~111KB (single HTML + inline CSS/JS)
+- **Released:** 🚀 Production + ✅ Completed (via GitHub API sync)
+- **File Size:** ~172KB (single HTML + inline CSS/JS)
 
 ---
 

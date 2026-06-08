@@ -1,6 +1,15 @@
 {
   "projects": [
     {
+      "repoName": "niu-dash",
+      "name": "NIU-DASH",
+      "status": "production",
+      "version": "v2.14.6",
+      "notes": "Dashboard command center — project portfolio, auto-deteksi GitHub, released tracking, dark cyber UI",
+      "dateMarked": "2026-06-09T00:30:00.000Z",
+      "_autoDetected": false
+    },
+    {
       "repoName": "niu-private",
       "name": "niu-private",
       "status": "production",
@@ -12,6 +21,13 @@
   ],
   "activityLog": [
     {
+      "projectName": "NIU-DASH",
+      "repoName": "niu-dash",
+      "status": "production",
+      "method": "manual",
+      "timestamp": 1780921800000
+    },
+    {
       "projectName": "niu-private",
       "repoName": "niu-private",
       "status": "production",
@@ -19,5 +35,5 @@
       "timestamp": 1780918352599
     }
   ],
-  "updatedAt": "2026-06-08T11:32:34.604Z"
+  "updatedAt": "2026-06-09T00:30:00.000Z"
 }

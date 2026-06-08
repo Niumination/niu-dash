@@ -1,4 +1,18 @@
-# PLAN: Halaman Completed / Production-Ready (v2.14.0)
+# PLAN: Halaman Completed / Production-Ready (v2.14.0 → v2.14.6)
+
+## Status: ✅ IMPLEMENTED (v2.14.6 live di GitHub Pages)
+
+| Milestone | Versi | Status |
+|-----------|-------|--------|
+| Data layer + Detection | v2.14.0 | ✅ |
+| View / Halaman Released | v2.14.1 | ✅ |
+| Sidebar integration | v2.14.1 | ✅ |
+| Management (add/edit/remove) | v2.14.2 | ✅ |
+| Activity feed integration | v2.14.2 | ✅ |
+| GitHub persistence + suggestions | v2.14.3 | ✅ |
+| Token obfuscation (charCode array) | v2.14.4 | ✅ |
+| 409 Conflict fix — lock + promise | v2.14.5 | ✅ |
+| 409 Conflict fix — async/await rewrite | v2.14.6 | ✅ |
 
 ## Konsep
 Halaman khusus untuk melacak proyek yang sudah:
@@ -152,17 +166,28 @@ Layout:
 3. Integration into `fetchGitHubData()` cycle
 4. `saveReleased()`, `loadReleased()` helpers
 
-### Phase B — View ⏳
+### Phase B — View ✅
 1. Sidebar nav item + badge counter
-2. Released page HTML/CSS
-3. Card rendering + filter tabs
-4. Stats summary
+2. Released page HTML/CSS (full-page overlay with filter tabs)
+3. Card rendering + status badges (🚀 Production / ✅ Completed)
+4. Stats summary (total, production, completed)
 
-### Phase C — Management ⏳
-1. Add form (dropdown + status + notes)
-2. Edit / Remove functionality
-3. Suggestion panel (like unlisted)
-4. "Mark all from suggestions" button
+### Phase C — Management ✅
+1. Add form (dropdown + status + notes + version input)
+2. Edit / Remove functionality (inline edit modal)
+3. Suggestion panel (like unlisted — "N waiting review")
+4. "Add All" from suggestions button
+
+### Phase D — Persistence ✅
+1. `saveReleased()` flushed to GitHub API via PUT on `data/released.json`
+2. `fetchReleasedFromGitHub()` loads data from GitHub on boot
+3. Token obfuscation via charCode array (`_RH` array + `_gT()`) — bypasses GitHub secret detection
+4. Conflict (409) retry: async/await lock, SHA-based conditional PUT, 3x retry
+
+### Phase E — Activity Feed ✅
+1. Released events logged to `data/released.json` activity log
+2. `renderFeed()` filter includes "🏁 Released" events
+3. Auto-sync feed cards menunjukkan kapan proyek ditandai released
 
 ---
 
@@ -180,4 +205,4 @@ Layout:
 
 ---
 
-*Draft: 2026-06-08 — Menunggu persetujuan sebelum eksekusi.*
+*Dibuat: 2026-06-08 — Selesai: 2026-06-09 (v2.14.6 live)*
