@@ -1,0 +1,15 @@
+#!/bin/bash
+# NIU⚡DASH — pre-commit hook: auto-update NIU_VERSION
+# Path: hooks/pre-commit
+
+echo "[pre-commit] Updating NIU_VERSION from git log..."
+node "$(dirname "$0")/../update-version.js"
+if [ $? -ne 0 ]; then
+    echo "[pre-commit] ❌ update-version.js failed"
+    exit 1
+fi
+
+# Re-stage index.html since update-version.js modified it
+git add "$(dirname "$0")/../index.html"
+
+echo "[pre-commit] ✅ NIU_VERSION updated"
