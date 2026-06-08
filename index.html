@@ -560,16 +560,13 @@
 
         <div class="sb-section">⌕ Kategori</div>
         <div class="sb-nav" id="sb-nav">
+            <button data-filter="released" id="sb-released-btn" onclick="showReleased()"><span>🏁</span> Released <span class="sb-badge dim" id="sb-released">0</span></button>
             <button data-filter="all" class="active" onclick="setFilter('all')"><span>◈</span> All Projects <span class="sb-badge" id="sb-total">0</span></button>
             <button data-filter="ready" onclick="setFilter('ready')"><span>⚡</span> Ready <span class="sb-badge green" id="sb-ready">0</span></button>
             <button data-filter="dev" onclick="setFilter('dev')"><span>⟐</span> Development <span class="sb-badge cyan" id="sb-dev">0</span></button>
             <button data-filter="ideas" onclick="setFilter('ideas')"><span>◇</span> Ideas <span class="sb-badge amber" id="sb-ideas">0</span></button>
             <button data-filter="config" onclick="setFilter('config')"><span>⚙</span> Config <span class="sb-badge purple" id="sb-config">0</span></button>
             <button data-filter="legacy" onclick="setFilter('legacy')"><span>◫</span> Legacy <span class="sb-badge dim" id="sb-legacy">0</span></button>
-        </div>
-
-        <div class="sb-nav" style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
-            <button data-filter="released" id="sb-released-btn" onclick="showReleased()"><span>🏁</span> Released <span class="sb-badge dim" id="sb-released">0</span></button>
         </div>
 
         <div class="sb-section">◆ Status (Dev)</div>
@@ -658,7 +655,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.14.0',hash:'fcbb8f4',date:'2026-06-08T14:46:06+07:00',msg:"v2.14.0 — Released projects page: dedicated view, auto-detection from GitHub, management UI"};
+var NIU_VERSION = {v:'2.14.0',hash:'90b768a',date:'2026-06-08T14:46:16+07:00',msg:"v2.14.0 — bump version number"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1823,12 +1820,7 @@ function renderReleased(){
     fi.innerHTML='🏁 <em>Released</em> projects';
     var total=releasedProjects.length,prod=releasedProjects.filter(function(p){return p.status==='production';}).length,comp=releasedProjects.filter(function(p){return p.status==='completed';}).length;
     statsEl.innerHTML='<span class="fs-item"><strong style="color:var(--green)">'+prod+'</strong> production</span><span class="fs-item"><strong style="color:var(--cyan)">'+comp+'</strong> completed</span><span class="fs-item">of <strong style="color:var(--text-secondary)">'+total+'</strong> total</span>';
-    if(!releasedProjects.length){
-        list.innerHTML='';noRes.style.display='block';
-        noRes.innerHTML='<div class="emoji">🏁</div><p>Belum ada project yang ditandai released.<br>Klik <strong style="color:var(--cyan)">+ Tambah</strong> di atas untuk mulai.</p>';
-        return;
-    }
-    noRes.style.display='none';
+    // Always show action bar (even when empty)
     var html='<div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
     html+='<button class="sort-btn'+(releasedFilter==='all'?' active':'')+'" onclick="setReleasedFilter(\'all\')">◈ All</button>';
     html+='<button class="sort-btn'+(releasedFilter==='production'?' active':'')+'" onclick="setReleasedFilter(\'production\')">🚀 Production</button>';
@@ -1838,6 +1830,12 @@ function renderReleased(){
         html+='<button class="sort-btn" style="border-color:rgba(255,170,0,.2);color:var(--amber)" onclick="showReleasedSuggestions()">💡 '+releasedSuggestions.length+' saran</button>';
     }
     html+='</div>';
+    if(!releasedProjects.length){
+        list.innerHTML=html;noRes.style.display='block';
+        noRes.innerHTML='<div class="emoji">🏁</div><p>Belum ada project yang ditandai released.</p>';
+        return;
+    }
+    noRes.style.display='none';
     var items=releasedProjects.slice();
     items.sort(function(a,b){return new Date(b.dateMarked||0)-new Date(a.dateMarked||0);});
     if(releasedFilter==='production')items=items.filter(function(p){return p.status==='production';});
