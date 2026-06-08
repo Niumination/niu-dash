@@ -1,11 +1,5 @@
 {
-  "projects": [
-    {
-      "name": "Test",
-      "status": "completed",
-      "dateMarked": "2026-06-08T12:00:00Z"
-    }
-  ],
+  "projects": [],
   "activityLog": [],
-  "updatedAt": "2026-06-08T12:00:00Z"
+  "updatedAt": null
 }
