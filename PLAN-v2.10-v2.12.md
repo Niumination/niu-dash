@@ -6,9 +6,9 @@
 
 ---
 
-## Feature A: 📰 Activity Feed — "What's New?" (v2.10)
+## Feature A: 📰 Activity Feed — "What's New?" (v2.10) ✅ DONE
 
-**Goal:** Feed kronologis yang show repo aktivitas terbaru — push, new stars, new repos.
+**Goal:** Feed kronologis yang show repo aktivitas terbaru — push, new repos kegiatan lain.
 
 ### Data
 | Sumber | Field | Status |
@@ -71,7 +71,7 @@
 
 ---
 
-## Feature B: ⚡ Virtual Scroll — Performance 100+ Cards (v2.11)
+## Feature B: ⚡ Virtual Scroll — Performance 100+ Cards (v2.11) ✅ DONE
 
 **Goal:** Smooth rendering at 100+ project cards tanpa lag, terutama di mobile.
 
@@ -129,7 +129,7 @@ If CSS-only is insufficient (e.g., need progressive loading + counters):
 
 ---
 
-## Feature C: 🏷️ Unlisted Auto-Add — Smart Defaults (v2.12)
+## Feature C: 🏷️ Unlisted Auto-Add — Smart Defaults (v2.12) ✅ DONE
 
 **Goal:** New repos detected from GitHub API are auto-processed and ready to add with one click — with smart defaults.
 
