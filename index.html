@@ -54,6 +54,17 @@
         /* ===== GLITCH OVERLAY ===== */
         .glitch-overlay{position:fixed;inset:0;pointer-events:none;z-index:9998;background:linear-gradient(90deg,rgba(255,0,64,.02) 0%,transparent 2%,transparent 98%,rgba(0,255,242,.02) 100%);animation:glitch-flicker 4s infinite}
         @keyframes glitch-flicker{0%,95%,100%{opacity:0}96%{opacity:1}97%{opacity:0}}
+
+        /* ===== TOAST ===== */
+        .toast-container{position:fixed;bottom:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+        .toast{font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 16px;border-radius:6px;border:1px solid;pointer-events:auto;animation:toast-in .3s ease;max-width:360px;line-height:1.5;backdrop-filter:blur(8px)}
+        .toast.toast-hide{animation:toast-out .3s ease forwards}
+        .toast.toast-error{background:rgba(255,0,64,.15);color:#ff4466;border-color:rgba(255,0,64,.3)}
+        .toast.toast-warn{background:rgba(255,170,0,.12);color:#ffbb33;border-color:rgba(255,170,0,.25)}
+        .toast.toast-success{background:rgba(0,255,136,.1);color:#00ff88;border-color:rgba(0,255,136,.2)}
+        .toast.toast-info{background:rgba(0,255,242,.1);color:#00fff2;border-color:rgba(0,255,242,.2)}
+        @keyframes toast-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes toast-out{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(20px)}}
         body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,242,.008) 2px,rgba(0,255,242,.008) 4px);pointer-events:none;z-index:9999}
         #particle-canvas{position:fixed;inset:0;z-index:0;opacity:.5;width:100%;height:100%;pointer-events:none}
 
@@ -142,10 +153,16 @@
         .feed-body .page-header h1 .slash{color:var(--red);margin:0 2px}
         .feed-body .page-header .sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-top:4px}
         .feed-body .page-header .sub em{color:var(--cyan);font-style:normal}
+        .gh-aggregate{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 12px;min-height:18px;transition:opacity .4s}
+        .gh-aggregate .gh-agg-item{opacity:.8}
+        .gh-aggregate .gh-agg-item .num{color:var(--cyan);font-weight:600}
+        .gh-aggregate .gh-agg-item .gl{width:6px;height:6px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:3px}
         .sort-bar{display:flex;align-items:center;gap:6px;margin-bottom:14px;flex-wrap:wrap}
         .sort-btn{background:rgba(13,13,26,.85);border:1px solid var(--border);border-radius:var(--rad);padding:5px 11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:10px;cursor:pointer;transition:all .25s;letter-spacing:.4px}
         .sort-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,242,.06)}
         .sort-btn.active{background:rgba(0,255,242,.1);border-color:var(--cyan);color:var(--cyan)}
+        .sort-btn .sort-icon{display:inline-block;width:14px;text-align:center;margin-right:2px}
+        .sort-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);margin-right:2px;letter-spacing:.3px;opacity:.7}
         .tag-filter-bar{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
         .tag-filter{background:rgba(13,13,26,.85);border:1px solid var(--border);border-radius:8px;padding:3px 10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:10px;cursor:pointer;transition:all .25s;user-select:none}
         .tag-filter:hover{border-color:var(--cyan);color:var(--cyan)}
@@ -317,6 +334,20 @@
             .detail-panel{width:100vw}
             .feed-body .page-header h1{font-size:22px}
             .search-bar{max-width:100%}
+            .sort-bar .sort-label{display:none}
+            .sort-btn{padding:5px 8px;font-size:9px}
+            .sort-btn .sort-icon{width:12px}
+            .feed-card .fc-desc{-webkit-line-clamp:2}
+            .feed-card .fc-body h3{font-size:12px}
+            .feed-card .fc-body h3 .fc-date{font-size:8px}
+            .feed-card .tag{font-size:8px;padding:1px 6px}
+            .gh-aggregate{font-size:9px;gap:2px 8px}
+            .gh-aggregate .gh-agg-item{opacity:.9}
+            .toast-container{bottom:44px;right:12px;left:12px}
+            .toast{font-size:10px;padding:8px 12px;max-width:100%}
+            .refresh-btn{width:28px;height:28px;font-size:12px}
+            .theme-btn{width:28px;height:28px;font-size:12px}
+            .sync-status{font-size:8px;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         }
         @media(min-width:769px){
             .sidebar-toggle{display:none !important}
@@ -478,6 +509,7 @@
             <div class="page-header stagger-in" data-delay="1">
                 <h1>NIU<span class="slash">⚡</span>DASH</h1>
                 <p class="sub">dark nexus // <em id="total-projects">0</em> projects tracked</p>
+                <div class="gh-aggregate" id="gh-aggregate"></div>
             </div>
             <div class="search-bar stagger-in" data-delay="2">
                 <span class="icon">⌕</span>
@@ -485,11 +517,12 @@
             </div>
             <div class="tag-filter-bar" id="tag-filter-bar"></div>
             <div class="sort-bar" id="sort-bar">
-                <button class="sort-btn active" onclick="setSort('newest')">◈ Newest</button>
-                <button class="sort-btn" onclick="setSort('oldest')">⟐ Oldest</button>
-                <button class="sort-btn" onclick="setSort('az')">A-Z</button>
-                <button class="sort-btn" onclick="setSort('za')">Z-A</button>
-                <button class="sort-btn" onclick="setSort('status')">◆ Status</button>
+                <span class="sort-label">Sort:</span>
+                <button class="sort-btn active" onclick="setSort('newest')"><span class="sort-icon">⬇</span> Newest</button>
+                <button class="sort-btn" onclick="setSort('oldest')"><span class="sort-icon">⬆</span> Oldest</button>
+                <button class="sort-btn" onclick="setSort('az')"><span class="sort-icon">A</span> A–Z</button>
+                <button class="sort-btn" onclick="setSort('za')"><span class="sort-icon">Z</span> Z–A</button>
+                <button class="sort-btn" onclick="setSort('status')"><span class="sort-icon">◆</span> Status</button>
             </div>
             <div class="feed-stats stagger-in" data-delay="3" id="feed-stats"></div>
             <div class="feed-cards" id="feed-list"></div>
@@ -1208,6 +1241,16 @@ function updateSyncStatus(){
     var stale=mins>15;
     el.innerHTML='<span class="dot '+(stale?'stale':'ok')+'"></span>'+txt;
 }
+function showToast(msg,type,dur){
+    var c=document.getElementById('toast-container');
+    if(!c)return;
+    type=type||'info';dur=dur||4000;
+    var t=document.createElement('div');
+    t.className='toast toast-'+type;
+    t.textContent=msg;
+    c.appendChild(t);
+    setTimeout(function(){t.classList.add('toast-hide');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},300);},dur);
+}
 function manualRefresh(){
     localStorage.removeItem('niu-gh-cache');
     var btn=document.getElementById('refresh-btn');
@@ -1220,15 +1263,48 @@ function manualRefresh(){
 // ===== GITHUB API =====
 async function fetchGitHubData(isManual){
     var c2=localStorage.getItem('niu-gh-cache');
-    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
+    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
     try{
         var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated');
+        var rl=r.headers&&r.headers.get('X-RateLimit-Remaining');
+        if(r.status===403&&rl==='0'){
+            var reset=r.headers.get('X-RateLimit-Reset');
+            var wait=reset?Math.ceil((reset*1000-Date.now())/60000):'?';
+            showToast('⚠ GitHub API rate limited. Reset in '+wait+'m','error',6000);
+            var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
+        }
         var repos=await r.json();
-        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);}
-    }catch(e){var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();detectUnlistedRepos();renderFeed();}catch(_){}}}
+        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();updateGitHubAggStats();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);}
+        else showToast('⚠ GitHub API returned unexpected data','warn',5000);
+    }catch(e){
+        showToast('⚠ GitHub API error — using cached data','warn',5000);
+        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();updateGitHubAggStats();detectUnlistedRepos();renderFeed();}catch(_){}}}
     if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
 }
 function applyAutoPages(){flatProjects.forEach(function(p){if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];if(g.has_pages&&!p.website)p.website='https://niumination.github.io/'+p.repoName;}});}
+function updateGitHubAggStats(){
+    var el=document.getElementById('gh-aggregate');
+    if(!el)return;
+    var keys=Object.keys(githubData);
+    if(!keys.length){el.innerHTML='';return;}
+    var stars=0,forks=0,langs={};
+    keys.forEach(function(k){
+        var g=githubData[k];
+        if(!g)return;
+        stars+=g.stars||0;forks+=g.forks||0;
+        if(g.language){langs[g.language]=(langs[g.language]||0)+1;}
+    });
+    var parts=[];
+    if(stars>0)parts.push('<span class="gh-agg-item">★ <span class="num">'+stars+'</span> stars</span>');
+    if(forks>0)parts.push('<span class="gh-agg-item">₂ <span class="num">'+forks+'</span> forks</span>');
+    var langArr=Object.keys(langs).sort(function(a,b){return langs[b]-langs[a];});
+    if(langArr.length>0){
+        var langParts=langArr.slice(0,5).map(function(l){return '<span class="gl" style="background:'+langColor(l)+'"></span>'+l;});
+        parts.push('<span class="gh-agg-item">'+langParts.join(' ')+'</span>');
+        if(langArr.length>5)parts[parts.length-1]+=' <span style="opacity:.6">+'+ (langArr.length-5) +'</span>';
+    }
+    el.innerHTML=parts.join('<span style="opacity:.2;margin:0 2px">·</span>')||'';
+}
 function enrichFromGitHub(){
     flatProjects.forEach(function(p){
         if(!p.repoName)return;
@@ -1557,6 +1633,7 @@ window.addEventListener('DOMContentLoaded', () => {
     })();
 });
 </script>
+<div class="toast-container" id="toast-container"></div>
 <div class="kb-hint"><kbd>S</kbd> search · <kbd>1-6</kbd> filter · <kbd>Esc</kbd> close</div>
 </body>
 </html>
