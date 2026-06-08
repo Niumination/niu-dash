@@ -32,5 +32,8 @@ if (re.test(html)) {
     html = html.replace('<script>', '<script>\n' + versionStr);
 }
 
+// Also update boot/splash screen version
+html = html.replace(/Dark Nexus v[\d.]+/, 'Dark Nexus v' + tag);
+
 fs.writeFileSync(__dirname + '/index.html', html);
 console.log('✅ Version updated:', versionStr);
