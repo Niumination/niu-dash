@@ -655,7 +655,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.14.5',hash:'bc3a4a0',date:'2026-06-08T18:29:14+07:00',msg:"v2.14.5 — Fix 409 SHA conflict: lock + retry 3x, skip push on fetch"};
+var NIU_VERSION = {v:'2.14.5',hash:'a46cb90',date:'2026-06-08T18:30:09+07:00',msg:"v2.14.5 — bump version number"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -2127,30 +2127,28 @@ function getReleasedToken(){
     if(typeof _gT==='function')return _gT();
     return null;
 }
-function _doPushReleased(attempt){
+async function _doPushReleased(attempt){
     attempt=attempt||1;
     if(_releasedPushBusy){
-        setTimeout(function(){_doPushReleased(attempt);},3000);
-        console.log('[Released] push busy, queued retry (attempt '+attempt+')');
-        return;
+        await new Promise(function(r){setTimeout(r,3000);});
+        return _doPushReleased(attempt);
     }
     _releasedPushBusy=true;
-    var token=getReleasedToken();
-    if(!token){_releasedPushBusy=false;console.warn('[Released] No GitHub token');showToast('⚠ Token GitHub tidak tersedia','error',5000);return;}
-    var content=JSON.stringify({projects:releasedProjects,activityLog:releasedActivityLog,updatedAt:new Date().toISOString()},null,2);
-    var base64=btoa(unescape(encodeURIComponent(content)));
-    // Get SHA first
-    fetch('https://api.github.com/repos/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/contents/'+RELEASED_GH_PATH,{
-        headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
-    })
-    .then(function(r){
-        if(r.status===404)return null;
-        if(!r.ok)throw new Error('GET SHA gagal (HTTP '+r.status+')');
-        return r.json();
-    })
-    .then(function(data){
-        var sha=data&&data.sha?data.sha:null;
-        return fetch('https://api.github.com/repos/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/contents/'+RELEASED_GH_PATH,{
+    try{
+        var token=getReleasedToken();
+        if(!token){console.warn('[Released] No GitHub token');showToast('⚠ Token GitHub tidak tersedia','error',5000);return;}
+        var content=JSON.stringify({projects:releasedProjects,activityLog:releasedActivityLog,updatedAt:new Date().toISOString()},null,2);
+        var base64=btoa(unescape(encodeURIComponent(content)));
+        // Get SHA first
+        var r=await fetch('https://api.github.com/repos/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/contents/'+RELEASED_GH_PATH,{
+            headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
+        });
+        var sha=null;
+        if(r.status===404){sha=null;}
+        else if(!r.ok){throw new Error('GET SHA gagal (HTTP '+r.status+')');}
+        else{var d=await r.json();sha=d.sha;}
+        // PUT content
+        r=await fetch('https://api.github.com/repos/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/contents/'+RELEASED_GH_PATH,{
             method:'PUT',
             headers:{
                 'Authorization':'token '+token,
@@ -2163,30 +2161,27 @@ function _doPushReleased(attempt){
                 sha:sha
             })
         });
-    })
-    .then(function(r){
-        // 409 SHA conflict → retry with fresh SHA
+        // 409 SHA conflict → retry with fresh SHA (max 3 attempts)
         if(r.status===409&&attempt<3){
-            _releasedPushBusy=false;
             console.log('[Released] SHA conflict (attempt '+attempt+'), retrying in 2s...');
-            return new Promise(function(resolve){
-                setTimeout(function(){resolve(_doPushReleased(attempt+1));},2000);
-            });
+            await new Promise(function(r2){setTimeout(r2,2000);});
+            _releasedPushBusy=false;
+            return _doPushReleased(attempt+1);
         }
-        if(!r.ok)return r.json().then(function(e){throw new Error('Push ditolak GitHub (HTTP '+r.status+'): '+(e.message||'unknown'));});
-        return r.json();
-    })
-    .then(function(data){
+        if(!r.ok){
+            var e=await r.json();
+            throw new Error('Push ditolak GitHub (HTTP '+r.status+'): '+(e.message||'unknown'));
+        }
+        var data=await r.json();
         if(data&&data.content&&data.content.sha)releasedGitSha=data.content.sha;
         console.log('[Released] GitHub sync: push OK');
         showToast('✅ Data tersimpan ke GitHub','success',2000);
-        _releasedPushBusy=false;
-    })
-    .catch(function(e){
+    }catch(e){
         console.error('[Released] GitHub sync push error:',e);
         showToast('⚠ Gagal sync ke GitHub: '+e.message,'error',5000);
+    }finally{
         _releasedPushBusy=false;
-    });
+    }
 }
 function showSyncConfig(){
     var token=getReleasedToken();
