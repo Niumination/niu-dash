@@ -436,7 +436,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub">Dark Nexus v2.6</div>
+        <div class="bt-sub">Dark Nexus v2.9.0</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -455,7 +455,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sb-pad">
             <div class="sb-logo">NIU<span>⚡</span>DASH</div>
-            <div class="sb-sub">dark nexus v2.6</div>
+            <div class="sb-sub" id="sb-version">dark nexus v2.9.0</div>
             <div class="clock-widget">
                 <span class="cw-dot"></span>
                 <span class="cw-time" id="clock">--:--:--</span>
@@ -550,6 +550,7 @@
 </div>
 
 <script>
+var NIU_VERSION = {v:'2.9.0',hash:'4d90bcb',date:'2026-06-08T09:57:35+07:00',msg:"v2.9.0 — PWA: manifest.json, service worker (cache-first + offline fallback), icon.svg"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1647,7 +1648,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(function(r){console.log('[Niu-Dash] SW registered');}).catch(function(e){console.warn('[Niu-Dash] SW failed:',e);});
     }
-    document.getElementById('search-input').addEventListener('input', function(){renderFeed(currentFilter, currentStatus, this.value);});
+    setVersionDisplay();
     
     // ===== MOBILE SWIPE: swipe right to close detail panel =====
     (function(){
