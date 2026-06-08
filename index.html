@@ -588,7 +588,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.9.0',hash:'f5a76c4',date:'2026-06-08T11:49:53+07:00',msg:"v2.13.0 — Detail Panel enhanced: last commit fetch, auto health recommendations from GitHub data, commit activity timeline, descriptions with GitHub metadata"};
+var NIU_VERSION = {v:'2.9.0',hash:'c5af00d',date:'2026-06-08T12:08:10+07:00',msg:"v2.13.1 — Fix setVersionDisplay ReferenceError, move commit data to top of detail panel, scale UI 110% base font-size"};
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1160,16 +1160,28 @@ var commitCache={};
 function fetchCommitData(repoName){
     if(!repoName)return;
     var key=repoName.toLowerCase();
-    if(commitCache[key]&&Date.now()-commitCache[key].ts<300000)return;
+    if(commitCache[key]&&Date.now()-commitCache[key].ts<300000){
+        // Re-render from cache
+        var el=document.getElementById('dp-commit-data');
+        if(el&&commitCache[key].data)el.innerHTML=buildCommitHtml(commitCache[key].data,repoName);
+        return;
+    }
     fetch('https://api.github.com/repos/Niumination/'+key+'/commits?per_page=5').then(function(r){return r.json();}).then(function(data){
-        if(!Array.isArray(data))return;
+        if(!Array.isArray(data)){
+            var el=document.getElementById('dp-commit-data');
+            if(el)el.innerHTML='<div class="dp-loading-cmt" style="color:rgba(255,100,100,.5)">⚠ '+(data&&data.message&&data.message.includes('API rate limit')?'GitHub API rate limited — commit data unavailable':data.message||'failed to load commits')+'</div>';
+            return;
+        }
         commitCache[key]={data:data,ts:Date.now()};
         var p2=flatProjects[selectedIndex];
         if(p2&&p2.repoName&&p2.repoName.toLowerCase()===key){
             var el=document.getElementById('dp-commit-data');
             if(el)el.innerHTML=buildCommitHtml(data,repoName);
         }
-    }).catch(function(){});
+    }).catch(function(e){
+        var el=document.getElementById('dp-commit-data');
+        if(el)el.innerHTML='<div class="dp-loading-cmt" style="color:rgba(255,100,100,.5)">⚠ network error — commits unavailable</div>';
+    });
 }
 function buildCommitHtml(commits,name){
     if(!commits||!commits.length)return'';
@@ -1368,6 +1380,7 @@ function setVersionDisplay(){
     el.title=window.NIU_VERSION?window.NIU_VERSION.msg||'':'';
 }
 function manualRefresh(){
+    commitCache={};
     localStorage.removeItem('niu-gh-cache');
     var btn=document.getElementById('refresh-btn');
     btn.classList.add('loading');
@@ -1379,7 +1392,7 @@ function manualRefresh(){
 // ===== GITHUB API =====
 async function fetchGitHubData(isManual){
     var c2=localStorage.getItem('niu-gh-cache');
-    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}}catch(e){}}
+    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');if(selectedIndex>=0&&flatProjects[selectedIndex]&&flatProjects[selectedIndex].repoName)fetchCommitData(flatProjects[selectedIndex].repoName);return;}}catch(e){}}
     try{
         var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated');
         var rl=r.headers&&r.headers.get('X-RateLimit-Remaining');
@@ -1396,6 +1409,7 @@ async function fetchGitHubData(isManual){
         showToast('⚠ GitHub API error — using cached data','warn',5000);
         var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();renderFeed();}catch(_){}}}
     if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
+    if(selectedIndex>=0&&flatProjects[selectedIndex]&&flatProjects[selectedIndex].repoName)fetchCommitData(flatProjects[selectedIndex].repoName);
 }
 function applyAutoPages(){flatProjects.forEach(function(p){if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];if(g.has_pages&&!p.website)p.website='https://niumination.github.io/'+p.repoName;}});}
 function updateGitHubAggStats(){
