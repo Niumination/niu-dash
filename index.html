@@ -532,7 +532,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub">Dark Nexus v2.14.6</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.14.6</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -561,6 +561,7 @@
         <div class="sb-section">⌕ Kategori</div>
         <div class="sb-nav" id="sb-nav">
             <button data-filter="released" id="sb-released-btn" onclick="showReleased()"><span>🏁</span> Released <span class="sb-badge dim" id="sb-released">0</span></button>
+            <a href="released.html" style="display:flex;align-items:center;gap:10px;padding:6px 14px;margin-left:20px;border-radius:var(--rad);font-size:10px;color:var(--text-muted);text-decoration:none;font-family:'JetBrains Mono',monospace;border:1px solid transparent;transition:all .2s" onmouseover="this.style.borderColor='rgba(0,255,242,.2)';this.style.color='var(--cyan)'" onmouseout="this.style.borderColor='transparent';this.style.color='var(--text-muted)'"><span>↗</span> Halaman Standalone</a>
             <button data-filter="all" class="active" onclick="setFilter('all')"><span>◈</span> All Projects <span class="sb-badge" id="sb-total">0</span></button>
             <button data-filter="ready" onclick="setFilter('ready')"><span>⚡</span> Ready <span class="sb-badge green" id="sb-ready">0</span></button>
             <button data-filter="dev" onclick="setFilter('dev')"><span>⟐</span> Development <span class="sb-badge cyan" id="sb-dev">0</span></button>
@@ -655,7 +656,8 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.14.6',hash:'99c8db2',date:'2026-06-08T18:52:02+07:00',msg:"v2.14.6 — dokumentasi final: PLAN ✅, README updated, NIU-DASH di released.json"};
+var NIU_VERSION = {v:'2.14.6',hash:'2a27070',date:'2026-06-08T18:53:07+07:00',msg:"v2.14.6 — fix: hapus hardcode v2.9.0 dari sidebar fallback + setVersionDisplay()"};
+document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -682,7 +684,7 @@ const PROJECTS = {
         { icon:'☆', name:'Prakom-Surgawi', path:'https://github.com/Niumination/Prakom-Surgawi', desc:'Anything you want - project Pranata Komputer.', tags:['Project','ASN','Prakom'], date:'2026' },
         { icon:'☆', name:'cyb3rgh0u1.github.io', path:'https://github.com/Niumination/cyb3rgh0u1.github.io', desc:'GitHub Pages - cyber/ghoul themed.', tags:['Pages','Cyber','GitHub'], date:'2026', website:'https://cyb3rgh0u1.github.io' },
         { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project - PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
-        { icon:'☆', name:'acehtengah-web', path:'/Users/zaryu/Documents/GitHub/zen-/acehtengah-web/', desc:'Website statis multi-halaman Aceh Tengah - HTML murni, berita, layanan publik.', tags:['HTML','CSS','Website','AcehTengah'], date:'2026' },
+        { icon:'☆', name:'acehtengah-web', path:'/Users/zaryu/Desktop/Niumination/projects/zen/acehtengah-web/', desc:'Website statis multi-halaman Aceh Tengah - HTML murni, berita, layanan publik.', tags:['HTML','CSS','Website','AcehTengah'], date:'2026' },
         { icon:'☆', name:'HermesV-Github', path:'https://github.com/Niumination/HermesV-Github', desc:'Hermes Agent Portable on Github Codespace.', tags:['Hermes','Codespace','Portable'], date:'6 Jun 2026' },  // NEW 6 Jun 2026
         { icon:'☆', name:'niu-private', path:'https://github.com/Niumination/niu-private', desc:'Niu Private — Document Vault & Kanban Project Board untuk dokumentasi pribadi + project tracking.', tags:['TypeScript','Vault','Kanban','Document'], date:'6 Jun 2026', website:'https://niumination.github.io/niu-private' }  // NEW 6 Jun 2026
     ],
@@ -710,16 +712,16 @@ const PROJECTS = {
         { icon:'⎔', name:'SPBE-DevOps-Academy', path:'https://github.com/Niumination/SPBE-DevOps-Academy', desc:'Akademi DevOps untuk SPBE - pembelajaran DevOps pemerintahan.', tags:['DevOps','SPBE','Academy'], date:'2026' },
         { icon:'⎔', name:'Devs-Niu', path:'https://github.com/Niumination/Devs-Niu', desc:'Developer portfolio / hub untuk semua project Niumination.', tags:['Dev','Portfolio','Hub'], date:'2026' },
         { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta - Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
-        { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Documents/Niu-Dash/index.html', desc:'Dark web glitch dashboard tracker - 90+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'3 Jun 2026' },
+        { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Desktop/Niumination/projects/niu-dash/index.html', desc:'Dark web glitch dashboard tracker - 90+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'3 Jun 2026' },
         { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework.', tags:['Next.js','GovTech','AcehTengah','Portal'], date:'Jun 2026', website:'https://pemdi-aceh-tengah.vercel.app' },
         { icon:'△', name:'VirtualAssistance', path:'https://github.com/Niumination/VirtualAssistance', desc:'Virtual Assistance web3 app - Next.js + TypeScript.', tags:['Next.js','Web3','TypeScript'], date:'Jun 2026' },
-        { icon:'△', name:'niu-studio', path:'/Users/zaryu/Desktop/niu-studio/', desc:'Tauri + React studio app - eksperimen desktop hybrid.', tags:['Tauri','React','Desktop','Studio'], date:'2026' },
-        { icon:'△', name:'NiuTUI', path:'/Users/zaryu/Documents/ZMP/NiuTUI/', desc:'Rust CLI/TUI app - terminal interface untuk Niu ecosystem.', tags:['Rust','CLI','TUI'], date:'2026' },
-        { icon:'△', name:'NiuTerm', path:'/Users/zaryu/Documents/ZMP/NiuTerm/', desc:'Tauri terminal emulator - niuterm v0.1.0.', tags:['Rust','Tauri','Terminal'], date:'2026' },
-        { icon:'△', name:'niude', path:'/Users/zaryu/Documents/ZMP/niude/', desc:'Tauri app v0.1.0 - desktop app eksperimental.', tags:['Rust','Tauri','Desktop'], date:'2026' },
+        { icon:'△', name:'niu-studio', path:'/Users/zaryu/Desktop/Niumination/projects/niu-studio/', desc:'Tauri + React studio app - eksperimen desktop hybrid.', tags:['Tauri','React','Desktop','Studio'], date:'2026' },
+        { icon:'△', name:'NiuTUI', path:'/Users/zaryu/Desktop/Niumination/projects/niutui/', desc:'Rust CLI/TUI app - terminal interface untuk Niu ecosystem.', tags:['Rust','CLI','TUI'], date:'2026' },
+        { icon:'△', name:'NiuTerm', path:'/Users/zaryu/Desktop/Niumination/projects/niuterm/', desc:'Tauri terminal emulator - niuterm v0.1.0.', tags:['Rust','Tauri','Terminal'], date:'2026' },
+        { icon:'△', name:'niude', path:'/Users/zaryu/Desktop/Niumination/projects/niude/', desc:'Tauri app v0.1.0 - desktop app eksperimental.', tags:['Rust','Tauri','Desktop'], date:'2026' },
         { icon:'△', name:'Niu-Flow', path:'/Users/zaryu/Desktop/Niumination/Niu-Flow/', desc:'Multi-agent pipeline orchestration — integrasi Hermes + JCode + Codex. Parallel ThreadPoolExecutor, GitHub auto-sync.', tags:['Python','Pipeline','Orchestrator','AI'], date:'Jun 2026' },
         { icon:'△', name:'JHermUSB-portable', path:'/Users/zaryu/Desktop/Niumination/JHermUSB-portable/', desc:'Hermes Agent USB portable variant — cross-platform launcher, docs, scripts.', tags:['Hermes','USB','Portable','Cross-Platform'], date:'Jun 2026' },
-        { icon:'△', name:'Orchestrator', path:'/Users/zaryu/Documents/ZMP/Orchestrator/', desc:'Python task orchestrator — scheduler, task queue, config JSON, logging.', tags:['Python','Scheduler','Orchestrator','Automation'], date:'Jun 2026' },
+        { icon:'△', name:'Orchestrator', path:'/Users/zaryu/Desktop/Niumination/projects/orchestrator/', desc:'Python task orchestrator — scheduler, task queue, config JSON, logging.', tags:['Python','Scheduler','Orchestrator','Automation'], date:'Jun 2026' },
         { icon:'△', name:'street-racer-offline', path:'/Users/zaryu/Desktop/Niumination/aistudio-google/street-racer-offline/', desc:'Android racing game — Kotlin, Jetpack Compose, Gradle. AI Studio Google.', tags:['Android','Kotlin','Game','Compose'], date:'Jun 2026' },
         { icon:'△', name:'TEDEO', path:'/Users/zaryu/Desktop/Niumination/TEDEO/', desc:'Delivery Service lokal Kabupaten Aceh Tengah — Expo monorepo (mobile, web, backend, Prisma).', tags:['Expo','React Native','Monorepo','Prisma','Delivery','AcehTengah'], date:'Jun 2026' },
         { icon:'△', name:'TEDEO-Kanban', path:'/Users/zaryu/Desktop/Niumination/TEDEO-Kanban/', desc:'Kanban Board untuk tracking progress TEDEO Delivery Service — Next.js PWA, drag-and-drop.', tags:['Next.js','PWA','Kanban','React','AcehTengah'], date:'Jun 2026' },  // NEW Jun 2026
@@ -737,8 +739,8 @@ const PROJECTS = {
         { icon:'☆', name:'lmarena.github.io', path:'https://github.com/Niumination/lmarena.github.io', desc:'GitHub Pages untuk LM Arena - 320MB.', tags:['Pages','LM','Arena'], date:'2026' },
         { icon:'△', name:'Ultra Automation System', path:'/Users/zaryu/Documents/arena.ai/ultra-automation-system/', desc:'Node.js ultra automation system - arsitektur sistem otomatis.', tags:['Node.js','Automation','System'], date:'2026' },
         { icon:'△', name:'obsidian-ai-os', path:'/Users/zaryu/Documents/obsidian-ai-os/', desc:'Obsidian plugin AI OS - integrasi AI dalam vault Obsidian.', tags:['Obsidian','Plugin','AI','OS'], date:'2026' },
-        { icon:'△', name:'Flame-ADE-Desain', path:'/Users/zaryu/Documents/ZMP/Flame-ADE-Desain/', desc:'Desain/template HTML untuk Flame ADE - mockup UI.', tags:['Design','HTML','Mockup','ADE'], date:'2026' },
-        { icon:'⎇', name:'komik-seksual', path:'/Users/zaryu/Desktop/komik-seksual/', desc:'Eksperimen HTML komik ASCII — creative coding.', tags:['HTML','ASCII','Creative','Eksperimen'], date:'2026' }  // NEW 2026,
+        { icon:'△', name:'Flame-ADE-Desain', path:'/Users/zaryu/Desktop/Niumination/labs/flame-ade-desain/', desc:'Desain/template HTML untuk Flame ADE - mockup UI.', tags:['Design','HTML','Mockup','ADE'], date:'2026' },
+        { icon:'⎇', name:'komik-seksual', path:'/Users/zaryu/Desktop/Niumination/labs/komik-seksual/', desc:'Eksperimen HTML komik ASCII — creative coding.', tags:['HTML','ASCII','Creative','Eksperimen'], date:'2026' }  // NEW 2026,
     ],
     config: [
         { icon:'☆', name:'ryu-dots', path:'https://github.com/Niumination/ryu-dots', desc:'Arch Linux config lengkap - Hyprland + Illogical Impulse.', tags:['Arch','Hyprland','Dotfiles','Linux'], date:'2026' },
@@ -762,16 +764,17 @@ const PROJECTS = {
         { icon:'☆', name:'win11-dotfiles', path:'https://github.com/Niumination/win11-dotfiles', desc:'Windows 11 dotfiles and config - CSS.', tags:['Windows','Dotfiles','Config'], date:'2026' },
         { icon:'☆', name:'Windots', path:'https://github.com/Niumination/Windots', desc:'Koleksi Windows dotfiles and configs pribadi.', tags:['Windows','Dotfiles','Config'], date:'2026' },
         { icon:'☆', name:'.local dotfiles', path:'/Users/zaryu/.local/src/dotfiles/', desc:'Dotfiles lokal - mirror config symlinked dari berbagai proyek.', tags:['Dotfiles','Local','Config'], date:'2026' },
-        { icon:'☆', name:'zaryu-terminal-dotfiles', path:'/Users/zaryu/Desktop/rekap/zaryu-terminal-dotfiles/', desc:'Terminal dotfiles stow-managed — Zsh, Neovim, Tmux, Git, Starship, Node, Ruby, ASDF.', tags:['Terminal','Dotfiles','Zsh','Neovim','Stow'], date:'Jun 2026' },
+        { icon:'🧠', name:'Second Brain', path:'/Users/zaryu/Desktop/Niumination/brain/_index.md', desc:'Obsidian knowledge base — daily capture, project notes, resources. 9 plugins, 5 themes.', tags:['Obsidian','Vault','Knowledge','SecondBrain'], date:'Jun 2026' },
+        { icon:'☆', name:'zaryu-terminal-dotfiles', path:'/Users/zaryu/Desktop/Niumination/rekap/zaryu-terminal-dotfiles/', desc:'Terminal dotfiles stow-managed — Zsh, Neovim, Tmux, Git, Starship, Node, Ruby, ASDF.', tags:['Terminal','Dotfiles','Zsh','Neovim','Stow'], date:'Jun 2026' },
     ],
     legacy: [
-        { icon:'◇', name:'Claude-Free-Project (LEAK)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Claude-Free-Project (LEAK)/', desc:'Static HTML website dari backup Windows - eksperimen Claude Free.', tags:['HTML','Backup','Legacy'], date:'2026' },
-        { icon:'◇', name:'Portal Pemdi (Desktop)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project PEMDI - Claude Desktop (FreeAccount)/Portal Pemdi/Portal-Pemdi/', desc:'Vite + React portal Pemdi versi awal - backup Windows.', tags:['React','Vite','Pemdi','Backup'], date:'2026' },
-        { icon:'◇', name:'DropBeam Flutter', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project DropBeam - Claude/dropbeam-production/dropbeam-flutter/', desc:'Flutter mobile app - project DropBeam (backup Windows).', tags:['Flutter','Mobile','Backup'], date:'2026' },
-        { icon:'◇', name:'DropBeam Server', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECTS/Project DropBeam - Claude/dropbeam-production/dropbeam-server/', desc:'Node.js backend untuk DropBeam (backup Windows).', tags:['Node.js','Backend','Backup'], date:'2026' },
-        { icon:'◇', name:'jcode-docs', path:'/Users/zaryu/Desktop/jcode-docs/', desc:'Dokumentasi JCode - referensi coding agent framework.', tags:['Docs','JCode','Reference'], date:'2026' },
+        { icon:'◇', name:'Claude-Free-Project (LEAK)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECT\'S/Claude-Free-Project (LEAK)/', desc:'Static HTML website dari backup Windows - eksperimen Claude Free.', tags:['HTML','Backup','Legacy'], date:'2026' },
+        { icon:'◇', name:'Portal Pemdi (Desktop)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECT\'S/Project PEMDI - Claude Desktop (FreeAccount)/Portal Pemdi/Portal-Pemdi/', desc:'Vite + React portal Pemdi versi awal - backup Windows.', tags:['React','Vite','Pemdi','Backup'], date:'2026' },
+        { icon:'◇', name:'DropBeam Flutter', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECT\'S/Project DropBeam - Claude/dropbeam-production/dropbeam-flutter/', desc:'Flutter mobile app - project DropBeam (backup Windows).', tags:['Flutter','Mobile','Backup'], date:'2026' },
+        { icon:'◇', name:'DropBeam Server', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECT\'S/Project DropBeam - Claude/dropbeam-production/dropbeam-server/', desc:'Node.js backend untuk DropBeam (backup Windows).', tags:['Node.js','Backend','Backup'], date:'2026' },
+        { icon:'◇', name:'jcode-docs', path:'/Users/zaryu/Desktop/Niumination/archive/jcode-docs/', desc:'Dokumentasi JCode - referensi coding agent framework.', tags:['Docs','JCode','Reference'], date:'2026' },
         { icon:'◇', name:'Hermes-USB-Portable', path:'/Users/zaryu/Music/Devs/Hermes-USB-Portable-main/', desc:'Dokumentasi portable Hermes Agent USB.', tags:['Docs','Hermes','Portable'], date:'2026' },
-        { icon:'◇', name:'xero-dotfiles-docs', path:'/Users/zaryu/Desktop/xero-dotfiles-docs/', desc:'Dokumentasi Xero dotfiles - referensi tema/ricing.', tags:['Docs','Dotfiles','Xero','Reference'], date:'2026' },
+        { icon:'◇', name:'xero-dotfiles-docs', path:'/Users/zaryu/Desktop/Niumination/archive/xero-dotfiles-docs/', desc:'Dokumentasi Xero dotfiles - referensi tema/ricing.', tags:['Docs','Dotfiles','Xero','Reference'], date:'2026' },
     ]
 };
 

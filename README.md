@@ -34,6 +34,7 @@ Dashboard three-panel **dark cyber** untuk menginventarisasi dan memonitoring se
 | **Mobile Responsive** — Sidebar slide-in, swipe gesture, adaptive layout | ✅ |
 | **PWA Ready** — Service worker, manifest, installable | ✅ |
 | **🏁 Released Projects** — Halaman khusus proyek production-ready/completed + GitHub auto-sync + data persist online via GitHub API | ✅ **v2.14.x** |
+| **🌐 Standalone Released Page** — `released.html` terpisah dengan UX premium, boot animasi, filter, search, manual add dropdown dari GitHub repos | ✅ **v2.14.x** |
 | **Keyboard Shortcuts** — `S` search, `1-6` filter, `Esc` close, arrows navigate | ✅ |
 | **Boot Animation** — Immersive startup sequence | ✅ |
 

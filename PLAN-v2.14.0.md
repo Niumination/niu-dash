@@ -12,7 +12,9 @@
 | GitHub persistence + suggestions | v2.14.3 | ✅ |
 | Token obfuscation (charCode array) | v2.14.4 | ✅ |
 | 409 Conflict fix — lock + promise | v2.14.5 | ✅ |
-| 409 Conflict fix — async/await rewrite | v2.14.6 | ✅ |
+|| 409 Conflict fix — async/await rewrite | v2.14.6 | ✅ |
+|| **Standalone released.html** — halaman terpisah dengan UX premium | v2.14.6 | ✅ |
+|| **Link sidebar → released.html** — navigasi dari dashboard utama | v2.14.6 | ✅ |
 
 ## Konsep
 Halaman khusus untuk melacak proyek yang sudah:
@@ -75,6 +77,30 @@ Mirip "Unlisted Repos" — badge di sidebar + panel suggestion:
 ---
 
 ## View / Halaman Baru
+
+### Standalone `released.html` (v2.14.6)
+```
+niu-dash/
+├── index.html              ← Dashboard utama (tidak berubah)
+├── released.html           ← Halaman standalone PREMIUM (BARU)
+└── data/
+    └── released.json       ← Data persist via GitHub API
+```
+
+**Fitur Standalone:**
+- Boot animation + particle canvas + grid/glitch overlay (sama dengan index.html)
+- Hero header: stats live (Production / Completed / Total) + last sync
+- Filter tabs: All · 🚀 Production · ✅ Completed + search
+- Section grouping: Production Ready dan Completed dipisah header
+- Cards premium: badge warna, lang dot, version, date, auto-tag, link repo, hapus
+- Manual add modal: dropdown dari GitHub repos + custom name + status + version + notes
+- GitHub auto-sync: fetch dari `released.json` → push perubahan via API
+- Auto-suggestions: deteksi repos dengan homepage/Pages → production, archived → completed
+- Bulk import suggestions
+- Toast notifications + keyboard shortcuts (`S` search, `Esc` close)
+- Responsive mobile + Cyber Dim theme toggle
+- Link "← Kembali ke Dashboard" di header
+- Link dari sidebar index.html → released.html
 
 ### Sidebar Entry
 ```
