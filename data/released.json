@@ -1,15 +1,6 @@
 {
   "projects": [
     {
-      "repoName": "niu-dash",
-      "name": "NIU-DASH",
-      "status": "production",
-      "version": "v2.14.6",
-      "notes": "Dashboard command center — project portfolio, auto-deteksi GitHub, released tracking, dark cyber UI",
-      "dateMarked": "2026-06-09T00:30:00.000Z",
-      "_autoDetected": false
-    },
-    {
       "repoName": "niu-private",
       "name": "niu-private",
       "status": "production",
@@ -17,23 +8,32 @@
       "notes": "",
       "dateMarked": "2026-06-08T11:32:32.599Z",
       "_autoDetected": false
+    },
+    {
+      "repoName": "auditti-at",
+      "name": "AuditTI-AT",
+      "status": "production",
+      "version": "",
+      "notes": "",
+      "dateMarked": "2026-06-09T04:39:26.221Z",
+      "_autoDetected": false
     }
   ],
   "activityLog": [
-    {
-      "projectName": "NIU-DASH",
-      "repoName": "niu-dash",
-      "status": "production",
-      "method": "manual",
-      "timestamp": 1780921800000
-    },
     {
       "projectName": "niu-private",
       "repoName": "niu-private",
       "status": "production",
       "method": "manual",
       "timestamp": 1780918352599
+    },
+    {
+      "projectName": "AuditTI-AT",
+      "repoName": "auditti-at",
+      "status": "production",
+      "method": "manual",
+      "timestamp": 1780979966221
     }
   ],
-  "updatedAt": "2026-06-09T00:30:00.000Z"
+  "updatedAt": "2026-06-09T04:39:28.249Z"
 }
