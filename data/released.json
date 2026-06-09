@@ -26,6 +26,15 @@
       "notes": "",
       "dateMarked": "2026-06-09T04:57:27.148Z",
       "_autoDetected": false
+    },
+    {
+      "repoName": "niu-dash",
+      "name": "niu-dash",
+      "status": "production",
+      "version": "",
+      "notes": "Auto-detected: GitHub Pages + homepage",
+      "dateMarked": "2026-06-09T10:56:23.119Z",
+      "_autoDetected": true
     }
   ],
   "activityLog": [
@@ -49,7 +58,14 @@
       "status": "production",
       "method": "manual",
       "timestamp": 1780981047151
+    },
+    {
+      "projectName": "niu-dash",
+      "repoName": "niu-dash",
+      "status": "production",
+      "method": "suggestion",
+      "timestamp": 1781002583120
     }
   ],
-  "updatedAt": "2026-06-09T04:57:29.152Z"
+  "updatedAt": "2026-06-09T10:56:25.121Z"
 }
