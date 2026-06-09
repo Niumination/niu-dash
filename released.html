@@ -229,7 +229,7 @@
 </head>
 <body>
     <!-- ===== BOOT OVERLAY ===== -->
-    <div class="boot-overlay" id="boot-overlay">
+    <div class="boot-overlay hidden" id="boot-overlay">
         <div class="boot-title">
             <div class="bt-line1">
                 <span class="bt-bolt">⚡</span>NIU<span class="bt-dash">— —</span>DASH
@@ -659,7 +659,7 @@
                 '<div class="rl-desc">'+escapeHtml(desc)+'</div>'+
                 '<div class="rl-meta">'+langHtml+versionHtml+(dateStr?'<span style="font-size:10px;color:var(--text-muted)">📅 '+dateStr+'</span>':'')+'</div>'+
                 '<div class="rl-actions">'+
-                '<button class="ul-action-btn rm" onclick="removeReleasedProject(\\''+key+'\\')" style="color:var(--red);border-color:rgba(255,0,64,.2)">✕ Hapus</button>'+
+                '<button class="ul-action-btn rm" onclick="removeReleasedProject(\x27'+key+'\x27)" style="color:var(--red);border-color:rgba(255,0,64,.2)">✕ Hapus</button>'+
                 (ghLink?'<a class="ul-action-btn" href="'+ghLink+'" target="_blank" style="margin-left:auto">↗ Repo</a>':'')+
                 '</div>'+
                 '</div>'+
@@ -919,7 +919,9 @@
         window.addEventListener('DOMContentLoaded',function(){
             loadReleased();
             initParticles();
-            runBoot();
+
+            // Show stagger-in elements immediately (no boot animation)
+            document.querySelectorAll('.stagger-in').forEach(function(el){el.classList.add('visible');});
 
             // Load GitHub repos first, then fetch released.json
             fetchGitHubRepos().then(function(){
