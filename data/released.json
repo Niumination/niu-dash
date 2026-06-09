@@ -33,7 +33,16 @@
       "status": "production",
       "version": "",
       "notes": "Auto-detected: GitHub Pages + homepage",
-      "dateMarked": "2026-06-09T10:56:23.119Z",
+      "dateMarked": "2026-06-09T10:58:04.427Z",
+      "_autoDetected": true
+    },
+    {
+      "repoName": "kune-ya.com",
+      "name": "kune-ya.com",
+      "status": "production",
+      "version": "",
+      "notes": "Auto-detected: Homepage terisi (kemungkinan deployed)",
+      "dateMarked": "2026-06-09T10:58:04.519Z",
       "_autoDetected": true
     }
   ],
@@ -64,8 +73,15 @@
       "repoName": "niu-dash",
       "status": "production",
       "method": "suggestion",
-      "timestamp": 1781002583120
+      "timestamp": 1781002684429
+    },
+    {
+      "projectName": "kune-ya.com",
+      "repoName": "kune-ya.com",
+      "status": "production",
+      "method": "suggestion",
+      "timestamp": 1781002684519
     }
   ],
-  "updatedAt": "2026-06-09T10:56:25.121Z"
+  "updatedAt": "2026-06-09T10:58:06.595Z"
 }
