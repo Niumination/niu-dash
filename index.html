@@ -561,7 +561,6 @@
         <div class="sb-section">⌕ Kategori</div>
         <div class="sb-nav" id="sb-nav">
             <button data-filter="released" id="sb-released-btn" onclick="showReleased()"><span>🏁</span> Released <span class="sb-badge dim" id="sb-released">0</span></button>
-            <a href="released.html" style="display:flex;align-items:center;gap:10px;padding:6px 14px;margin-left:20px;border-radius:var(--rad);font-size:10px;color:var(--text-muted);text-decoration:none;font-family:'JetBrains Mono',monospace;border:1px solid transparent;transition:all .2s" onmouseover="this.style.borderColor='rgba(0,255,242,.2)';this.style.color='var(--cyan)'" onmouseout="this.style.borderColor='transparent';this.style.color='var(--text-muted)'"><span>↗</span> Halaman Standalone</a>
             <button data-filter="all" class="active" onclick="setFilter('all')"><span>◈</span> All Projects <span class="sb-badge" id="sb-total">0</span></button>
             <button data-filter="ready" onclick="setFilter('ready')"><span>⚡</span> Ready <span class="sb-badge green" id="sb-ready">0</span></button>
             <button data-filter="dev" onclick="setFilter('dev')"><span>⟐</span> Development <span class="sb-badge cyan" id="sb-dev">0</span></button>
@@ -656,7 +655,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.14.6',hash:'8b5a4af',date:'2026-06-09T17:47:46+07:00',msg:"fix: escaped quotes di renderReleasedCard + hapus boot animation di released.html"};
+var NIU_VERSION = {v:'2.14.6',hash:'5a348a9',date:'2026-06-09T17:52:15+07:00',msg:"fix: search input tidak responsif — tambah event listener 'input' ke search-input"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (99 projects, 5 categories) =====
 const PROJECTS = {
