@@ -532,7 +532,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.14.6</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.15.0</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -655,9 +655,9 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.14.6',hash:'5a348a9',date:'2026-06-09T17:52:15+07:00',msg:"fix: search input tidak responsif — tambah event listener 'input' ke search-input"};
+var NIU_VERSION = {v:'2.15.0',hash:'543d020',date:'2026-06-09T18:02:30+07:00',msg:"revert: hapus standalone released.html — pertahankan boot overlay fix + search fix"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
-// ===== PROJECT DATA (99 projects, 5 categories) =====
+// ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
     ready: [
         { icon:'◈', name:'Meum', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Documents-Mac/Mac-Project/Meum/index.html', desc:'Halaman welcome Matrix-style dengan animasi particle dan CRT effect.', tags:['HTML','CSS','Canvas','Matrix'], date:'24 Feb 2026' },
@@ -673,7 +673,7 @@ const PROJECTS = {
         { icon:'☆', name:'SilentSDDM', path:'https://github.com/Niumination/SilentSDDM', desc:'SDDM theme highly customizable untuk Arch / Hyprland.', tags:['SDDM','Theme','Linux','QML'], date:'2026' },
         { icon:'☆', name:'Maze-3D-Game', path:'https://github.com/Niumination/Maze-3D-Game---Web-Based', desc:'Game maze 3D berbasis web. Labyrinth interaktif dalam 3D.', tags:['Web','3D','Game','Maze'], date:'2026' },
         { icon:'☆', name:'Niu-Cyber-Search-Engine', path:'https://github.com/Niumination/Niu-Cyber-Search-Engine', desc:'Cyber search engine app pertama. Tema cyber/dark.', tags:['Search','Web','Cyber'], date:'2026' },
-        { icon:'☆', name:'Niu-LKH', path:'https://github.com/Niumination/Niu-LKH', desc:'Laporan Kegiatan Harian - Afrizal Munthe. Pelaporan aktivitas digital.', tags:['Web','Laporan','ASN'], date:'2026' },
+        { icon:'☆', name:'Niu-LKH', path:'https://github.com/Niumination/Niu-LKH', desc:'Laporan Kegiatan Harian - Afrizal Munthe. Pelaporan aktivitas digital. Vite + React 19 + Tailwind v4.', tags:['Web','Laporan','ASN','React'], date:'2026', website:'https://niumination.github.io/Niu-LKH' },
         { icon:'☆', name:'niu-speedtest', path:'https://github.com/Niumination/niu-speedtest', desc:'Aplikasi speed test kecepatan jaringan berbasis Python.', tags:['Speedtest','Python','Network'], date:'2026' },
         { icon:'☆', name:'Bella', path:'https://github.com/Niumination/Bella', desc:'Bella is best - project personal.', tags:['Project','Personal'], date:'2026' },
         { icon:'☆', name:'DiskominfoAT', path:'https://github.com/Niumination/DiskominfoAT', desc:'Website Diskominfo Aceh Tengah. Dibangun dengan Cursor + ContinueDev.', tags:['Website','Kominfo','GovTech'], date:'2026' },
@@ -711,8 +711,9 @@ const PROJECTS = {
         { icon:'⎔', name:'SPBE-DevOps-Academy', path:'https://github.com/Niumination/SPBE-DevOps-Academy', desc:'Akademi DevOps untuk SPBE - pembelajaran DevOps pemerintahan.', tags:['DevOps','SPBE','Academy'], date:'2026' },
         { icon:'⎔', name:'Devs-Niu', path:'https://github.com/Niumination/Devs-Niu', desc:'Developer portfolio / hub untuk semua project Niumination.', tags:['Dev','Portfolio','Hub'], date:'2026' },
         { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta - Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
-        { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Desktop/Niumination/projects/niu-dash/index.html', desc:'Dark web glitch dashboard tracker - 90+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'3 Jun 2026' },
-        { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework.', tags:['Next.js','GovTech','AcehTengah','Portal'], date:'Jun 2026', website:'https://pemdi-aceh-tengah.vercel.app' },
+        { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Desktop/Niumination/projects/niu-dash/index.html', desc:'Dark web glitch dashboard tracker - 105+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'11 Jun 2026' },
+        { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework. 52 OPD, 4.507 ASN, 63 pages.', tags:['Next.js','GovTech','AcehTengah','Portal','Vercel'], date:'Jun 2026', website:'https://pemdi-aceh-tengah.vercel.app' },
+        { icon:'△', name:'niu-vermilion', path:'https://github.com/niumination/niu-vermilion', desc:'Second Brain Ecosystem — Knowledge Management web app. Next.js 16 + React 19 + Supabase + TipTap. 22 routes, Graph View, Notes, Tasks, Bookmarks.', tags:['Next.js','Supabase','TipTap','SecondBrain','Vercel'], date:'Jun 2026' },
         { icon:'△', name:'VirtualAssistance', path:'https://github.com/Niumination/VirtualAssistance', desc:'Virtual Assistance web3 app - Next.js + TypeScript.', tags:['Next.js','Web3','TypeScript'], date:'Jun 2026' },
         { icon:'△', name:'niu-studio', path:'/Users/zaryu/Desktop/Niumination/projects/niu-studio/', desc:'Tauri + React studio app - eksperimen desktop hybrid.', tags:['Tauri','React','Desktop','Studio'], date:'2026' },
         { icon:'△', name:'NiuTUI', path:'/Users/zaryu/Desktop/Niumination/projects/niutui/', desc:'Rust CLI/TUI app - terminal interface untuk Niu ecosystem.', tags:['Rust','CLI','TUI'], date:'2026' },
@@ -737,7 +738,7 @@ const PROJECTS = {
         { icon:'☆', name:'roboto_origin', path:'https://github.com/Niumination/roboto_origin', desc:'Fully Open-Source DIY Humanoid Robot - 750MB. Skala penuh, bilingual EN/CN.', tags:['Robot','Hardware','DIY','Open-Source'], date:'2026' },
         { icon:'☆', name:'lmarena.github.io', path:'https://github.com/Niumination/lmarena.github.io', desc:'GitHub Pages untuk LM Arena - 320MB.', tags:['Pages','LM','Arena'], date:'2026' },
         { icon:'△', name:'Ultra Automation System', path:'/Users/zaryu/Documents/arena.ai/ultra-automation-system/', desc:'Node.js ultra automation system - arsitektur sistem otomatis.', tags:['Node.js','Automation','System'], date:'2026' },
-        { icon:'△', name:'obsidian-ai-os', path:'/Users/zaryu/Documents/obsidian-ai-os/', desc:'Obsidian plugin AI OS - integrasi AI dalam vault Obsidian.', tags:['Obsidian','Plugin','AI','OS'], date:'2026' },
+        { icon:'△', name:'obsidian-ai-os', path:'/Users/zaryu/Desktop/Niumination/labs/obsidian-ai-os/', desc:'Obsidian AI OS — vault template + OpenCode integration untuk AI-powered knowledge management. Sudah dipindah ke labs/.', tags:['Obsidian','AI','OS','Vault'], date:'11 Jun 2026' },
         { icon:'△', name:'Flame-ADE-Desain', path:'/Users/zaryu/Desktop/Niumination/labs/flame-ade-desain/', desc:'Desain/template HTML untuk Flame ADE - mockup UI.', tags:['Design','HTML','Mockup','ADE'], date:'2026' },
         { icon:'⎇', name:'komik-seksual', path:'/Users/zaryu/Desktop/Niumination/labs/komik-seksual/', desc:'Eksperimen HTML komik ASCII — creative coding.', tags:['HTML','ASCII','Creative','Eksperimen'], date:'2026' }  // NEW 2026,
     ],
@@ -763,7 +764,7 @@ const PROJECTS = {
         { icon:'☆', name:'win11-dotfiles', path:'https://github.com/Niumination/win11-dotfiles', desc:'Windows 11 dotfiles and config - CSS.', tags:['Windows','Dotfiles','Config'], date:'2026' },
         { icon:'☆', name:'Windots', path:'https://github.com/Niumination/Windots', desc:'Koleksi Windows dotfiles and configs pribadi.', tags:['Windows','Dotfiles','Config'], date:'2026' },
         { icon:'☆', name:'.local dotfiles', path:'/Users/zaryu/.local/src/dotfiles/', desc:'Dotfiles lokal - mirror config symlinked dari berbagai proyek.', tags:['Dotfiles','Local','Config'], date:'2026' },
-        { icon:'🧠', name:'Second Brain', path:'/Users/zaryu/Desktop/Niumination/brain/_index.md', desc:'Obsidian knowledge base — daily capture, project notes, resources. 9 plugins, 5 themes.', tags:['Obsidian','Vault','Knowledge','SecondBrain'], date:'Jun 2026' },
+        { icon:'🧠', name:'Second Brain', path:'/Users/zaryu/Desktop/Niumination/brain/_index.md', desc:'Obsidian vault pribadi — daily capture, catatan proyek, riset. HEAD 9391ef5. 66 repositori di DOX.', tags:['Obsidian','Vault','Knowledge','SecondBrain','DOX'], date:'11 Jun 2026' },
         { icon:'☆', name:'zaryu-terminal-dotfiles', path:'/Users/zaryu/Desktop/Niumination/rekap/zaryu-terminal-dotfiles/', desc:'Terminal dotfiles stow-managed — Zsh, Neovim, Tmux, Git, Starship, Node, Ruby, ASDF.', tags:['Terminal','Dotfiles','Zsh','Neovim','Stow'], date:'Jun 2026' },
     ],
     legacy: [
