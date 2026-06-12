@@ -548,7 +548,7 @@
     <div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
 
     <!-- ===== SIDEBAR ===== -->
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Navigasi proyek">
         <div class="sb-pad">
             <div class="sb-logo">NIU<span>⚡</span>DASH</div>
             <div class="sb-sub" id="sb-version">dark nexus —</div>
@@ -594,15 +594,15 @@
     </aside>
 
     <!-- ===== FEED ===== -->
-    <main class="feed" id="feed">
+    <main class="feed" id="feed" role="main">
         <div class="topbar">
-            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Buka/tutup sidebar navigasi">☰</button>
             <span class="logo-text">NIU<span>⚡</span>DASH</span>
             <span class="filter-info" id="filter-info">◈ <em>all</em> projects</span>
             <div class="topbar-right">
                 <span class="sync-status" id="sync-status"></span>
-                <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()" title="Refresh GitHub data">⟳</button>
-                <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
+                <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()" title="Refresh GitHub data" aria-label="Refresh data GitHub">⟳</button>
+                <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Ganti tema tampilan">☀</button>
             </div>
         </div>
         <div class="feed-body">
@@ -613,7 +613,7 @@
             </div>
             <div class="search-bar stagger-in" data-delay="2">
                 <span class="icon">⌕</span>
-                <input type="text" id="search-input" placeholder="Cari proyek..." autocomplete="off">
+                <input type="text" id="search-input" placeholder="Cari proyek..." autocomplete="off" aria-label="Cari proyek berdasarkan nama, deskripsi, atau tag">
             </div>
             <div class="activity-feed" id="activity-feed">
                 <div class="act-header" onclick="toggleActivity()">
@@ -639,7 +639,7 @@
     </main>
 
     <!-- ===== DETAIL PANEL ===== -->
-    <aside class="detail-panel" id="detail-panel">
+    <aside class="detail-panel" id="detail-panel" role="complementary" aria-label="Detail proyek">
         <div class="dp-header">
             <span class="dp-title">⟐ Project Detail</span>
             <button class="dp-close" onclick="closeDetail()">✕</button>
@@ -655,7 +655,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.15.0',hash:'543d020',date:'2026-06-09T18:02:30+07:00',msg:"revert: hapus standalone released.html — pertahankan boot overlay fix + search fix"};
+var NIU_VERSION = {v:'2.15.0',hash:'d83e3b3',date:'2026-06-11T15:23:13+07:00',msg:"v2.15.0: update niu-dash dengan kondisi terkini - Tambah: niu-vermilion (Second Brain, Next.js 16, Supabase) - Update: Niu-LKH (GH Pages URL + stack detail) - Update: PemdiAcehTengah (52 OPD, 4507 ASN, 63 pages) - Update: Second Brain (HEAD 9391ef5, DOX v1.2) - Update: obsidian-ai-os (path baru di labs/) - Update: project count 105+ - Update: bump v2.14.6 → v2.15.0"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
@@ -1147,8 +1147,14 @@ var RELEASED_GH_PATH='data/released.json';
 var releasedGitSha=null;
 var releasedSyncTimer=null;
 // Obfuscated token (charCode array) to avoid GitHub secret detection
-var _RH=[103,104,112,95,70,118,57,89,76,90,99,69,67,119,70,120,50,79,89,57,73,104,98,97,50,78,114,78,90,82,97,81,120,108,49,85,115,66,84,99];
-function _gT(){return String.fromCharCode.apply(null,_RH);}
+/* 🔴 KEAMANAN: Token GitHub tidak boleh di-hardcode di kode sumber.
+   Pengguna dapat menyetel token via localStorage:
+     localStorage.setItem('niu_gh_token', 'ghp_xxx...')
+   Jika tidak disetel, fitur Released berjalan read-only (baca dari GitHub).
+   Lihat SECURITY.md untuk informasi lebih lanjut. */
+var _RH=[]; // Token dihapus pada audit 12 Jun 2026 — lihat catatan di atas
+function _gT(){return null;}
+/* Fungsi tetap ada untuk kompatibilitas — token dibaca dari localStorage jika ada */
 
 // ===== BUILD FLAT LIST =====
 function buildFlatList() {
@@ -2126,7 +2132,10 @@ function pushReleasedToGitHub(){
     },2000); // debounce 2s
 }
 function getReleasedToken(){
-    // Decode built-in token from charCode array (no user input needed)
+    // Cek localStorage dulu — user bisa set token sendiri
+    var userToken=localStorage.getItem('niu_gh_token');
+    if(userToken&&userToken.length>10)return userToken;
+    // Fallback built-in (sudah dikosongkan sejak audit 12 Jun 2026)
     if(typeof _gT==='function')return _gT();
     return null;
 }
