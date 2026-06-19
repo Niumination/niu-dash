@@ -85,7 +85,11 @@
         .sidebar .sb-logo{font-size:15px;font-weight:800;color:var(--cyan);letter-spacing:-.5px;display:flex;align-items:center;gap:6px}
         .sidebar .sb-logo span{color:var(--red)}
         .sidebar .sb-sub{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:16px}
-        .sidebar .clock-widget{font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:10px;background:rgba(0,255,242,.04);border:1px solid rgba(0,255,242,.1);border-radius:var(--rad);padding:5px 12px;margin-bottom:20px;transition:all .3s ease}
+        .sidebar .clock-widget{font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:10px;background:rgba(0,255,242,.04);border:1px solid rgba(0,255,242,.1);border-radius:var(--rad);padding:5px 12px;margin-bottom:8px;transition:all .3s ease}
+        .sidebar .gh-token-status{display:flex;align-items:center;gap:6px;padding:4px 12px;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-muted);letter-spacing:.5px;border-radius:4px;background:rgba(255,255,255,.02);cursor:default}
+        .sidebar .gh-token-status .gts-indicator{width:6px;height:6px;border-radius:50%;margin-left:auto;transition:background .3s}
+        .sidebar .gh-token-status .gts-indicator.ok{background:var(--green);box-shadow:0 0 6px rgba(0,255,136,.5)}
+        .sidebar .gh-token-status .gts-indicator.missing{background:var(--amber);box-shadow:0 0 6px rgba(255,170,0,.4)}
         .sidebar .clock-widget:hover{border-color:rgba(0,255,242,.25)}
         .sidebar .clock-widget .cw-time{font-size:13px;font-weight:600;color:var(--cyan);letter-spacing:2px}
         .sidebar .clock-widget .cw-dot{width:5px;height:5px;border-radius:50%;background:var(--cyan);opacity:.6;animation:cw-pulse 1.2s ease-in-out infinite}
@@ -556,6 +560,7 @@
                 <span class="cw-dot"></span>
                 <span class="cw-time" id="clock">--:--:--</span>
             </div>
+            <div class="gh-token-status" id="gh-token-status" title="GitHub token status — set via localStorage niu_gh_token">🔑 <span class="gts-label">token</span><span class="gts-indicator" id="gts-dot"></span></div>
         </div>
 
         <div class="sb-section">⌕ Kategori</div>
@@ -655,7 +660,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.0',hash:'dcc5293',date:'2026-06-19T18:57:34+07:00',msg:"v2.16.0: update Niu-LKH status ✓ DONE + bump version"};
+var NIU_VERSION = {v:'2.16.0',hash:'1a50883',date:'2026-06-19T19:54:47+07:00',msg:"Fase 1: critical + high fixes - Fix #1: _added flag in loadPendingAdds() -> data persist - Fix #2: NaN bug in addAllUnlisted() toast -> real count - Fix #3: manifest icons -> proper sizing per resolution - Fix #4: Rajdhani 700 removed (glyph bbox error) -> Inter 600 - Fix #5: html font-size 110% -> 100%"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
@@ -1250,28 +1255,36 @@ function getRepoDateValue(p){
 }
 // ===== SELECT PROJECT =====
 var commitCache={};
-function fetchCommitData(repoName){
+function fetchCommitData(repoName, attempt){
     if(!repoName)return;
+    attempt=attempt||1;
     var key=repoName.toLowerCase();
-    if(commitCache[key]&&Date.now()-commitCache[key].ts<300000){
-        // Re-render from cache
+    // Check in-memory cache first
+    if(commitCache[key]&&Date.now()-commitCache[key].ts<1800000){
         var el=document.getElementById('dp-commit-data');
         if(el&&commitCache[key].data)el.innerHTML=buildCommitHtml(commitCache[key].data,repoName);
         return;
     }
-    fetch('https://api.github.com/repos/Niumination/'+key+'/commits?per_page=5').then(function(r){return r.json();}).then(function(data){
+    // Try localStorage cache (cross-session)
+    try{var lc=localStorage.getItem('niu-commit-cache-'+key);if(lc){var p=JSON.parse(lc);if(Date.now()-p.ts<1800000){commitCache[key]=p;if(p.data){var el2=document.getElementById('dp-commit-data');if(el2)el2.innerHTML=buildCommitHtml(p.data,repoName);}return;}}localStorage.removeItem('niu-commit-cache-'+key);}catch(e){}
+    var ghToken=getReleasedToken();
+    var fetchOpts={};
+    if(ghToken) fetchOpts.headers={'Authorization':'token '+ghToken};
+    fetch('https://api.github.com/repos/Niumination/'+key+'/commits?per_page=5',fetchOpts).then(function(r){return r.json();}).then(function(data){
         if(!Array.isArray(data)){
             var el=document.getElementById('dp-commit-data');
             if(el)el.innerHTML='<div class="dp-loading-cmt" style="color:rgba(255,100,100,.5)">⚠ '+(data&&data.message&&data.message.includes('API rate limit')?'GitHub API rate limited — commit data unavailable':data.message||'failed to load commits')+'</div>';
             return;
         }
         commitCache[key]={data:data,ts:Date.now()};
+        try{localStorage.setItem('niu-commit-cache-'+key,JSON.stringify(commitCache[key]));}catch(e){}
         var p2=flatProjects[selectedIndex];
         if(p2&&p2.repoName&&p2.repoName.toLowerCase()===key){
             var el=document.getElementById('dp-commit-data');
             if(el)el.innerHTML=buildCommitHtml(data,repoName);
         }
     }).catch(function(e){
+        if(attempt<3){setTimeout(function(){fetchCommitData(repoName,attempt+1);},1000*attempt);return;}
         var el=document.getElementById('dp-commit-data');
         if(el)el.innerHTML='<div class="dp-loading-cmt" style="color:rgba(255,100,100,.5)">⚠ network error — commits unavailable</div>';
     });
@@ -1474,6 +1487,8 @@ function setVersionDisplay(){
 }
 function manualRefresh(){
     commitCache={};
+    // Clear localStorage commit cache keys
+    try{for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i);if(k&&k.indexOf('niu-commit-cache-')===0)localStorage.removeItem(k);}}catch(e){}
     localStorage.removeItem('niu-gh-cache');
     var btn=document.getElementById('refresh-btn');
     btn.classList.add('loading');
@@ -1481,13 +1496,24 @@ function manualRefresh(){
     el.innerHTML='<span class="dot syncing"></span> sync...';
     fetchGitHubData(true);
 }
+function updateTokenStatus(){
+    var dot=document.getElementById('gts-dot');
+    if(!dot)return;
+    var tk=getReleasedToken();
+    if(tk&&tk.length>10){dot.className='gts-indicator ok';dot.title='Token active — 5000 req/h';}
+    else{dot.className='gts-indicator missing';dot.title='No token — 60 req/h';}
+}
 
 // ===== GITHUB API =====
-async function fetchGitHubData(isManual){
+async function fetchGitHubData(isManual, attempt){
+    attempt=attempt||1;
     var c2=localStorage.getItem('niu-gh-cache');
     if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');if(selectedIndex>=0&&flatProjects[selectedIndex]&&flatProjects[selectedIndex].repoName)fetchCommitData(flatProjects[selectedIndex].repoName);return;}}catch(e){}}
     try{
-        var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated');
+        var ghToken=getReleasedToken();
+        var fetchOpts={};
+        if(ghToken) fetchOpts.headers={'Authorization':'token '+ghToken};
+        var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated',fetchOpts);
         var rl=r.headers&&r.headers.get('X-RateLimit-Remaining');
         if(r.status===403&&rl==='0'){
             var reset=r.headers.get('X-RateLimit-Reset');
@@ -1499,6 +1525,7 @@ async function fetchGitHubData(isManual){
         if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,pushed_at:rr.pushed_at||null,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);}
         else showToast('⚠ GitHub API returned unexpected data','warn',5000);
     }catch(e){
+        if(attempt<3){showToast('⚠ GitHub API error — retrying ('+attempt+'/3)','warn',3000);setTimeout(function(){fetchGitHubData(isManual,attempt+1);},1500*attempt);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}
         showToast('⚠ GitHub API error — using cached data','warn',5000);
         var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed();}catch(_){}}}
     if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
@@ -2296,8 +2323,14 @@ function initParticles() {
             }
         }
     }
-    function animate() { ctx.clearRect(0, 0, w, h); particles.forEach(p => { p.update(); p.draw(); }); drawLines(); requestAnimationFrame(animate); }
+    function animate() { if(!_particleRunning)return; ctx.clearRect(0, 0, w, h); particles.forEach(p => { p.update(); p.draw(); }); drawLines(); _particleFrame=requestAnimationFrame(animate); }
     animate();
+    // Pause/resume on tab visibility change
+    var _particleRunning=true,_particleFrame=null;
+    document.addEventListener('visibilitychange',function(){
+        if(document.hidden){_particleRunning=false;if(_particleFrame)cancelAnimationFrame(_particleFrame);}
+        else{_particleRunning=true;animate();}
+    });
 }
 
 // ===== CLOCK =====
@@ -2388,6 +2421,7 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchGitHubData();
     buildActivityFeed();
     updateSyncStatus();
+    updateTokenStatus();
     setInterval(updateSyncStatus, 30000);
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(function(r){console.log('[Niu-Dash] SW registered');}).catch(function(e){console.warn('[Niu-Dash] SW failed:',e);});
