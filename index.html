@@ -543,7 +543,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.3</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.5</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -667,8 +667,12 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.3',hash:'065ce99',date:'2026-06-20T01:21:43+07:00',msg:"fix: sync NIU_VERSION ke v2.16.5"};
+var NIU_VERSION = {v:'2.16.5',hash:'148bea2',date:'2026-06-20T01:24:09+07:00',msg:"revert: balik ke v2.16.4 — remove _lastDataVersion hack, revert index.html ke 7385ff7"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
+// Error capture for debugging
+var _niuErrors=[];
+function _niuLog(e){var msg=e.message||e||'?';_niuErrors.push(msg);try{var d=document.getElementById('_niuErr');if(d)d.textContent=_niuErrors.join(' | ');}catch(_){}}
+window.addEventListener('error',function(e){_niuLog(e.error||e);});
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
     ready: [
@@ -1290,7 +1294,7 @@ function renderFeed(filter,statusFilter,searchText){
             }
         });
     }
-    }catch(e){console.error('[Niu-Dash] renderFeed error:',e);showToast('Render error: '+e.message,'error');}
+    }catch(e){console.error('[Niu-Dash] renderFeed error:',e);_niuLog(e);showToast('Render error: '+e.message,'error');}
 }
 function langColor(lang){var cc={'JavaScript':'#f1e05a','TypeScript':'#3178c6','Python':'#3572a5','Rust':'#dea584','HTML':'#e34c26','CSS':'#563d7c','Shell':'#89e051','C++':'#f34b7d','C':'#555555','Nix':'#7e7eff','Kotlin':'#A97BFF','Dart':'#00b4ab','Vue':'#41b883','Svelte':'#ff3e00','Ruby':'#701516','Swift':'#ffac45','Java':'#b07219','Go':'#00add8','MDX':'#fcb32c','SCSS':'#c6538c','Less':'#1d365d','TeX':'#3d6117','Perl':'#0298c3','Lua':'#000080','Dockerfile':'#384d54','Makefile':'#427819'};return cc[lang]||'#8b8b8b';}
 function getRepoDate(p){
@@ -2439,6 +2443,7 @@ function toggleSidebar() {
 function setFilter(filter) {
     currentFilter = filter;
     currentView = 'categories'; // Exit released view
+    _lastDataVersion = -1; // Force full rebuild from released DOM corruption
     // Restore normal feed controls (in case returning from released view)
     var sb=document.getElementById('sort-bar');if(sb)sb.style.display='';
     var tb=document.getElementById('tag-filter-bar');if(tb)tb.style.display='';
@@ -2467,13 +2472,13 @@ function updateStats() {
     const cats = ['ready','dev','ideas','config','legacy'];
     const total = flatProjects.length;
     cats.forEach(cat => {
-        const count = PROJECTS[cat].length;
-        document.getElementById('sb-' + cat).textContent = count;
-        document.getElementById('sb-st-' + cat).textContent = count;
+        var arr=PROJECTS[cat];
+        var count=Array.isArray(arr)?arr.length:0;
+        var el1=document.getElementById('sb-'+cat),el2=document.getElementById('sb-st-'+cat);
+        if(el1)el1.textContent=count;if(el2)el2.textContent=count;
     });
-    document.getElementById('sb-total').textContent = total;
-    document.getElementById('sb-st-total').textContent = total;
-    document.getElementById('total-projects').textContent = total;
+    var el3=document.getElementById('sb-total'),el4=document.getElementById('sb-st-total'),el5=document.getElementById('total-projects');
+    if(el3)el3.textContent=total;if(el4)el4.textContent=total;if(el5)el5.textContent=total;
 }
 
 // ===== PARTICLES =====
@@ -2688,5 +2693,6 @@ window.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <div class="kb-hint"><kbd>S</kbd> search · <kbd>1-6</kbd> filter · <kbd>Esc</kbd> close</div>
+<div id="_niuErr" style="display:none"></div>
 </body>
 </html>

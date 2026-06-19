@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><body>
+<script>
+// Override console.error to capture render errors
+var realError = console.error;
+window._renderErrors = [];
+console.error = function() {
+    window._renderErrors.push(Array.from(arguments).join(' '));
+    realError.apply(console, arguments);
+};
+
+// Now load the page in an iframe
+var iframe = document.createElement('iframe');
+iframe.src = '/';
+iframe.style = 'width:100%;height:100vh;position:absolute;top:0;left:0;border:none';
+document.body.appendChild(iframe);
+
+// Wait then show errors
+setTimeout(function(){
+    var errDiv = document.createElement('div');
+    errDiv.style = 'position:fixed;top:10px;right:10px;background:rgba(255,0,0,.9);color:#fff;padding:20px;z-index:99999;font-family:monospace;font-size:12px;max-width:500px;white-space:pre-wrap';
+    errDiv.textContent = 'Errors:\n' + (window._renderErrors.length ? window._renderErrors.join('\n') : 'none');
+    document.body.appendChild(errDiv);
+}, 3000);
+</script>
+</body></html>
