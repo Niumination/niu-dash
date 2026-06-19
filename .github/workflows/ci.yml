@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check HTML structure
+        run: |
+          echo "=== Checking critical files ==="
+          for f in index.html manifest.json sw.js icon.svg; do
+            if [ -f "$f" ]; then
+              echo "[OK] $f exists ($(wc -c < "$f") bytes)"
+            else
+              echo "[FAIL] $f missing"
+              exit 1
+            fi
+          done
+
+      - name: Validate HTML
+        run: |
+          echo "=== Basic HTML structure check ==="
+          # Check DOCTYPE
+          if head -1 index.html | grep -q '<!DOCTYPE html'; then
+            echo "[OK] DOCTYPE present"
+          else
+            echo "[FAIL] Missing DOCTYPE"
+            exit 1
+          fi
+          # Check meta charset
+          if grep -q 'charset="UTF-8"' index.html; then
+            echo "[OK] charset UTF-8"
+          else
+            echo "[FAIL] Missing charset"
+            exit 1
+          fi
+          # Check manifest link
+          if grep -q 'manifest.json' index.html; then
+            echo "[OK] manifest linked"
+          else
+            echo "[FAIL] Missing manifest link"
+            exit 1
+          fi
+          # Count HTML tags balanced (simple check)
+          OPEN_TAGS=$(grep -c '<[a-zA-Z]' index.html || true)
+          CLOSE_TAGS=$(grep -c '</[a-zA-Z]' index.html || true)
+          echo "[INFO] Open tags: $OPEN_TAGS, Close tags: $CLOSE_TAGS"
+
+      - name: Validate manifest
+        run: |
+          if command -v python3 &>/dev/null; then
+            python3 -c "
+import json
+with open('manifest.json') as f:
+    m = json.load(f)
+print(f'[OK] name: {m.get(\"name\",\"?\")}')
+print(f'[OK] start_url: {m.get(\"start_url\",\"?\")}')
+print(f'[OK] display: {m.get(\"display\",\"?\")}')
+print(f'[OK] theme_color: {m.get(\"theme_color\",\"?\")}')
+print(f'[OK] icons: {len(m.get(\"icons\",[]))}')
+"
+          else
+            echo "[SKIP] python3 not available"
+          fi

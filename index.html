@@ -11,10 +11,10 @@
     <link rel="apple-touch-icon" href="icon.svg">
     <meta name="apple-mobile-web-app-title" content="NIU-DASH">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        html{scroll-behavior:smooth;background:#050508;font-size:110%}
+        html{scroll-behavior:smooth;background:#050508;font-size:100%}
         :root{
             --bg-primary:#050508;--bg-secondary:#0a0a14;--bg-card:#0d0d1a;
             --bg-card-hover:#12122a;--border:#1a1a3a;--border-subtle:rgba(255,255,255,.04);
@@ -325,7 +325,7 @@
         }
         .dp-item .dp-open-btn:hover{border-color:var(--cyan);background:rgba(0,255,242,.18);box-shadow:0 0 20px rgba(0,255,242,.15);transform:translateY(-1px)}
         .dp-section{margin-bottom:20px}
-        .dp-section h4{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;color:#6060a0;text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+        .dp-section h4{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#6060a0;text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:8px;margin-bottom:10px}
         .dp-section h4 .hl{width:16px;height:2px;border-radius:2px}
         .dp-section .hl-cyan{background:var(--cyan)}
         .dp-section .hl-green{background:var(--green)}
@@ -532,7 +532,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.15.1</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.0</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -655,7 +655,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.15.1',hash:'6cea479',date:'2026-06-12T14:06:31+07:00',msg:"fix: update NIU_VERSION ke 2.15.1 — proper hash & msg"};
+var NIU_VERSION = {v:'2.16.0',hash:'dcc5293',date:'2026-06-19T18:57:34+07:00',msg:"v2.16.0: update Niu-LKH status ✓ DONE + bump version"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
@@ -1750,6 +1750,7 @@ function loadPendingAdds(){
             entry.date=r.date||entry.date;
             entry.repoName=r.repoName||entry.repoName;
             entry.category=cat;
+            entry._added=true;
             PROJECTS[cat].push(entry);
         });
     }catch(e){localStorage.removeItem('niu-added-repos');}
@@ -1783,12 +1784,14 @@ function addUnlistedRepo(idx){
     var btn=event&&event.target;if(btn){btn.textContent='✓ Added!';setTimeout(function(){btn.textContent='+ ADD ke PROJECTS';},2000);}
 }
 function addAllUnlisted(){
+    var count=0;
     unlistedRepos.forEach(function(r){
         var smart=generateSmartEntry(r);
         smart._added=true;
         var cat=smart.category||'dev';
         if(!PROJECTS[cat])PROJECTS[cat]=[];
         PROJECTS[cat].push(smart);
+        count++;
     });
     unlistedRepos=[];
     savePendingAdds();
@@ -1796,7 +1799,7 @@ function addAllUnlisted(){
     currentFilter='all';
     buildFlatList();buildTagFilterBar();updateStats();updateSyncStatus();
     renderFeed('all','all');
-    showToast('✅ '+PROJECTS._added.length+' repos added with smart defaults','success',3000);
+    showToast('✅ '+count+' repos added with smart defaults','success',3000);
 }
 
 // ===== RELEASED PROJECTS — DATA =====
