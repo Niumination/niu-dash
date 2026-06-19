@@ -543,7 +543,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.4</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.5</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -667,7 +667,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.4',hash:'7385ff7',date:'2026-06-20T00:04:20+07:00',msg:"v2.16.4 — Fix overlay bug, tambah retry sync"};
+var NIU_VERSION = {v:'2.16.5',hash:'8719671',date:'2026-06-20T00:18:22+07:00',msg:"v2.16.5 — Sync version string v2.16.3→v2.16.4 di index.html"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
@@ -1139,6 +1139,12 @@ let currentFilter = 'all';
 let currentStatus = 'all';
 let selectedIndex = -1;
 let flatProjects = [];
+// Restore filter state from sessionStorage (survives tab switches but not tab close)
+try{
+    var _sf=sessionStorage.getItem('niu-filter');
+    if(_sf){var _fp=JSON.parse(_sf);if(_fp&&_fp.f)currentFilter=_fp.f;if(_fp&&_fp.s)currentStatus=_fp.s;}
+}catch(_){}
+function saveFilterState(){try{sessionStorage.setItem('niu-filter',JSON.stringify({f:currentFilter,s:currentStatus}));}catch(_){}}
 let currentSort = 'newest';
 let activeTag = null;
 let _cardCache = {};
@@ -1234,7 +1240,7 @@ function renderFeed(filter,statusFilter,searchText){
     filter=filter||currentFilter;statusFilter=statusFilter||currentStatus;
     var items=flatProjects.slice();
     if(filter!=='all')items=items.filter(function(p){return p.category===filter;});
-    if(statusFilter!=='all')items=items.filter(function(p){return p.category==='dev'&&p.status===statusFilter;});
+    if(statusFilter!=='all' && (filter==='all'||filter==='dev'))items=items.filter(function(p){return p.category==='dev'&&p.status===statusFilter;});
     if(activeTag){var t=activeTag.toLowerCase();items=items.filter(function(p){return p.tags&&p.tags.some(function(x){return x.toLowerCase()===t;});});}
     if(searchText){var q=searchText.toLowerCase();items=items.filter(function(p){return p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)||(p.tags&&p.tags.some(function(x){return x.toLowerCase().includes(q);}));});}
     items.sort(getSortFn(currentSort));
@@ -2439,6 +2445,14 @@ function toggleSidebar() {
 function setFilter(filter) {
     currentFilter = filter;
     currentView = 'categories'; // Exit released view
+    _lastDataVersion = -1; // Force full rebuild from released DOM corruption
+    // Reset status filter when switching away from 'all' or 'dev' category
+    if(filter!=='all' && filter!=='dev' && currentStatus!=='all'){
+        currentStatus='all';
+        document.querySelectorAll('#sb-status button').forEach(b => b.classList.remove('active'));
+        var allBtn=document.querySelector('#sb-status button[data-status="all"]');
+        if(allBtn)allBtn.classList.add('active');
+    }
     // Restore normal feed controls (in case returning from released view)
     var sb=document.getElementById('sort-bar');if(sb)sb.style.display='';
     var tb=document.getElementById('tag-filter-bar');if(tb)tb.style.display='';
@@ -2449,6 +2463,7 @@ function setFilter(filter) {
     if (window.innerWidth <= 768) toggleSidebar();
     renderFeed(filter, currentStatus);
     updateStats();
+    saveFilterState();
 }
 
 function setStatusFilter(status) {
@@ -2594,7 +2609,7 @@ window.addEventListener('DOMContentLoaded', () => {
     loadPendingAdds();
     loadReleased();
     buildFlatList();
-    renderFeed('all', 'all');
+    renderFeed(currentFilter, currentStatus);
     updateStats();
     initParticles();
     runBoot();
