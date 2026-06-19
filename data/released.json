@@ -44,6 +44,13 @@
       "notes": "Auto-detected: Homepage terisi (kemungkinan deployed)",
       "dateMarked": "2026-06-09T10:58:04.519Z",
       "_autoDetected": true
+    },
+    {
+      "repoName": "niu-cast",
+      "name": "Niu Cast",
+      "status": "production",
+      "dateMarked": "2026-06-19T17:40:16.098Z",
+      "fromUnlisted": true
     }
   ],
   "activityLog": [
@@ -83,5 +90,5 @@
       "timestamp": 1781002684519
     }
   ],
-  "updatedAt": "2026-06-09T10:58:06.595Z"
+  "updatedAt": "2026-06-19T17:40:18.102Z"
 }
