@@ -7,7 +7,7 @@
     <meta name="description" content="Dark Nexus — Project portfolio dashboard. 105+ proyek terinventarisasi dengan live GitHub stats, auto-detection, dan DEV TRACKER.">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#050508">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; frame-ancestors 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.svg">
     <meta name="apple-mobile-web-app-title" content="NIU-DASH">
@@ -667,7 +667,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.1',hash:'ae31483',date:'2026-06-19T22:50:08+07:00',msg:"Fase 5: Code Quality — Fix #17: refactor static inline onclick → event delegation (data-action); Fix #18: error boundary wrapper di renderFeed (per-iteration + outer catch); Fix #19: CSP meta tag; Fix #20: README version badge auto-update via pre-commit hook + update-version.js"};
+var NIU_VERSION = {v:'2.16.1',hash:'88a34fa',date:'2026-06-19T23:03:14+07:00',msg:"v2.16.1 — Fix #21: filter DOM rebuild (DocumentFragment + show/hide cache); Fix #22: path absolut (LOCAL_BASE variable)"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {

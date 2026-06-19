@@ -58,15 +58,15 @@ jobs:
         run: |
           if command -v python3 &>/dev/null; then
             python3 -c "
-import json
-with open('manifest.json') as f:
-    m = json.load(f)
-print(f'[OK] name: {m.get(\"name\",\"?\")}')
-print(f'[OK] start_url: {m.get(\"start_url\",\"?\")}')
-print(f'[OK] display: {m.get(\"display\",\"?\")}')
-print(f'[OK] theme_color: {m.get(\"theme_color\",\"?\")}')
-print(f'[OK] icons: {len(m.get(\"icons\",[]))}')
-"
+          import json
+          with open('manifest.json') as f:
+              m = json.load(f)
+          print('[OK] name:', m.get('name','?'))
+          print('[OK] start_url:', m.get('start_url','?'))
+          print('[OK] display:', m.get('display','?'))
+          print('[OK] theme_color:', m.get('theme_color','?'))
+          print('[OK] icons:', len(m.get('icons',[])))
+          "
           else
             echo "[SKIP] python3 not available"
           fi

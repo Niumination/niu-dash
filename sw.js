@@ -1,4 +1,5 @@
-/* NIU⚡DASH — Service Worker v1.1 */
+/* NIU⚡DASH — Service Worker v1.2 */
+const RELEASED_JSON_URL = 'https://raw.githubusercontent.com/Niumination/niu-dash/main/data/released.json';
 const CACHE = 'niu-dash-v1';
 const ASSETS = [
   '.',
@@ -7,7 +8,6 @@ const ASSETS = [
   'icon.svg',
   RELEASED_JSON_URL
 ];
-const RELEASED_JSON_URL = 'https://raw.githubusercontent.com/Niumination/niu-dash/main/data/released.json';
 
 // Install — cache all static assets
 self.addEventListener('install', e => {
