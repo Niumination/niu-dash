@@ -7,6 +7,7 @@
     <meta name="description" content="Dark Nexus — Project portfolio dashboard. 105+ proyek terinventarisasi dengan live GitHub stats, auto-detection, dan DEV TRACKER.">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#050508">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; frame-ancestors 'none'">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.svg">
     <meta name="apple-mobile-web-app-title" content="NIU-DASH">
@@ -555,7 +556,7 @@
 <div class="app-layout" id="app">
 
     <!-- Overlay — INSIDE app-layout agar setara stacking context dengan sidebar -->
-    <div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
+    <div class="sb-overlay" id="sb-overlay" data-action="toggle-sidebar"></div>
 
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar" id="sidebar" role="navigation" aria-label="Navigasi proyek">
@@ -571,21 +572,21 @@
 
         <div class="sb-section">⌕ Kategori</div>
         <div class="sb-nav" id="sb-nav">
-            <button data-filter="released" id="sb-released-btn" onclick="showReleased()"><span>🏁</span> Released <span class="sb-badge dim" id="sb-released">0</span></button>
-            <button data-filter="all" class="active" onclick="setFilter('all')"><span>◈</span> All Projects <span class="sb-badge" id="sb-total">0</span></button>
-            <button data-filter="ready" onclick="setFilter('ready')"><span>⚡</span> Ready <span class="sb-badge green" id="sb-ready">0</span></button>
-            <button data-filter="dev" onclick="setFilter('dev')"><span>⟐</span> Development <span class="sb-badge cyan" id="sb-dev">0</span></button>
-            <button data-filter="ideas" onclick="setFilter('ideas')"><span>◇</span> Ideas <span class="sb-badge amber" id="sb-ideas">0</span></button>
-            <button data-filter="config" onclick="setFilter('config')"><span>⚙</span> Config <span class="sb-badge purple" id="sb-config">0</span></button>
-            <button data-filter="legacy" onclick="setFilter('legacy')"><span>◫</span> Legacy <span class="sb-badge dim" id="sb-legacy">0</span></button>
+            <button data-action="show-released" id="sb-released-btn"><span>🏁</span> Released <span class="sb-badge dim" id="sb-released">0</span></button>
+            <button data-action="set-filter" data-filter="all" class="active"><span>◈</span> All Projects <span class="sb-badge" id="sb-total">0</span></button>
+            <button data-action="set-filter" data-filter="ready"><span>⚡</span> Ready <span class="sb-badge green" id="sb-ready">0</span></button>
+            <button data-action="set-filter" data-filter="dev"><span>⟐</span> Development <span class="sb-badge cyan" id="sb-dev">0</span></button>
+            <button data-action="set-filter" data-filter="ideas"><span>◇</span> Ideas <span class="sb-badge amber" id="sb-ideas">0</span></button>
+            <button data-action="set-filter" data-filter="config"><span>⚙</span> Config <span class="sb-badge purple" id="sb-config">0</span></button>
+            <button data-action="set-filter" data-filter="legacy"><span>◫</span> Legacy <span class="sb-badge dim" id="sb-legacy">0</span></button>
         </div>
 
         <div class="sb-section">◆ Status (Dev)</div>
         <div class="sb-status" id="sb-status">
-            <button data-status="all" class="active" onclick="setStatusFilter('all')">All</button>
-            <button data-status="active" onclick="setStatusFilter('active')">▶ Active</button>
-            <button data-status="staging" onclick="setStatusFilter('staging')">⟐ Staging</button>
-            <button data-status="paused" onclick="setStatusFilter('paused')">◌ Paused</button>
+            <button data-action="set-status" data-status="all" class="active">All</button>
+            <button data-action="set-status" data-status="active">▶ Active</button>
+            <button data-action="set-status" data-status="staging">⟐ Staging</button>
+            <button data-action="set-status" data-status="paused">◌ Paused</button>
         </div>
 
         <div class="sb-section" style="margin-top:auto">◆ Statistik</div>
@@ -598,7 +599,7 @@
             <div class="sb-stat"><span class="num" style="color:var(--red)" id="sb-st-total">0</span><span class="lbl">Total</span></div>
         </div>
         <div class="sb-unlisted" id="sb-unlisted-section" style="display:none">
-            <button class="sb-unlisted-btn" id="sb-unlisted-btn" onclick="showUnlisted()">
+            <button data-action="show-unlisted" class="sb-unlisted-btn" id="sb-unlisted-btn">
                 <span>🚀</span> Repo Baru Terdeteksi <span class="ul-count" id="sb-unlisted-count">0</span>
             </button>
         </div>
@@ -607,13 +608,13 @@
     <!-- ===== FEED ===== -->
     <main class="feed" id="feed" role="main">
         <div class="topbar">
-            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Buka/tutup sidebar navigasi">☰</button>
+            <button data-action="toggle-sidebar" class="sidebar-toggle" aria-label="Buka/tutup sidebar navigasi">☰</button>
             <span class="logo-text">NIU<span>⚡</span>DASH</span>
             <span class="filter-info" id="filter-info">◈ <em>all</em> projects</span>
             <div class="topbar-right">
                 <span class="sync-status" id="sync-status"></span>
-                <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()" title="Refresh GitHub data" aria-label="Refresh data GitHub">⟳</button>
-                <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Ganti tema tampilan">☀</button>
+                <button data-action="manual-refresh" class="refresh-btn" id="refresh-btn" title="Refresh GitHub data" aria-label="Refresh data GitHub">⟳</button>
+                <button data-action="toggle-theme" class="theme-btn" id="theme-btn" title="Toggle theme" aria-label="Ganti tema tampilan">☀</button>
             </div>
         </div>
         <div class="feed-body">
@@ -627,7 +628,7 @@
                 <input type="text" id="search-input" placeholder="Cari proyek..." autocomplete="off" aria-label="Cari proyek berdasarkan nama, deskripsi, atau tag">
             </div>
             <div class="activity-feed" id="activity-feed">
-                <div class="act-header" onclick="toggleActivity()">
+                <div data-action="toggle-activity" class="act-header">
                     <span class="act-title">📰 Activity</span>
                     <span class="act-info" id="act-info">...</span>
                     <span class="act-toggle" id="act-toggle">▾</span>
@@ -637,11 +638,11 @@
             <div class="tag-filter-bar" id="tag-filter-bar"></div>
             <div class="sort-bar" id="sort-bar">
                 <span class="sort-label">Sort:</span>
-                <button class="sort-btn active" onclick="setSort('newest')"><span class="sort-icon">⬇</span> Newest</button>
-                <button class="sort-btn" onclick="setSort('oldest')"><span class="sort-icon">⬆</span> Oldest</button>
-                <button class="sort-btn" onclick="setSort('az')"><span class="sort-icon">A</span> A–Z</button>
-                <button class="sort-btn" onclick="setSort('za')"><span class="sort-icon">Z</span> Z–A</button>
-                <button class="sort-btn" onclick="setSort('status')"><span class="sort-icon">◆</span> Status</button>
+                <button data-action="set-sort" data-sort="newest" class="sort-btn active"><span class="sort-icon">⬇</span> Newest</button>
+                <button data-action="set-sort" data-sort="oldest" class="sort-btn"><span class="sort-icon">⬆</span> Oldest</button>
+                <button data-action="set-sort" data-sort="az" class="sort-btn"><span class="sort-icon">A</span> A–Z</button>
+                <button data-action="set-sort" data-sort="za" class="sort-btn"><span class="sort-icon">Z</span> Z–A</button>
+                <button data-action="set-sort" data-sort="status" class="sort-btn"><span class="sort-icon">◆</span> Status</button>
             </div>
             <div class="feed-stats stagger-in" data-delay="3" id="feed-stats"></div>
             <div class="feed-cards" id="feed-list"></div>
@@ -653,7 +654,7 @@
     <aside class="detail-panel" id="detail-panel" role="complementary" aria-label="Detail proyek">
         <div class="dp-header">
             <span class="dp-title">⟐ Project Detail</span>
-            <button class="dp-close" onclick="closeDetail()">✕</button>
+            <button data-action="close-detail" class="dp-close">✕</button>
         </div>
         <div class="dp-content" id="dp-content">
             <div class="dp-empty">
@@ -666,7 +667,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.0',hash:'224960c',date:'2026-06-19T20:26:57+07:00',msg:"Fase 3: Data Integrity — Fix #10: merge released.json with manual adds (no replace); Fix #11: persist dismissed state for unlistedRepos + releasedSuggestions to localStorage; Fix #12: SW cache released.json (cache-first)"};
+var NIU_VERSION = {v:'2.16.0',hash:'84e41bc',date:'2026-06-19T22:40:02+07:00',msg:"Fase 4: UX & Mobile enhancements"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
@@ -1221,6 +1222,7 @@ function parseSmart(str) {
     return new Date(0);
 }
 function renderFeed(filter,statusFilter,searchText){
+    try {
     var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
     filter=filter||currentFilter;statusFilter=statusFilter||currentStatus;
     var items=flatProjects.slice();
@@ -1236,6 +1238,7 @@ function renderFeed(filter,statusFilter,searchText){
     noRes.style.display='none';
     var html='';
     items.forEach(function(p,i){
+        try {
         var sh='';
         if(p.category==='dev'&&p.status){var st=p.status==='active'?'▶ ACTIVE':p.status==='staging'?'⟐ STAGING':'◌ PAUSED';var sc=p.status==='active'?'color:var(--green);border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.12)':p.status==='staging'?'color:var(--cyan);border-color:rgba(0,255,242,.2);background:rgba(0,255,242,.12)':'color:#ffd000;border-color:rgba(255,208,0,.15);background:rgba(255,255,0,.08)';sh='<span class="fc-status" style="'+sc+'">'+st+'</span>';}
         var gh='';
@@ -1243,8 +1246,10 @@ function renderFeed(filter,statusFilter,searchText){
         var idx=flatProjects.indexOf(p);
         var th='';if(p.tags&&p.tags.length){for(var ti=0;ti<p.tags.length;ti++){var t=p.tags[ti];th+='<span class="tag'+(activeTag===t?' active-tag':'')+'" data-tag="'+t.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+t+'</span>';}}if(p._ghTopics){for(var gi=0;gi<p._ghTopics.length;gi++){var gt=p._ghTopics[gi];th+='<span class="tag gh-topic" data-tag="'+gt.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+gt+'</span>';}}
         html+='<div class="feed-card '+p.category+(selectedIndex===idx?' selected':'')+'" onclick="selectProject('+idx+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();selectProject('+idx+')}" tabindex="0" role="button" style="animation-delay:'+(i*0.03)+'s" data-index="'+idx+'"><div class="fc-strip"></div><div class="fc-icon">'+p.icon+'</div><div class="fc-body"><h3>'+p.name+(getRepoDate(p)?'<span class="fc-date">'+getRepoDate(p)+'</span>':'')+'</h3><div class="fc-desc">'+(p._ghDesc||p.desc)+'</div><div class="fc-tags">'+th+'</div>'+gh+'</div>'+sh+'</div>';
+    }catch(e){console.warn('[Niu-Dash] Skipped project render:',p&&p.name,e);}
     });
     list.innerHTML=html;
+    }catch(e){console.error('[Niu-Dash] renderFeed error:',e);showToast('Render error: '+e.message,'error');}
 }
 function langColor(lang){var cc={'JavaScript':'#f1e05a','TypeScript':'#3178c6','Python':'#3572a5','Rust':'#dea584','HTML':'#e34c26','CSS':'#563d7c','Shell':'#89e051','C++':'#f34b7d','C':'#555555','Nix':'#7e7eff','Kotlin':'#A97BFF','Dart':'#00b4ab','Vue':'#41b883','Svelte':'#ff3e00','Ruby':'#701516','Swift':'#ffac45','Java':'#b07219','Go':'#00add8','MDX':'#fcb32c','SCSS':'#c6538c','Less':'#1d365d','TeX':'#3d6117','Perl':'#0298c3','Lua':'#000080','Dockerfile':'#384d54','Makefile':'#427819'};return cc[lang]||'#8b8b8b';}
 function getRepoDate(p){
@@ -2513,6 +2518,25 @@ window.addEventListener('DOMContentLoaded', () => {
             if(fx-ex2>80&&!sidebar.classList.contains('open')){sidebar.classList.add('open');document.getElementById('sb-overlay').classList.add('show');}
         },{passive:true});}
     })();
+
+    // Fix #17: Delegated event handlers (replaces static inline onclick)
+    document.addEventListener('click', function(e){
+        var el=e.target.closest('[data-action]');
+        if(!el) return;
+        var a=el.getAttribute('data-action');
+        switch(a){
+            case 'toggle-sidebar': toggleSidebar(); break;
+            case 'close-detail': closeDetail(); break;
+            case 'manual-refresh': manualRefresh(); break;
+            case 'toggle-theme': toggleTheme(); break;
+            case 'toggle-activity': toggleActivity(); break;
+            case 'show-released': showReleased(); break;
+            case 'show-unlisted': showUnlisted(); break;
+            case 'set-filter': setFilter(el.getAttribute('data-filter')||'all'); break;
+            case 'set-status': setStatusFilter(el.getAttribute('data-status')||'all'); break;
+            case 'set-sort': setSort(el.getAttribute('data-sort')||'newest'); break;
+        }
+    }, {passive:true});
 });
 </script>
 <div class="toast-container" id="toast-container"></div>

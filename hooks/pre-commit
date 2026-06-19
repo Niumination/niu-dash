@@ -9,7 +9,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Re-stage index.html since update-version.js modified it
-git add "$(dirname "$0")/../index.html"
+# Re-stage files that update-version.js modified
+git add "$(dirname "$0")/../index.html" "$(dirname "$0")/../README.md"
 
 echo "[pre-commit] ✅ NIU_VERSION updated"

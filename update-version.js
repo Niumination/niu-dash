@@ -23,7 +23,7 @@ const tag = tagMatch ? tagMatch[1].replace(/^v/,'') : currentVer;
 const versionStr = `var NIU_VERSION = {v:'${tag}',hash:'${hash}',date:'${date}',msg:${JSON.stringify(msg)}};`;
 
 let html = fs.readFileSync(__dirname + '/index.html', 'utf8');
-const re = /var NIU_VERSION = \{v:'[\d.]+',hash:'[a-f0-9]+',date:'[^']+',msg:[^;]+};/;
+const re = /var NIU_VERSION = \{v:'[\d.]+',hash:'[a-f0-9]+',date:'[^']+',msg:.*?};/;
 
 if (re.test(html)) {
     html = html.replace(re, versionStr);
@@ -36,4 +36,15 @@ if (re.test(html)) {
 html = html.replace(/Dark Nexus v[\d.]+/, 'Dark Nexus v' + tag);
 
 fs.writeFileSync(__dirname + '/index.html', html);
+
+// Update README badge
+try {
+    let readme = fs.readFileSync(__dirname + '/README.md', 'utf8');
+    readme = readme.replace(/(badge\/version-)[\d.]+/, '$1' + tag);
+    fs.writeFileSync(__dirname + '/README.md', readme);
+    console.log('✅ README badge updated to v' + tag);
+} catch(e) {
+    console.warn('[update-version] README badge update skipped:', e.message);
+}
+
 console.log('✅ Version updated:', versionStr);
