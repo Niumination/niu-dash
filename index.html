@@ -543,7 +543,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.1</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.2</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -667,7 +667,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.1',hash:'88a34fa',date:'2026-06-19T23:03:14+07:00',msg:"v2.16.1 — Fix #21: filter DOM rebuild (DocumentFragment + show/hide cache); Fix #22: path absolut (LOCAL_BASE variable)"};
+var NIU_VERSION = {v:'2.16.2',hash:'321ab90',date:'2026-06-19T23:26:19+07:00',msg:"v2.16.2 — Fix CI YAML, CSP, SW, console errors"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
@@ -1852,6 +1852,16 @@ function addUnlistedRepo(idx){
     PROJECTS[cat].push(smart);
     unlistedRepos.splice(idx,1);
     savePendingAdds();
+    // Also push to released + GitHub for cross-session persistence
+    var rn=(r.repoName||'').toLowerCase();
+    if(rn&&!releasedProjects.some(function(p){return(p.repoName||'').toLowerCase()===rn;})){
+        releasedProjects.push({
+            repoName:rn,name:smart.name||rn,
+            status:cat==='legacy'?'completed':'production',
+            dateMarked:new Date().toISOString(),fromUnlisted:true
+        });
+        saveReleased(); // persists to GitHub (if token available) + localStorage
+    }
     buildFlatList();buildTagFilterBar();updateStats();updateSyncStatus();
     var sec=document.getElementById('sb-unlisted-section');
     var countEl=document.getElementById('sb-unlisted-count');
@@ -1874,9 +1884,19 @@ function addAllUnlisted(){
         if(!PROJECTS[cat])PROJECTS[cat]=[];
         PROJECTS[cat].push(smart);
         count++;
+        // Also push to released + GitHub
+        var rn=(r.repoName||'').toLowerCase();
+        if(rn&&!releasedProjects.some(function(p){return(p.repoName||'').toLowerCase()===rn;})){
+            releasedProjects.push({
+                repoName:rn,name:smart.name||rn,
+                status:cat==='legacy'?'completed':'production',
+                dateMarked:new Date().toISOString(),fromUnlisted:true
+            });
+        }
     });
     unlistedRepos=[];
     savePendingAdds();
+    saveReleased(); // bulk push to GitHub
     document.getElementById('sb-unlisted-section').style.display='none';
     currentFilter='all';
     buildFlatList();buildTagFilterBar();updateStats();updateSyncStatus();
@@ -1913,6 +1933,37 @@ function loadReleased(){
     try{var d=localStorage.getItem('niu-released');if(d)releasedProjects=JSON.parse(d);if(!Array.isArray(releasedProjects))releasedProjects=[];}catch(e){releasedProjects=[];}
     // If localStorage is empty (e.g. after clearing cache), try GitHub
     if(!releasedProjects.length)fetchReleasedFromGitHub();
+    else syncReleasedToProjects();
+}
+// Sync released projects (from GitHub) back into main PROJECTS
+// so entries added-from-unlisted survive cache clear
+function syncReleasedToProjects(){
+    var existing={};
+    Object.keys(PROJECTS).forEach(function(cat){
+        if(Array.isArray(PROJECTS[cat]))PROJECTS[cat].forEach(function(p){
+            if(p.repoName)existing[p.repoName.toLowerCase()]=true;
+        });
+    });
+    var added=0;
+    releasedProjects.forEach(function(rp){
+        var rn=(rp.repoName||'').toLowerCase();
+        if(!rn||existing[rn]||!rp.fromUnlisted)return;
+        var g=githubData[rn];
+        var entry={
+            icon:getEmojiForRepo(g||{}),name:rp.name||rn,
+            path:'https://github.com/Niumination/'+rn,
+            desc:(g&&g.description)||'Synced from released data.',
+            tags:['auto-sync'],date:'',repoName:rn,
+            category:rp.status==='completed'?'legacy':'ready',
+            _added:true
+        };
+        var cat=entry.category||'dev';
+        if(!PROJECTS[cat])PROJECTS[cat]=[];
+        PROJECTS[cat].push(entry);
+        existing[rn]=true;
+        added++;
+    });
+    if(added){savePendingAdds();buildFlatList();buildTagFilterBar();updateStats();renderFeed(currentFilter||'all',currentStatus||'all');}
 }
 function saveReleased(skipPush){
     localStorage.setItem('niu-released',JSON.stringify(releasedProjects));
@@ -2247,6 +2298,8 @@ function fetchReleasedFromGitHub(){
                 saveReleased(true);
                 saveReleasedActivityLog();
                 updateReleasedBadge();
+                // Restore released entries back into main PROJECTS
+                syncReleasedToProjects();
                 if(typeof renderReleased==='function'&&currentView==='released')renderReleased();
                 console.log('[Released] GitHub sync: merged',data.projects.length,'from GitHub, total',releasedProjects.length);
                 return true;
@@ -2333,9 +2386,24 @@ async function _doPushReleased(attempt){
 function showSyncConfig(){
     var token=getReleasedToken();
     if(token){
-        showToast('✅ Sync aktif — token terpasang di kode','success',3000);
+        showToast('✅ Sync aktif — token tersimpan. Push ke GitHub berjalan otomatis.','success',3000);
     }else{
-        showToast('⚠ Token GitHub tidak ditemukan di kode','error',5000);
+        // Show token input prompt
+        var overlay=document.createElement('div');
+        overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;';
+        var box=document.createElement('div');
+        box.style.cssText='background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:480px;width:90%;';
+        box.innerHTML=
+            '<h3 style="margin:0 0 12px;color:var(--amber)">🔑 Token GitHub</h3>'+
+            '<p style="margin:0 0 16px;color:var(--text-secondary);font-size:13px">Set token untuk sync data ke GitHub. Token disimpan di localStorage browser.</p>'+
+            '<input id="token-input" type="password" placeholder="ghp_..." style="width:100%;padding:10px 14px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:monospace;font-size:13px;margin-bottom:12px">'+
+            '<div style="display:flex;gap:8px;justify-content:flex-end">'+
+            '<button class="sort-btn" onclick="this.closest(\'div[style]\').parentElement.remove()">Batal</button>'+
+            '<button class="sort-btn" style="border-color:var(--cyan);color:var(--cyan)" onclick="var t=document.getElementById(\'token-input\').value;if(t&&t.length>10){localStorage.setItem(\'niu_gh_token\',t);this.closest(\'div[style]\').parentElement.remove();showToast(\'✅ Token tersimpan — sync aktif\',\'success\',3000);updateTokenStatus();}else{showToast(\'⚠ Token tidak valid (min 10 karakter)\',\'error\',3000);}">Simpan</button>'+
+            '</div>';
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
+        setTimeout(function(){var inp=document.getElementById('token-input');if(inp)inp.focus();},100);
     }
 }
 
