@@ -543,7 +543,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.2</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.3</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -667,7 +667,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.2',hash:'321ab90',date:'2026-06-19T23:26:19+07:00',msg:"v2.16.2 — Fix CI YAML, CSP, SW, console errors"};
+var NIU_VERSION = {v:'2.16.3',hash:'55cd751',date:'2026-06-19T23:46:11+07:00',msg:"v2.16.3 — Persist unlisted-add ke GitHub, sync restored ke PROJECTS"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
@@ -2388,21 +2388,29 @@ function showSyncConfig(){
     if(token){
         showToast('✅ Sync aktif — token tersimpan. Push ke GitHub berjalan otomatis.','success',3000);
     }else{
-        // Show token input prompt
         var overlay=document.createElement('div');
+        overlay.id='sync-overlay';
         overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;';
-        var box=document.createElement('div');
-        box.style.cssText='background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:480px;width:90%;';
-        box.innerHTML=
+        overlay.innerHTML=
+            '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:480px;width:90%">'+
             '<h3 style="margin:0 0 12px;color:var(--amber)">🔑 Token GitHub</h3>'+
             '<p style="margin:0 0 16px;color:var(--text-secondary);font-size:13px">Set token untuk sync data ke GitHub. Token disimpan di localStorage browser.</p>'+
             '<input id="token-input" type="password" placeholder="ghp_..." style="width:100%;padding:10px 14px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:monospace;font-size:13px;margin-bottom:12px">'+
             '<div style="display:flex;gap:8px;justify-content:flex-end">'+
-            '<button class="sort-btn" onclick="this.closest(\'div[style]\').parentElement.remove()">Batal</button>'+
-            '<button class="sort-btn" style="border-color:var(--cyan);color:var(--cyan)" onclick="var t=document.getElementById(\'token-input\').value;if(t&&t.length>10){localStorage.setItem(\'niu_gh_token\',t);this.closest(\'div[style]\').parentElement.remove();showToast(\'✅ Token tersimpan — sync aktif\',\'success\',3000);updateTokenStatus();}else{showToast(\'⚠ Token tidak valid (min 10 karakter)\',\'error\',3000);}">Simpan</button>'+
-            '</div>';
-        overlay.appendChild(box);
+            '<button class="sort-btn" id="sync-btn-batal">Batal</button>'+
+            '<button class="sort-btn" id="sync-btn-simpan" style="border-color:var(--cyan);color:var(--cyan)">Simpan</button>'+
+            '</div></div>';
         document.body.appendChild(overlay);
+        document.getElementById('sync-btn-batal').onclick=function(){document.getElementById('sync-overlay').remove();};
+        document.getElementById('sync-btn-simpan').onclick=function(){
+            var t=document.getElementById('token-input').value;
+            if(t&&t.length>10){
+                localStorage.setItem('niu_gh_token',t);
+                document.getElementById('sync-overlay').remove();
+                showToast('✅ Token tersimpan — sync aktif','success',3000);
+                updateTokenStatus();
+            }else{showToast('⚠ Token tidak valid (min 10 karakter)','error',3000);}
+        };
         setTimeout(function(){var inp=document.getElementById('token-input');if(inp)inp.focus();},100);
     }
 }
@@ -2592,6 +2600,13 @@ window.addEventListener('DOMContentLoaded', () => {
     runBoot();
     buildTagFilterBar();
     initKeyboardShortcuts();
+    // Retry sync from GitHub in case async fetch failed or was slow
+    setTimeout(function(){
+        if(!releasedProjects.length){
+            console.log('[Released] Init fallback: retrying GitHub fetch...');
+            fetchReleasedFromGitHub();
+        }
+    },3000);
     document.querySelectorAll('button, .dp-open-btn, .sidebar-toggle').forEach(el => {
         el.addEventListener('click', () => playClick());
         el.addEventListener('mouseenter', () => playHover());
