@@ -543,7 +543,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.0</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.1</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -667,7 +667,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.0',hash:'84e41bc',date:'2026-06-19T22:40:02+07:00',msg:"Fase 4: UX & Mobile enhancements"};
+var NIU_VERSION = {v:'2.16.1',hash:'ae31483',date:'2026-06-19T22:50:08+07:00',msg:"Fase 5: Code Quality — Fix #17: refactor static inline onclick → event delegation (data-action); Fix #18: error boundary wrapper di renderFeed (per-iteration + outer catch); Fix #19: CSP meta tag; Fix #20: README version badge auto-update via pre-commit hook + update-version.js"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
@@ -1133,13 +1133,18 @@ const DEV_META = {
     },
 };
 
-// ===== STATE =====
+// ===== CONFIG & STATE =====
+const LOCAL_BASE = '/Volumes/Niumination';
 let currentFilter = 'all';
 let currentStatus = 'all';
 let selectedIndex = -1;
 let flatProjects = [];
 let currentSort = 'newest';
 let activeTag = null;
+let _cardCache = {};
+let _lastSort = 'newest';
+let _dataVersion = 0;
+let _lastDataVersion = -1;
 let githubData = {};
 let unlistedRepos = [];
 let tagCounts = {};
@@ -1183,6 +1188,7 @@ function buildFlatList() {
             }
             flatProjects.push({
                 ...p,
+                path: p.path && p.path.startsWith('/Volumes/Niumination/') ? p.path.replace('/Volumes/Niumination/', LOCAL_BASE + '/') : p.path,
                 category: cat,
                 categoryLabel: labels[cat],
                 status: meta ? meta.status : null,
@@ -1194,6 +1200,7 @@ function buildFlatList() {
         });
     });
     buildTagCounts();
+    _dataVersion++;
     return flatProjects;
 }
 
@@ -1236,19 +1243,53 @@ function renderFeed(filter,statusFilter,searchText){
     statsEl.innerHTML='<span class="fs-item"><strong style="color:var(--cyan)">'+items.length+'</strong> visible</span><span class="fs-item">of <strong style="color:var(--text-secondary)">'+flatProjects.length+'</strong> total</span>';
     if(!items.length){list.innerHTML='';noRes.style.display='block';return;}
     noRes.style.display='none';
-    var html='';
-    items.forEach(function(p,i){
-        try {
-        var sh='';
-        if(p.category==='dev'&&p.status){var st=p.status==='active'?'▶ ACTIVE':p.status==='staging'?'⟐ STAGING':'◌ PAUSED';var sc=p.status==='active'?'color:var(--green);border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.12)':p.status==='staging'?'color:var(--cyan);border-color:rgba(0,255,242,.2);background:rgba(0,255,242,.12)':'color:#ffd000;border-color:rgba(255,208,0,.15);background:rgba(255,255,0,.08)';sh='<span class="fc-status" style="'+sc+'">'+st+'</span>';}
-        var gh='';
-        if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];var pts=[];if(g.language)pts.push('<span class="lang" style="background:'+langColor(g.language)+'"></span> '+g.language);if(g.stars>0)pts.push('<span class="star">★</span> '+g.stars);if(g.forks>0)pts.push('<span class="fork">₂</span> '+g.forks);if(pts.length)gh='<div class="fc-meta"><span class="fc-gh">'+pts.join(' · ')+'</span></div>';}
-        var idx=flatProjects.indexOf(p);
-        var th='';if(p.tags&&p.tags.length){for(var ti=0;ti<p.tags.length;ti++){var t=p.tags[ti];th+='<span class="tag'+(activeTag===t?' active-tag':'')+'" data-tag="'+t.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+t+'</span>';}}if(p._ghTopics){for(var gi=0;gi<p._ghTopics.length;gi++){var gt=p._ghTopics[gi];th+='<span class="tag gh-topic" data-tag="'+gt.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+gt+'</span>';}}
-        html+='<div class="feed-card '+p.category+(selectedIndex===idx?' selected':'')+'" onclick="selectProject('+idx+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();selectProject('+idx+')}" tabindex="0" role="button" style="animation-delay:'+(i*0.03)+'s" data-index="'+idx+'"><div class="fc-strip"></div><div class="fc-icon">'+p.icon+'</div><div class="fc-body"><h3>'+p.name+(getRepoDate(p)?'<span class="fc-date">'+getRepoDate(p)+'</span>':'')+'</h3><div class="fc-desc">'+(p._ghDesc||p.desc)+'</div><div class="fc-tags">'+th+'</div>'+gh+'</div>'+sh+'</div>';
-    }catch(e){console.warn('[Niu-Dash] Skipped project render:',p&&p.name,e);}
-    });
-    list.innerHTML=html;
+    var needsRebuild=!list.children.length||_lastDataVersion!==_dataVersion||_lastSort!==currentSort;
+    _lastSort=currentSort;_lastDataVersion=_dataVersion;
+    if(needsRebuild){
+        var frag=document.createDocumentFragment();
+        items.forEach(function(p,i){
+            try {
+            var idx=flatProjects.indexOf(p);
+            var cardHtml=_cardCache[idx];
+            if(!cardHtml){
+                var sh='';
+                if(p.category==='dev'&&p.status){var st=p.status==='active'?'▶ ACTIVE':p.status==='staging'?'⟐ STAGING':'◌ PAUSED';var sc=p.status==='active'?'color:var(--green);border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.12)':p.status==='staging'?'color:var(--cyan);border-color:rgba(0,255,242,.2);background:rgba(0,255,242,.12)':'color:#ffd000;border-color:rgba(255,208,0,.15);background:rgba(255,255,0,.08)';sh='<span class="fc-status" style="'+sc+'">'+st+'</span>';}
+                var gh='';
+                if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];var pts=[];if(g.language)pts.push('<span class="lang" style="background:'+langColor(g.language)+'"></span> '+g.language);if(g.stars>0)pts.push('<span class="star">★</span> '+g.stars);if(g.forks>0)pts.push('<span class="fork">₂</span> '+g.forks);if(pts.length)gh='<div class="fc-meta"><span class="fc-gh">'+pts.join(' · ')+'</span></div>';}
+                var th='';if(p.tags&&p.tags.length){for(var ti=0;ti<p.tags.length;ti++){var t=p.tags[ti];th+='<span class="tag'+(activeTag===t?' active-tag':'')+'" data-tag="'+t.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+t+'</span>';}}if(p._ghTopics){for(var gi=0;gi<p._ghTopics.length;gi++){var gt=p._ghTopics[gi];th+='<span class="tag gh-topic" data-tag="'+gt.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+gt+'</span>';}}
+                cardHtml='<div class="fc-strip"></div><div class="fc-icon">'+p.icon+'</div><div class="fc-body"><h3>'+p.name+(getRepoDate(p)?'<span class="fc-date">'+getRepoDate(p)+'</span>':'')+'</h3><div class="fc-desc">'+(p._ghDesc||p.desc)+'</div><div class="fc-tags">'+th+'</div>'+gh+'</div>'+sh;
+                _cardCache[idx]=cardHtml;
+            }
+            var card=document.createElement('div');
+            card.className='feed-card '+p.category+(selectedIndex===idx?' selected':'');
+            card.setAttribute('onclick',"selectProject("+idx+")");
+            card.setAttribute('onkeydown',"if(event.key==='Enter'||event.key===' '){event.preventDefault();selectProject("+idx+")}");
+            card.setAttribute('tabindex','0');
+            card.setAttribute('role','button');
+            card.style.animationDelay=(i*0.03)+'s';
+            card.dataset.index=idx;
+            card.innerHTML=cardHtml;
+            frag.appendChild(card);
+        }catch(e){console.warn('[Niu-Dash] Skipped project render:',p&&p.name,e);}
+        });
+        list.innerHTML='';
+        list.appendChild(frag);
+    }else{
+        var matched={};
+        items.forEach(function(p){matched[flatProjects.indexOf(p)]=true;});
+        var vi=0;
+        Array.from(list.children).forEach(function(card){
+            var idx=parseInt(card.dataset.index);
+            if(matched[idx]){
+                card.style.display='';
+                card.style.animationDelay=(vi*0.03)+'s';
+                card.classList.toggle('selected',selectedIndex===idx);
+                vi++;
+            }else{
+                card.style.display='none';
+            }
+        });
+    }
     }catch(e){console.error('[Niu-Dash] renderFeed error:',e);showToast('Render error: '+e.message,'error');}
 }
 function langColor(lang){var cc={'JavaScript':'#f1e05a','TypeScript':'#3178c6','Python':'#3572a5','Rust':'#dea584','HTML':'#e34c26','CSS':'#563d7c','Shell':'#89e051','C++':'#f34b7d','C':'#555555','Nix':'#7e7eff','Kotlin':'#A97BFF','Dart':'#00b4ab','Vue':'#41b883','Svelte':'#ff3e00','Ruby':'#701516','Swift':'#ffac45','Java':'#b07219','Go':'#00add8','MDX':'#fcb32c','SCSS':'#c6538c','Less':'#1d365d','TeX':'#3d6117','Perl':'#0298c3','Lua':'#000080','Dockerfile':'#384d54','Makefile':'#427819'};return cc[lang]||'#8b8b8b';}
