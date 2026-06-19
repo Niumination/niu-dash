@@ -520,6 +520,8 @@
         .ul-action-btn:hover{border-color:var(--cyan);color:var(--cyan)}
         .ul-action-btn.add-btn{border-color:rgba(0,255,136,.2);color:var(--green);background:rgba(0,255,136,.06)}
         .ul-action-btn.add-btn:hover{background:rgba(0,255,136,.15);border-color:var(--green)}
+        .ul-action-btn.dismiss-btn{border-color:rgba(255,255,255,.08);color:var(--text-muted);background:rgba(255,255,255,.02)}
+        .ul-action-btn.dismiss-btn:hover{border-color:var(--red);color:var(--red);background:rgba(255,0,0,.06)}
         @media(max-width:480px){
             .feed-card.unlisted .fc-desc{-webkit-line-clamp:2}
             .ul-actions{flex-direction:column}
@@ -660,7 +662,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.0',hash:'1a50883',date:'2026-06-19T19:54:47+07:00',msg:"Fase 1: critical + high fixes - Fix #1: _added flag in loadPendingAdds() -> data persist - Fix #2: NaN bug in addAllUnlisted() toast -> real count - Fix #3: manifest icons -> proper sizing per resolution - Fix #4: Rajdhani 700 removed (glyph bbox error) -> Inter 600 - Fix #5: html font-size 110% -> 100%"};
+var NIU_VERSION = {v:'2.16.0',hash:'c82e2ea',date:'2026-06-19T20:04:37+07:00',msg:"Fase 2: API & Performance fixes"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // ===== PROJECT DATA (105+ projects, 5 categories) =====
 const PROJECTS = {
@@ -1668,9 +1670,12 @@ function enrichFromGitHub(){
 function detectUnlistedRepos(){
     unlistedRepos=[];
     var listed=new Set();
+    // Load dismissed unlisted repos
+    var dismissed={};
+    try{var du=localStorage.getItem('niu-dismissed-unlisted');if(du){var arr=JSON.parse(du);if(Array.isArray(arr))arr.forEach(function(k){if(k)dismissed[k.toLowerCase()]=true;});}}catch(_){}
     flatProjects.forEach(function(p){if(p.repoName)listed.add(p.repoName.toLowerCase());});
     Object.keys(githubData).forEach(function(key){
-        if(listed.has(key))return;
+        if(listed.has(key)||dismissed[key])return;
         var r=githubData[key];
         // Double-check by trying name match (some paths aren't standard GitHub URLs)
         var nameMatch=flatProjects.some(function(p){return p.name.toLowerCase().replace(/[^a-z0-9-]/g,'')===key;});
@@ -1729,7 +1734,7 @@ function renderUnlisted(){
             if(p.forks>0)pts.push('<span class="fork">₂</span> '+p.forks);
             if(pts.length)gh='<div class="fc-meta"><span class="fc-gh">'+pts.join(' · ')+'</span></div>';
         }
-        html+='<div class="feed-card unlisted"><div class="fc-strip"></div><div class="fc-icon">△</div><div class="fc-body"><h3>'+p.name+(p.date?'<span class="fc-date"> '+p.date+'</span>':'')+'</h3><div class="fc-desc">'+p.desc+'</div>'+gh+'<div class="ul-actions"><a class="ul-action-btn" href="'+p.path+'" target="_blank">↗ Buka Repo</a><button class="ul-action-btn add-btn" onclick="addUnlistedRepo('+i+')">+ ADD ke PROJECTS</button></div></div><span class="ul-badge">NEW</span></div>';
+        html+='<div class="feed-card unlisted"><div class="fc-strip"></div><div class="fc-icon">△</div><div class="fc-body"><h3>'+p.name+(p.date?'<span class="fc-date"> '+p.date+'</span>':'')+'</h3><div class="fc-desc">'+p.desc+'</div>'+gh+'<div class="ul-actions"><a class="ul-action-btn" href="'+p.path+'" target="_blank">↗ Buka Repo</a><button class="ul-action-btn add-btn" onclick="addUnlistedRepo('+i+')">+ ADD ke PROJECTS</button><button class="ul-action-btn dismiss-btn" onclick="dismissUnlistedRepo('+i+')">✕ Dismiss</button></div></div><span class="ul-badge">NEW</span></div>';
     });
     list.innerHTML=html;
 }
@@ -1828,6 +1833,30 @@ function addAllUnlisted(){
     renderFeed('all','all');
     showToast('✅ '+count+' repos added with smart defaults','success',3000);
 }
+function dismissUnlistedRepo(idx){
+    var r=unlistedRepos[idx];
+    if(!r||!r.repoName)return;
+    try{
+        var arr=[];
+        var d=localStorage.getItem('niu-dismissed-unlisted');
+        if(d)arr=JSON.parse(d);
+        if(!Array.isArray(arr))arr=[];
+        if(arr.indexOf(r.repoName)===-1)arr.push(r.repoName);
+        localStorage.setItem('niu-dismissed-unlisted',JSON.stringify(arr));
+    }catch(_){}
+    unlistedRepos.splice(idx,1);
+    var sec=document.getElementById('sb-unlisted-section');
+    var countEl=document.getElementById('sb-unlisted-count');
+    if(unlistedRepos.length){
+        countEl.textContent=unlistedRepos.length;
+        renderUnlisted();
+    }else{
+        sec.style.display='none';
+        currentFilter='all';
+        renderFeed('all','all');
+    }
+    showToast('✕ Dismissed — tidak akan muncul lagi','info',2000);
+}
 
 // ===== RELEASED PROJECTS — DATA =====
 function loadReleased(){
@@ -1842,10 +1871,13 @@ function saveReleased(skipPush){
 function detectReleasedFromGitHub(){
     releasedSuggestions=[];
     var existing=new Set(releasedProjects.map(function(p){return(p.repoName||'').toLowerCase();}));
+    // Load dismissed suggestions so they don't reappear
+    var dismissed={};
+    try{var ds=localStorage.getItem('niu-dismissed-suggestions');if(ds){var arr=JSON.parse(ds);if(Array.isArray(arr))arr.forEach(function(k){if(k)dismissed[k.toLowerCase()]=true;});}}catch(_){}
     var allProjs=flatProjects.concat(unlistedRepos);
     allProjs.forEach(function(p){
         var rn=(p.repoName||'').toLowerCase();
-        if(!rn||existing.has(rn))return;
+        if(!rn||existing.has(rn)||dismissed[rn])return;
         var g=githubData[rn];
         if(!g)return;
         if(g.has_pages&&g.homepage&&!existing.has(rn)){
@@ -2074,6 +2106,17 @@ function addReleasedSuggestion(idx){
     showToast('✅ '+(s.name||s.repoName)+' ditambahkan','success',2000);
 }
 function dismissReleasedSuggestion(idx){
+    var s=releasedSuggestions[idx];
+    if(s&&s.repoName){
+        try{
+            var arr=[];
+            var d=localStorage.getItem('niu-dismissed-suggestions');
+            if(d)arr=JSON.parse(d);
+            if(!Array.isArray(arr))arr=[];
+            if(arr.indexOf(s.repoName)===-1)arr.push(s.repoName);
+            localStorage.setItem('niu-dismissed-suggestions',JSON.stringify(arr));
+        }catch(_){}
+    }
     releasedSuggestions.splice(idx,1);
     updateReleasedBadge();
     if(releasedSuggestions.length)showReleasedSuggestions();else{
@@ -2137,13 +2180,25 @@ function fetchReleasedFromGitHub(){
         })
         .then(function(data){
             if(data&&Array.isArray(data.projects)){
-                releasedProjects=data.projects;
-                releasedActivityLog=data.activityLog||[];
+                // Merge: keep existing entries, add from GitHub that don't exist locally
+                var existingMap={};
+                releasedProjects.forEach(function(p){
+                    var key=(p.repoName||'').toLowerCase();
+                    if(key)existingMap[key]=true;
+                });
+                data.projects.forEach(function(p){
+                    var key=(p.repoName||'').toLowerCase();
+                    if(key&&!existingMap[key]){
+                        releasedProjects.push(p);
+                        existingMap[key]=true;
+                    }
+                });
+                releasedActivityLog=data.activityLog||releasedActivityLog||[];
                 saveReleased(true);
                 saveReleasedActivityLog();
                 updateReleasedBadge();
                 if(typeof renderReleased==='function'&&currentView==='released')renderReleased();
-                console.log('[Released] GitHub sync: loaded',releasedProjects.length,'projects');
+                console.log('[Released] GitHub sync: merged',data.projects.length,'from GitHub, total',releasedProjects.length);
                 return true;
             }
             throw new Error('Invalid data format');

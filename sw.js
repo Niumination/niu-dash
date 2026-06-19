@@ -1,11 +1,13 @@
-/* NIU⚡DASH — Service Worker v1.0 */
+/* NIU⚡DASH — Service Worker v1.1 */
 const CACHE = 'niu-dash-v1';
 const ASSETS = [
   '.',
   'index.html',
   'manifest.json',
-  'icon.svg'
+  'icon.svg',
+  RELEASED_JSON_URL
 ];
+const RELEASED_JSON_URL = 'https://raw.githubusercontent.com/Niumination/niu-dash/main/data/released.json';
 
 // Install — cache all static assets
 self.addEventListener('install', e => {
@@ -27,6 +29,12 @@ self.addEventListener('activate', e => {
 // Fetch — cache-first for static, network-first for API, stale-while-revalidate for others
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
+  
+  // released.json — cache-first (always serve cached, update in background)
+  if (url.href.startsWith(RELEASED_JSON_URL)) {
+    e.respondWith(cacheFirst(e.request));
+    return;
+  }
   
   // GitHub API — network-first (always want fresh data)
   if (url.hostname === 'api.github.com') {
