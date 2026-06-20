@@ -3,8 +3,8 @@
 **Lokasi:** `projects/niu-dash/`
 **Stack:** Single-file HTML/CSS/JS Vanilla, PWA
 **Remote:** `github.com/Niumination/niu-dash`
-**Deploy:** 🟢 GH Pages — v2.16.5 | **Audit:** 22/22 ✅
-**HEAD:** 9876671 | **Last Push:** 20 Jun 2026
+**Deploy:** 🟢 GH Pages — v2.16.7 | **Audit:** 27/27 ✅
+**HEAD:** e3f6447 | **Last Push:** 21 Jun 2026
 
 ## Overview
 
@@ -12,10 +12,11 @@ Niu-Dash adalah dark web glitch dashboard untuk memonitor ekosistem Niumination.
 
 ## Audit Status
 
-22/22 ALL FIXED ✅ — Fase 1-6 selesai:
+27/27 ALL FIXED ✅ — Fase 1-7 selesai:
 - Critical (3): Unlisted-add persist, overlay bug, PWA icon ✅
 - High (7): Rate limit, font, categorization, commit cache, particles, README, font-size ✅
 - Medium+ (12): RenderFeed, SW caching, CSP, path absolut, dll ✅
+- Fix Batch (5): Pagination, renderFeed args, _gT cleanup, KANBAN_API_URL config, SW root cache ✅
 
 ## Tasks
 

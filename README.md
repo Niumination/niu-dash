@@ -2,7 +2,7 @@
 
 **Dark Nexus — Project Portfolio Dashboard**
 
-[![Version](https://img.shields.io/badge/version-2.16.6-00fff2?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
+[![Version](https://img.shields.io/badge/version-2.16.7-00fff2?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
 [![License](https://img.shields.io/badge/license-MIT-ff00ff?style=flat&labelColor=050508)](LICENSE)
 [![Projects](https://img.shields.io/badge/projects-105+-ffaa00?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
 

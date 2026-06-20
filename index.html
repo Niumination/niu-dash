@@ -561,7 +561,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.6</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.7</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -686,7 +686,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.6',hash:'d960c86',date:'2026-06-21T01:49:35+07:00',msg:"v2.16.6 — fix Ecosystem View schema mismatch: renderEcosystem() handle tier/priority, backend-compatible fallback"};
+var NIU_VERSION = {v:'2.16.7',hash:'e3f6447',date:'2026-06-21T02:31:04+07:00',msg:"v2.16.7 — fix cross-category count mismatch: updateStats() uses flatProjects, autoCategorize() preserves curated PROJECTS data"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // Error capture for debugging
 var _niuErrors=[];
@@ -1714,6 +1714,8 @@ function autoCategorize(){
     var now=Date.now(),THREE=90*86400000,SIX=180*86400000;
     flatProjects.forEach(function(p){
         if(!p.repoName||p.category==='config'||p.category==='unlisted')return;
+        // Skip curated PROJECTS items — only auto-categorize dynamically added (_added) repos
+        if(!p._added)return;
         var g=githubData[p.repoName.toLowerCase()];
         if(!g)return;
         var t=new Date(g.updated_at).getTime();
@@ -2648,8 +2650,7 @@ function updateStats() {
     const cats = ['ready','dev','ideas','config','legacy'];
     const total = flatProjects.length;
     cats.forEach(cat => {
-        var arr=PROJECTS[cat];
-        var count=Array.isArray(arr)?arr.length:0;
+        var count=flatProjects.filter(function(p){return p.category===cat;}).length;
         var el1=document.getElementById('sb-'+cat),el2=document.getElementById('sb-st-'+cat);
         if(el1)el1.textContent=count;if(el2)el2.textContent=count;
     });
