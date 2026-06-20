@@ -105,6 +105,11 @@
         }
         .sidebar .sb-nav button:hover{background:rgba(0,255,242,.06);border-color:rgba(0,255,242,.2);color:var(--cyan)}
         .sidebar .sb-nav button.active{background:rgba(0,255,242,.1);border-color:var(--cyan);color:var(--cyan)}
+/* Ecosystem card tiers */
+.feed-card.ec-p1 .fc-strip{background:var(--red);box-shadow:0 0 8px rgba(255,0,64,.4)}
+.feed-card.ec-p2 .fc-strip{background:var(--amber);box-shadow:0 0 6px rgba(255,170,0,.3)}
+.feed-card.ec-p3 .fc-strip{background:var(--text-muted);opacity:.4}
+
         .sidebar .sb-nav button .sb-badge{margin-left:auto;font-size:10px;padding:1px 8px;border-radius:8px;background:rgba(255,255,255,.05)}
         .sidebar .sb-nav button.active .sb-badge{background:rgba(0,255,242,.15)}
         .sidebar .sb-nav button .sb-badge.green{color:var(--green)}
@@ -573,6 +578,7 @@
         <div class="sb-section">⌕ Kategori</div>
         <div class="sb-nav" id="sb-nav">
             <button data-action="show-released" id="sb-released-btn"><span>🏁</span> Released <span class="sb-badge dim" id="sb-released">0</span></button>
+            <button data-action="show-ecosystem" id="sb-eco-btn"><span>⊞</span> Ecosystem <span class="sb-badge dim" id="sb-eco-count">0</span></button>
             <button data-action="set-filter" data-filter="all" class="active"><span>◈</span> All Projects <span class="sb-badge" id="sb-total">0</span></button>
             <button data-action="set-filter" data-filter="ready"><span>⚡</span> Ready <span class="sb-badge green" id="sb-ready">0</span></button>
             <button data-action="set-filter" data-filter="dev"><span>⟐</span> Development <span class="sb-badge cyan" id="sb-dev">0</span></button>
@@ -667,7 +673,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.5',hash:'148bea2',date:'2026-06-20T01:24:09+07:00',msg:"revert: balik ke v2.16.4 — remove _lastDataVersion hack, revert index.html ke 7385ff7"};
+var NIU_VERSION = {v:'2.16.5',hash:'9876671',date:'2026-06-20T01:46:59+07:00',msg:"chore: remove debug file"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // Error capture for debugging
 var _niuErrors=[];
@@ -2004,6 +2010,136 @@ function updateReleasedBadge(){
     else el.className='sb-badge '+(count>0?'green':'dim');
 }
 // ===== RELEASED PROJECTS — VIEW =====
+// ===== ECOSYSTEM VIEW =====
+let ecosystemData = null;
+let ecosystemLoaded = false;
+function showEcosystem(){
+    currentView='ecosystem';
+    document.querySelectorAll('#sb-nav button').forEach(function(b){b.classList.remove('active');});
+    var btn=document.getElementById('sb-eco-btn');
+    if(btn)btn.classList.add('active');
+    // Hide normal feed controls
+    var sb=document.getElementById('sort-bar');
+    if(sb)sb.style.display='none';
+    var tb=document.getElementById('tag-filter-bar');
+    if(tb)tb.style.display='none';
+    var si=document.getElementById('search-input');
+    if(si)si.parentElement.style.display='none';
+    var af=document.getElementById('activity-feed');
+    if(af)af.style.display='none';
+    if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open'),document.getElementById('sb-overlay').classList.remove('show');
+    renderEcosystem();
+}
+function renderEcosystem(){
+    var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
+    fi.innerHTML='⊞ <em>Ecosystem</em> — 30 projects'+(ecosystemLoaded&&ecosystemData?' · synced':'');
+    if(!ecosystemLoaded&&!ecosystemData){
+        statsEl.innerHTML='<span class="fs-item" style="color:var(--amber)">⟳ Fetching ecosystem data...</span>';
+        list.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--text-muted)"><div style="font-size:32px;margin-bottom:12px">⟳</div><p>Memuat data ekosistem...</p></div>';
+        noRes.style.display='none';
+        fetchEcosystemData();
+        return;
+    }
+    if(!ecosystemData){
+        statsEl.innerHTML='<span class="fs-item">No ecosystem data available</span>';
+        list.innerHTML='';
+        noRes.style.display='block';
+        noRes.innerHTML='<div class="emoji">⊞</div><p>Ecosystem data sedang tidak tersedia. Jalankan Kanban server atau refresh halaman.</p>';
+        return;
+    }
+    var data=ecosystemData;
+    var total=data.projects?data.projects.length:0;
+    var gitCount=data.git||0;
+    var doxCount=data.dox||0;
+    var cronCount=data.crons||0;
+    var taskCount=data.tasks||0;
+    statsEl.innerHTML='<span class="fs-item"><strong style="color:var(--cyan)">'+total+'</strong> projects</span><span class="fs-item"><strong style="color:var(--green)">'+gitCount+'</strong> git</span><span class="fs-item"><strong style="color:var(--amber)">'+doxCount+'</strong> DOX</span><span class="fs-item"><strong style="color:var(--neon-purple)">'+cronCount+'</strong> cron</span><span class="fs-item"><strong style="color:var(--text-secondary)">'+taskCount+'</strong> tasks</span>';
+    noRes.style.display='none';
+    var html='';
+    // Tier legend
+    html+='<div style="display:flex;gap:12px;margin-bottom:16px;font-size:11px;flex-wrap:wrap">';
+    html+='<span style="color:var(--red);font-weight:700">🔴 P1 Critical</span>';
+    html+='<span style="color:var(--amber)">🟡 P2 Active</span>';
+    html+='<span style="color:var(--text-muted)">⚪ P3 Minor</span>';
+    html+='</div>';
+    // Cards
+    (data.projects||[]).forEach(function(p,i){
+        var tierClass='';
+        var tierLabel='';
+        if(p.priority==='P1'){tierClass='ec-p1';tierLabel='🔴 P1';}
+        else if(p.priority==='P2'){tierClass='ec-p2';tierLabel='🟡 P2';}
+        else {tierClass='ec-p3';tierLabel='⚪ P3';}
+        var statusSymbol='⬜';
+        if(p.status==='completed'||p.status==='done')statusSymbol='✅';
+        else if(p.status==='in_progress'||p.status==='active')statusSymbol='⟳';
+        else if(p.status==='paused'||p.status==='cancelled')statusSymbol='⏸';
+        html+='<div class="feed-card '+tierClass+'" style="cursor:default">';
+        html+='<div class="fc-strip"></div>';
+        html+='<div class="fc-icon">'+tierLabel+'</div>';
+        html+='<div class="fc-body">';
+        html+='<h3>'+p.name+' <span class="fc-date">'+statusSymbol+' '+(p.status||'pending')+'</span></h3>';
+        html+='<div class="fc-desc">'+(p.desc||p.description||'')+'</div>';
+        html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">';
+        if(p.git)html+='<span class="tag gh-topic">'+p.git+'</span>';
+        if(p.dox)html+='<span class="tag" style="background:rgba(255,170,0,.1);color:var(--amber)">📄 DOX</span>';
+        if(p.cron)html+='<span class="tag" style="background:rgba(0,255,242,.1);color:var(--cyan)">⏱ cron</span>';
+        if(p.deployUrl)html+='<a class="tag" href="'+p.deployUrl+'" target="_blank" style="background:rgba(0,255,136,.1);color:var(--green);text-decoration:none">↗ deploy</a>';
+        html+='</div></div></div>';
+    });
+    list.innerHTML=html;
+}
+function fetchEcosystemData(){
+    // Coba ambil dari Kanban API
+    fetch('http://localhost:5199/api/ecosystem')
+        .then(function(r){return r.json();})
+        .then(function(d){
+            ecosystemData=d;
+            ecosystemLoaded=true;
+            renderEcosystem();
+            document.getElementById('sb-eco-count').textContent=(d.projects?d.projects.length:0);
+        })
+        .catch(function(){
+            // Fallback: build from BACKLOG raw
+            console.log('[Ecosystem] Kanban API unavailable, building from GitHub raw...');
+            ecosystemData={projects:[],git:0,dox:0,crons:0,tasks:0};
+            // Ambil BACKLOG.md dari raw GitHub
+            fetch('https://raw.githubusercontent.com/Niumination/Niumination/refs/heads/main/BACKLOG.md')
+                .then(function(r){return r.text();})
+                .then(function(txt){
+                    var lines=txt.split('\n');
+                    var currentPriority='P3';
+                    var projects=[];
+                    for(var i=0;i<lines.length;i++){
+                        var l=lines[i].trim();
+                        if(l.includes('P1')&&l.includes('Critical'))currentPriority='P1';
+                        else if(l.includes('P2')&&l.includes('Active'))currentPriority='P2';
+                        else if(l.includes('P3')&&l.includes('Minor'))currentPriority='P3';
+                        var m=l.match(/^-\s*\[(.)\]\s*\*\*(.+?)\*\*\s*—\s*(.+?)\s*—\s*@(\S+)/);
+                        if(m){
+                            var st=m[1].trim();
+                            var statusMap={' ':'pending','~':'in_progress','x':'completed','-':'cancelled'};
+                            projects.push({
+                                name:m[2],desc:m[3],
+                                tag:m[4],
+                                priority:currentPriority,
+                                status:statusMap[st]||'pending'
+                            });
+                        }
+                    }
+                    ecosystemData.projects=projects;
+                    ecosystemData.git=projects.length;
+                    ecosystemLoaded=true;
+                    renderEcosystem();
+                    document.getElementById('sb-eco-count').textContent=projects.length;
+                })
+                .catch(function(e){
+                    console.error('[Ecosystem] Fallback failed:',e);
+                    ecosystemLoaded=true;
+                    renderEcosystem();
+                });
+        });
+}
+
 function showReleased(){
     currentView='released';
     document.querySelectorAll('#sb-nav button').forEach(function(b){b.classList.remove('active');});
@@ -2442,7 +2578,7 @@ function toggleSidebar() {
 // ===== FILTERS =====
 function setFilter(filter) {
     currentFilter = filter;
-    currentView = 'categories'; // Exit released view
+    currentView = 'categories'; // Exit released/ecosystem view
     _lastDataVersion = -1; // Force full rebuild from released DOM corruption
     // Restore normal feed controls (in case returning from released view)
     var sb=document.getElementById('sort-bar');if(sb)sb.style.display='';
@@ -2660,6 +2796,7 @@ window.addEventListener('DOMContentLoaded', () => {
             case 'toggle-theme': toggleTheme(); break;
             case 'toggle-activity': toggleActivity(); break;
             case 'show-released': showReleased(); break;
+            case 'show-ecosystem': showEcosystem(); break;
             case 'show-unlisted': showUnlisted(); break;
             case 'set-filter': setFilter(el.getAttribute('data-filter')||'all'); break;
             case 'set-status': setStatusFilter(el.getAttribute('data-status')||'all'); break;

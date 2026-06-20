@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIUMINATION // ECOSYSTEM</title>
+    <meta name="description" content="Niumination Ecosystem Overview — 28 proyek (20 git + 8 non-git)">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{background:#050508;color:#e8e8f0;font-family:'Inter','Segoe UI',sans-serif;font-size:14px;scroll-behavior:smooth}
+        body{padding:2rem;max-width:1200px;margin:0 auto}
+        h1{font-size:1.8rem;font-weight:800;margin-bottom:.25rem;background:linear-gradient(135deg,#00fff2,#b000ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .subtitle{color:#8888aa;margin-bottom:2rem;font-size:.9rem}
+        .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+        .stat-card{background:#0d0d1a;border:1px solid #1a1a3a;border-radius:8px;padding:1rem;text-align:center}
+        .stat-card .num{font-size:1.8rem;font-weight:700;color:#00fff2}
+        .stat-card .lbl{font-size:.75rem;color:#8888aa;margin-top:.25rem}
+        .stat-card.green .num{color:#00ff88}
+        .stat-card.amber .num{color:#ffaa00}
+        .stat-card.red .num{color:#ff0040}
+        .section{margin-bottom:2rem}
+        .section h2{font-size:1.1rem;font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid #1a1a3a;color:#aaaacc}
+        .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+        .proj-card{background:#0d0d1a;border:1px solid #1a1a3a;border-radius:8px;padding:1rem;transition:border-color .2s}
+        .proj-card:hover{border-color:#00fff244}
+        .proj-card .name{font-weight:600;font-size:.95rem;margin-bottom:.25rem}
+        .proj-card .name a{color:#e8e8f0;text-decoration:none}
+        .proj-card .name a:hover{color:#00fff2}
+        .proj-card .meta{font-size:.78rem;color:#8888aa;margin-bottom:.5rem}
+        .proj-card .tags{display:flex;flex-wrap:wrap;gap:4px}
+        .tag{padding:2px 8px;border-radius:4px;font-size:.7rem;background:#1a1a3a;color:#8888aa}
+        .tag.green{background:#00ff8822;color:#00ff88}
+        .tag.cyan{background:#00fff222;color:#00fff2}
+        .tag.amber{background:#ffaa0022;color:#ffaa00}
+        .tag.red{background:#ff004022;color:#ff0040}
+        .divider{margin:2rem 0;border:0;border-top:1px solid #1a1a3a}
+        .footer{text-align:center;color:#55557a;font-size:.78rem;padding:2rem 0}
+        .cron-section{background:#0d0d1a;border:1px solid #1a1a3a;border-radius:8px;padding:1rem;margin-bottom:2rem}
+        .cron-section h3{font-size:.9rem;color:#aaaacc;margin-bottom:.5rem}
+        .cron-item{font-size:.82rem;color:#8888aa;padding:.25rem 0;display:flex;gap:.5rem}
+        .cron-item .schedule{color:#ffaa00;min-width:100px}
+    </style>
+</head>
+<body>
+    <h1>⚡ NIUMINATION // ECOSYSTEM</h1>
+    <p class="subtitle">28 item lokal (20 git + 8 non-git) · Remote ~20 repositori · Diperbarui 20 Jun 2026</p>
+
+    <div class="stats-row">
+        <div class="stat-card green"><div class="num">3</div><div class="lbl">✅ Done</div></div>
+        <div class="stat-card amber"><div class="num">12</div><div class="lbl">🔄 Active</div></div>
+        <div class="stat-card"><div class="num">36</div><div class="lbl">⏳ Pending</div></div>
+        <div class="stat-card"><div class="num">6</div><div class="lbl">⚙️ Cron Active</div></div>
+        <div class="stat-card green"><div class="num">10</div><div class="lbl">📋 Tier 1 DOX</div></div>
+    </div>
+
+    <div class="cron-section">
+        <h3>⏰ Scheduled Crons</h3>
+        <div class="cron-item"><span class="schedule">every 5m</span><span>Niu-Kanban-Dash Watchdog — pantau server</span></div>
+        <div class="cron-item"><span class="schedule">every 1h</span><span>Hermes Heartbeat — keep-alive hermes</span></div>
+        <div class="cron-item"><span class="schedule">every 1h</span><span>Kanban Backlog Sync — BACKLOG → kanban.db</span></div>
+        <div class="cron-item"><span class="schedule">every 6h</span><span>Ecosystem Health Check — disk, git, deploy</span></div>
+        <div class="cron-item"><span class="schedule">every 6h</span><span>Remote Poller — deteksi perubahan remote</span></div>
+        <div class="cron-item"><span class="schedule">08:00 daily</span><span>Daily Heartbeat — ringkasan ekosistem harian</span></div>
+        <div class="cron-item"><span class="schedule">Sun 08:00</span><span>Gitleaks Weekly — secret scan seluruh repo</span></div>
+        <div class="cron-item"><span class="schedule">21:00 daily</span><span>Brain Daily Capture — backup catatan harian</span></div>
+    </div>
+
+    <div class="section" id="tier1">
+        <h2>🎯 Tier 1 — Active Projects (DOX Complete)</h2>
+        <div class="project-grid" id="tier1-grid"></div>
+    </div>
+
+    <div class="section" id="tier2">
+        <h2>🧪 Tier 2 — Experimental & Tools</h2>
+        <div class="project-grid" id="tier2-grid"></div>
+    </div>
+
+    <div class="section" id="remote">
+        <h2>☁️ Remote-Only (GitHub, no local)</h2>
+        <div class="project-grid" id="remote-grid"></div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="footer">
+        Niumination Ecosystem · <a href="https://github.com/Niumination" style="color:#00fff2;text-decoration:none">github.com/Niumination</a> · 
+        <a href="https://niumination.github.io/niu-dash" style="color:#8888aa;text-decoration:none">← Back to Dashboard</a>
+    </div>
+
+<script>
+const projects = [
+  // === Tier 1 (DOX Complete) ===
+  {name:'TEDEO', desc:'Delivery Service — Express/React/MySQL', tier:1, stack:['Express','Prisma','Socket.IO','MySQL','Expo'], status:'in_progress', gh:'Niumination/TEDEO', deploy:'local'},
+  {name:'kune-ya.com', desc:'AI Chat RAG — Next.js 15, Prisma, PostgreSQL', tier:1, stack:['Next.js','Prisma','PostgreSQL','Tailwind','Vercel'], status:'in_progress', gh:'Niumination/kune-ya.com', deploy:'vercel'},
+  {name:'Niu-Dash', desc:'Dark Nexus Dashboard — Single-file HTML/JS/CSS PWA', tier:1, stack:['Vanilla JS','PWA','GitHub API'], status:'in_progress', gh:'Niumination/niu-dash', deploy:'gh-pages', ver:'v2.16.5'},
+  {name:'Niu-Flow', desc:'JCode Bridge Pipeline — paralel + retry + QC', tier:1, stack:['Python','JCode Bash','Hermes Agent'], status:'in_progress', gh:'Niumination/niu-flow', deploy:'local'},
+  {name:'niu-vermilion', desc:'Second Brain — Notes, Tasks, Bookmarks, Graph', tier:1, stack:['Next.js','Supabase','TipTap','Prisma'], status:'in_progress', gh:'Niumination/niu-vermilion', deploy:'local', ver:'65%'},
+  {name:'PemdiAcehTengah', desc:'Portal Pemda Aceh Tengah — 52 OPD, 70 pages', tier:1, stack:['Next.js 14','React 18','Pure CSS'], status:'in_progress', gh:'Niumination/PemdiAcehTengah', deploy:'vercel', ver:'6 Quick Win ✅'},
+  {name:'niu-cast', desc:'Android Screen Mirror — Gaming Edition', tier:1, stack:['Python','PyQt5','ADB'], status:'pending', gh:'Niumination/niu-cast', deploy:'local', ver:'v1.1.1'},
+  {name:'Flame-ADE', desc:'AI-native Terminal Emulator', tier:1, stack:['Tauri 2','Rust','React 19','TypeScript'], status:'in_progress', gh:'Niumination/Flame-ADE', deploy:'desktop', ver:'v1.3.0'},
+  {name:'Niu-LKH', desc:'Laporan Kegiatan Harian — ✅ 100% Done 🎉', tier:1, stack:['React 19','Vite 6','Tailwind v4','Supabase'], status:'done', gh:'Niumination/Niu-LKH', deploy:'gh-pages', ver:'v3.1.1'},
+  {name:'brain', desc:'Obsidian Vault — Knowledge base & catatan harian', tier:1, stack:['Markdown','Obsidian','Git'], status:'in_progress', gh:'Niumination/brain', deploy:'local'},
+  // === Tier 2 ===
+  {name:'TEDEO-Kanban', desc:'Kanban untuk TEDEO — Vite/React/Zustand', tier:2, stack:['React','Zustand','@dnd-kit','PWA'], status:'in_progress', gh:'Niumination/TEDEO-Kanban'},
+  {name:'JHermUSB-portable', desc:'Hermes Agent Portable USB — launcher + config', tier:2, stack:['Shell','Hermes Agent v25'], status:'active', gh:'Niumination/JHermUSB-portable'},
+  {name:'AuditTI-AT', desc:'Audit TI Aceh Tengah — GH Pages Live', tier:2, stack:['JS','HTML','CSS'], status:'active', gh:'Niumination/AuditTI-AT', deploy:'gh-pages'},
+  {name:'terax-ai', desc:'Lightweight ADE fork (TypeScript)', tier:2, stack:['TypeScript','Tauri'], status:'pending', gh:'Niumination/terax-ai'},
+  {name:'niutui', desc:'Rust CLI/TUI app — terminal interface', tier:2, stack:['Rust','CLI','TUI'], status:'pending', gh:'Niumination/niutui'},
+  {name:'maze-3d', desc:'3D Web Maze Game', tier:2, stack:['Three.js','WebGL'], status:'pending', gh:'Niumination/maze-3d', deploy:'gh-pages'},
+  {name:'niu-studio', desc:'Creative Studio — Tauri/React', tier:2, stack:['Tauri','React'], status:'pending'},
+  {name:'niude', desc:'Tauri desktop app', tier:2, stack:['Tauri'], status:'pending'},
+  {name:'niuterm', desc:'Tauri terminal tool', tier:2, stack:['Tauri'], status:'pending'},
+  {name:'zen', desc:'acehtengah-web/', tier:2, stack:['HTML','CSS'], status:'pending'},
+  {name:'niu-kanban-dash', desc:'React/Vite Dashboard — ❌ NO GIT', tier:2, stack:['React','Vite','SQLite'], status:'pending'},
+  {name:'orchestrator', desc:'Python multi-agent — ❌ NO GIT', tier:2, stack:['Python'], status:'pending'},
+  // === Remote-Only ===
+  {name:'kms-spbe', desc:'SPBE Knowledge Management', tier:3, status:'live', gh:'Niumination/kms-spbe', deploy:'vercel'},
+  {name:'DiskominfoAT', desc:'Diskominfo Aceh Tengah', tier:3, status:'live', gh:'Niumination/DiskominfoAT', deploy:'gh-pages'},
+  {name:'Diskominfo-Web', desc:'Diskominfo Web', tier:3, status:'live', gh:'Niumination/Diskominfo-Web', deploy:'gh-pages'},
+  {name:'SPBE-DevOps-Academy', desc:'SPBE DevOps Academy', tier:3, status:'live', gh:'Niumination/SPBE-DevOps-Academy', deploy:'gh-pages'},
+  {name:'VirtualAssistance', desc:'Virtual Assistance AI', tier:3, status:'live', gh:'Niumination/VirtualAssistance', deploy:'vercel'},
+  {name:'Rekapitulasi-SPBE', desc:'Rekap SPBE', tier:3, status:'stale', gh:'Niumination/Rekapitulasi-SPBE'},
+  {name:'Database-DiskominfoAT', desc:'DB Diskominfo AT', tier:3, status:'stale', gh:'Niumination/Database-DiskominfoAT'},
+  {name:'Automata', desc:'Automata', tier:3, status:'stale', gh:'Niumination/Automata'},
+  {name:'Prakom-Surgawi', desc:'Prakom Surgawi', tier:3, status:'stale', gh:'Niumination/Prakom-Surgawi'},
+  {name:'Niu-Startpage', desc:'Niu Startpage', tier:3, status:'active', gh:'Niumination/Niu-Startpage', deploy:'gh-pages'},
+  {name:'Niu-Cyber-Search-Engine', desc:'Niu Cyber Search Engine', tier:3, status:'active', gh:'Niumination/Niu-Cyber-Search-Engine', deploy:'gh-pages'},
+  {name:'NiuHomePage', desc:'Niu Home Page', tier:3, status:'active', gh:'Niumination/NiuHomePage'},
+  {name:'ryuland', desc:'Hyprland ecosystem dots', tier:3, status:'active', gh:'Niumination/ryuland'},
+];
+
+function renderCard(p) {
+  const statusMap = {done:'✅ Done', in_progress:'🔄 Active', pending:'⏳ Pending', active:'✅ Active', live:'🟢 Live', stale:'⚪ Stale'};
+  const st = statusMap[p.status] || p.status;
+  const tagClass = {done:'green', active:'green', live:'green', in_progress:'amber', pending:'', stale:'red'}[p.status] || '';
+  const ghLink = p.gh ? `<a href="https://github.com/${p.gh}" target="_blank">${p.gh}</a>` : '';
+  const ver = p.ver ? `<span style="color:#ffaa00;font-size:.7rem">${p.ver}</span>` : '';
+  const deploy = p.deploy ? `<span style="color:#8888aa;font-size:.7rem">${p.deploy.toUpperCase()}</span>` : '';
+  return `<div class="proj-card">
+    <div class="name">${ghLink || p.name} ${ver}</div>
+    <div class="meta">${p.desc} ${deploy ? '· '+deploy : ''}</div>
+    <div class="tags">
+      <span class="tag ${tagClass}">${st}</span>
+      ${(p.stack||[]).map(s => `<span class="tag">${s}</span>`).join('')}
+    </div>
+  </div>`;
+}
+
+document.getElementById('tier1-grid').innerHTML = projects.filter(p => p.tier === 1).map(renderCard).join('');
+document.getElementById('tier2-grid').innerHTML = projects.filter(p => p.tier === 2).map(renderCard).join('');
+document.getElementById('remote-grid').innerHTML = projects.filter(p => p.tier === 3).map(renderCard).join('');
+</script>
+</body>
+</html>

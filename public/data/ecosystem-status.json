@@ -1,0 +1,114 @@
+{
+  "version": 2,
+  "generated_at": "2026-06-20T16:28:10+07:00",
+  "total_tasks": 51,
+  "kanban": {
+    "active": 0,
+    "todo": 0,
+    "done": 4,
+    "archived": 0
+  },
+  "backlog": {
+    "total": 51,
+    "p1": 0
+0,
+    "p2": 0
+0,
+    "p3": 0
+0
+  },
+  "projects": [
+    {
+      "name": "TEDEO",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P1",
+      "git": "Niumination/TEDEO",
+      "dox": true,
+      "desc": "Delivery Service — T1-T4 critical bugs fixed, butuh deploy test"
+    },
+    {
+      "name": "kune-ya.com",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P1",
+      "git": "Niumination/kune-ya.com",
+      "dox": true,
+      "desc": "AI Chat RAG — analytics & rate limiting"
+    },
+    {
+      "name": "PemdiAcehTengah",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P1",
+      "git": "Niumination/PemdiAcehTengah",
+      "dox": true,
+      "desc": "Portal Pemda Aceh Tengah — 52 OPD, 70 pages"
+    },
+    {
+      "name": "niu-vermilion",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P1",
+      "git": "Niumination/Niu-Vermilion",
+      "dox": true,
+      "desc": "Second Brain — V1-V5 auth fixed"
+    },
+    {
+      "name": "Niu-Flow",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P2",
+      "git": "Niumination/Niu-Flow",
+      "dox": true,
+      "desc": "JCode bridge — pipeline paralel, 5 commits"
+    },
+    {
+      "name": "niu-dash",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P2",
+      "git": "Niumination/niu-dash",
+      "dox": true,
+      "deployUrl": "https://niumination.github.io/niu-dash",
+      "desc": "Ecosystem dashboard — v2.16.5, 22/22 audit"
+    },
+    {
+      "name": "Niu-LKH",
+      "tier": 1,
+      "status": "done",
+      "priority": "P2",
+      "git": "Niumination/Niu-LKH",
+      "dox": true,
+      "deployUrl": "https://niumination.github.io/Niu-LKH",
+      "desc": "Laporan Kegiatan Harian — v3.1.1 ✅ 100%"
+    },
+    {
+      "name": "Flame-ADE",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P2",
+      "git": "Niumination/Flame-ADE",
+      "dox": true,
+      "desc": "Tauri/Rust v1.3.0 — AI-native terminal"
+    },
+    {
+      "name": "niu-cast",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P2",
+      "git": "Niumination/niu-cast",
+      "dox": true,
+      "desc": "Android ADB Tool & Screen Mirror v1.1.1"
+    },
+    {
+      "name": "brain",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P2",
+      "git": "Niumination/brain",
+      "dox": true,
+      "desc": "Obsidian Vault — 14 inbox daily"
+    }
+  ]
+}
