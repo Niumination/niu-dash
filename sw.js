@@ -4,6 +4,7 @@ const CACHE = 'niu-dash-v1';
 const ASSETS = [
   '.',
   'index.html',
+  '/',
   'manifest.json',
   'icon.svg',
   RELEASED_JSON_URL

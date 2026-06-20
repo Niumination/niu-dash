@@ -561,7 +561,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.5</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.6</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -686,7 +686,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.5',hash:'f50f83e',date:'2026-06-21T00:41:12+07:00',msg:"v2.16.5 — Ecosystem View: sidebar button, tiered cards, stats, auto-fetch dari Kanban server"};
+var NIU_VERSION = {v:'2.16.6',hash:'d960c86',date:'2026-06-21T01:49:35+07:00',msg:"v2.16.6 — fix Ecosystem View schema mismatch: renderEcosystem() handle tier/priority, backend-compatible fallback"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // Error capture for debugging
 var _niuErrors=[];
@@ -1186,15 +1186,14 @@ var RELEASED_GH_REPO='niu-dash';
 var RELEASED_GH_PATH='data/released.json';
 var releasedGitSha=null;
 var releasedSyncTimer=null;
+var KANBAN_API_URL='http://localhost:5199/api/ecosystem';
 // Obfuscated token (charCode array) to avoid GitHub secret detection
 /* 🔴 KEAMANAN: Token GitHub tidak boleh di-hardcode di kode sumber.
    Pengguna dapat menyetel token via localStorage:
      localStorage.setItem('niu_gh_token', 'ghp_xxx...')
    Jika tidak disetel, fitur Released berjalan read-only (baca dari GitHub).
    Lihat SECURITY.md untuk informasi lebih lanjut. */
-var _RH=[]; // Token dihapus pada audit 12 Jun 2026 — lihat catatan di atas
-function _gT(){return null;}
-/* Fungsi tetap ada untuk kompatibilitas — token dibaca dari localStorage jika ada */
+/* Token dibaca dari localStorage — lihat SECURITY.md */
 
 // ===== BUILD FLAT LIST =====
 function buildFlatList() {
@@ -1588,21 +1587,34 @@ async function fetchGitHubData(isManual, attempt){
         var ghToken=getReleasedToken();
         var fetchOpts={};
         if(ghToken) fetchOpts.headers={'Authorization':'token '+ghToken};
-        var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated',fetchOpts);
-        var rl=r.headers&&r.headers.get('X-RateLimit-Remaining');
-        if(r.status===403&&rl==='0'){
-            var reset=r.headers.get('X-RateLimit-Reset');
-            var wait=reset?Math.ceil((reset*1000-Date.now())/60000):'?';
-            showToast('⚠ GitHub API rate limited. Reset in '+wait+'m','error',6000);
-            var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
+        // Paginated fetch — handle repos > 100 (max 10 pages)
+        var allRepos=[];
+        for(var pg=1;pg<=10;pg++){
+            var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated&page='+pg,fetchOpts);
+            if(pg===1){
+                var rl=r.headers&&r.headers.get('X-RateLimit-Remaining');
+                if(r.status===403&&rl==='0'){
+                    var reset=r.headers.get('X-RateLimit-Reset');
+                    var wait=reset?Math.ceil((reset*1000-Date.now())/60000):'?';
+                    showToast('⚠ GitHub API rate limited. Reset in '+wait+'m','error',6000);
+                    var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
+                }
+            }
+            var repos=await r.json();
+            if(Array.isArray(repos)){
+                allRepos=allRepos.concat(repos);
+                var link=r.headers&&r.headers.get('Link');
+                if(!link||link.indexOf('rel="next"')===-1)break;
+            }else break;
         }
-        var repos=await r.json();
-        if(Array.isArray(repos)){repos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,pushed_at:rr.pushed_at||null,created_at:rr.created_at||null};});var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);}
-        else showToast('⚠ GitHub API returned unexpected data','warn',5000);
+        if(allRepos.length>0){
+            allRepos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,pushed_at:rr.pushed_at||null,created_at:rr.created_at||null};});
+            var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);
+        }else showToast('⚠ GitHub API returned unexpected data','warn',5000);
     }catch(e){
         if(attempt<3){showToast('⚠ GitHub API error — retrying ('+attempt+'/3)','warn',3000);setTimeout(function(){fetchGitHubData(isManual,attempt+1);},1500*attempt);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}
         showToast('⚠ GitHub API error — using cached data','warn',5000);
-        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed();}catch(_){}}}
+        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);}catch(_){}}}
     if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
     if(selectedIndex>=0&&flatProjects[selectedIndex]&&flatProjects[selectedIndex].repoName)fetchCommitData(flatProjects[selectedIndex].repoName);
 }
@@ -2104,7 +2116,7 @@ function renderEcosystem(){
 }
 function fetchEcosystemData(){
     // Coba ambil dari Kanban API
-    fetch('http://localhost:5199/api/ecosystem')
+    fetch(KANBAN_API_URL)
         .then(function(r){return r.json();})
         .then(function(d){
             ecosystemData=d;
@@ -2476,8 +2488,6 @@ function getReleasedToken(){
     // Cek localStorage dulu — user bisa set token sendiri
     var userToken=localStorage.getItem('niu_gh_token');
     if(userToken&&userToken.length>10)return userToken;
-    // Fallback built-in (sudah dikosongkan sejak audit 12 Jun 2026)
-    if(typeof _gT==='function')return _gT();
     return null;
 }
 async function _doPushReleased(attempt){
