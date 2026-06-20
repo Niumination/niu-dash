@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-21T00:00:00+07:00",
+  "title": "Design System: Niu-Dash",
+  "extensions": {
+    "colorMeta": {
+      "neon-cyan": {
+        "role": "primary",
+        "displayName": "Neon Cyan",
+        "canonical": "oklch(0.88 0.15 197)",
+        "purpose": "Aksen primer — navigasi aktif, state terpilih, glow indikator, link",
+        "tonalRamp": ["oklch(0.15 0.15 197)", "oklch(0.25 0.15 197)", "oklch(0.38 0.15 197)", "oklch(0.50 0.15 197)", "oklch(0.63 0.15 197)", "oklch(0.75 0.15 197)", "oklch(0.88 0.15 197)", "oklch(0.95 0.08 197)"]
+      },
+      "danger-red": {
+        "role": "tertiary",
+        "displayName": "Danger Red",
+        "canonical": "oklch(0.52 0.28 32)",
+        "purpose": "Alert, error, glitch overlay, tombol close/danger",
+        "tonalRamp": ["oklch(0.15 0.28 32)", "oklch(0.22 0.28 32)", "oklch(0.30 0.28 32)", "oklch(0.38 0.28 32)", "oklch(0.45 0.28 32)", "oklch(0.52 0.28 32)", "oklch(0.62 0.20 32)", "oklch(0.75 0.12 32)"]
+      },
+      "success-green": {
+        "role": "tertiary",
+        "displayName": "Success Green",
+        "canonical": "oklch(0.82 0.25 163)",
+        "purpose": "Status Active, kategori Ready, indikator OK",
+        "tonalRamp": ["oklch(0.15 0.25 163)", "oklch(0.25 0.25 163)", "oklch(0.35 0.25 163)", "oklch(0.48 0.25 163)", "oklch(0.60 0.25 163)", "oklch(0.72 0.25 163)", "oklch(0.82 0.25 163)", "oklch(0.92 0.12 163)"]
+      },
+      "warning-amber": {
+        "role": "tertiary",
+        "displayName": "Warning Amber",
+        "canonical": "oklch(0.77 0.18 72)",
+        "purpose": "Kategori Ideas, unlisted repo, rate limit warning",
+        "tonalRamp": ["oklch(0.15 0.18 72)", "oklch(0.25 0.18 72)", "oklch(0.36 0.18 72)", "oklch(0.47 0.18 72)", "oklch(0.58 0.18 72)", "oklch(0.68 0.18 72)", "oklch(0.77 0.18 72)", "oklch(0.88 0.10 72)"]
+      },
+      "accent-magenta": {
+        "role": "secondary",
+        "displayName": "Accent Magenta",
+        "canonical": "oklch(0.58 0.29 307)",
+        "purpose": "Aksen kedua — kategori Config, topic tag GitHub",
+        "tonalRamp": ["oklch(0.15 0.29 307)", "oklch(0.24 0.29 307)", "oklch(0.33 0.29 307)", "oklch(0.42 0.29 307)", "oklch(0.50 0.29 307)", "oklch(0.58 0.29 307)", "oklch(0.68 0.20 307)", "oklch(0.82 0.10 307)"]
+      },
+      "bg-deepest": {
+        "role": "neutral",
+        "displayName": "Deepest Background",
+        "canonical": "oklch(0.03 0.01 260)",
+        "purpose": "Body, app root, boot overlay",
+        "tonalRamp": ["oklch(0.03 0.01 260)", "oklch(0.04 0.015 260)", "oklch(0.05 0.015 260)", "oklch(0.06 0.02 260)", "oklch(0.08 0.025 260)", "oklch(0.10 0.03 260)", "oklch(0.15 0.03 260)", "oklch(0.20 0.03 260)"]
+      },
+      "text-primary": {
+        "role": "neutral",
+        "displayName": "Primary Text",
+        "canonical": "oklch(0.85 0.02 260)",
+        "purpose": "Heading, nama proyek, label utama",
+        "tonalRamp": ["oklch(0.85 0.02 260)", "oklch(0.80 0.02 260)", "oklch(0.72 0.03 260)", "oklch(0.60 0.04 260)", "oklch(0.50 0.04 260)", "oklch(0.40 0.04 260)", "oklch(0.30 0.03 260)", "oklch(0.20 0.02 260)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Logo, page titles — Orbitron, jarang digunakan" },
+      "headline": { "displayName": "Headline", "purpose": "Angka statistik besar, judul halaman feed" },
+      "title": { "displayName": "Title", "purpose": "Nama proyek, judul card, elemen UI utama" },
+      "body": { "displayName": "Body", "purpose": "Deskripsi proyek, paragraf konten" },
+      "label": { "displayName": "Label", "purpose": "Tombol, status badge, tag, metadata — elemen UI paling sering" },
+      "utility": { "displayName": "Utility", "purpose": "Rajdhani semi-condensed — dense metric readouts, accessible via .font-rajdhani" }
+    },
+    "shadows": [
+      { "name": "glow-cyan", "value": "0 0 7px rgba(0,255,242,0.6), 0 0 20px rgba(0,255,242,0.3)", "purpose": "Glow aksen cyan untuk elemen stateful aktif" },
+      { "name": "glow-red", "value": "0 0 7px rgba(255,0,64,0.6), 0 0 20px rgba(255,0,64,0.3)", "purpose": "Glow alert merah untuk danger state" },
+      { "name": "glow-box-cyan", "value": "0 0 10px rgba(0,255,242,0.15), 0 0 30px rgba(0,255,242,0.05)", "purpose": "Glow ambient untuk hover card dan selected state" },
+      { "name": "hover-lift", "value": "0 4px 24px rgba(0,0,0,0.3)", "purpose": "Box shadow subtle untuk hover card" }
+    ],
+    "motion": [
+      { "name": "ease-default", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default easing untuk state transitions (200–350ms)" },
+      { "name": "ease-spring", "value": "cubic-bezier(0.175, 0.885, 0.32, 1.275)", "purpose": "Spring curve untuk tombol aksi (scale hover/active)" },
+      { "name": "ease-card", "value": "cubic-bezier(0.25, 0.46, 0.45, 0.94)", "purpose": "Card entry fade-up, 400ms" },
+      { "name": "duration-fast", "value": "150ms", "purpose": "State transitions (hover, focus)" },
+      { "name": "duration-normal", "value": "250ms", "purpose": "Panel slide, toast, card state change" },
+      { "name": "duration-slow", "value": "350ms", "purpose": "Sidebar slide-in, overlay fade" }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "768px", "purpose": "Single column, sidebar slide-in, full-width detail panel" },
+      { "name": "tablet", "value": "1024px", "purpose": "Detail panel overlay instead of fixed right" },
+      { "name": "desktop", "value": "1280px", "purpose": "Full three-panel layout" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Nav Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Sidebar navigation button — default, hover, active states",
+      "html": "<button class=\"ds-btn-nav\"><span>◈</span> All Projects <span class=\"ds-badge\">105</span></button>",
+      "css": ".ds-btn-nav { display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255,255,255,.03); border: 1px solid #1a1a3a; color: #8888aa; padding: 10px 14px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; cursor: pointer; text-align: left; transition: all 0.2s cubic-bezier(0.4,0,0.2,1); } .ds-btn-nav:hover { background: rgba(0,255,242,.06); border-color: rgba(0,255,242,.2); color: #00fff2; } .ds-btn-nav:focus-visible { outline: 2px solid #00fff2; outline-offset: 2px; } .ds-btn-nav.active { background: rgba(0,255,242,.1); border-color: #00fff2; color: #00fff2; } .ds-badge { margin-left: auto; font-size: 10px; padding: 1px 8px; border-radius: 8px; background: rgba(255,255,255,.05); } .ds-btn-nav.active .ds-badge { background: rgba(0,255,242,.15); }"
+    },
+    {
+      "name": "Action CTA Button",
+      "kind": "button",
+      "refersTo": "button-action",
+      "description": "Primary call-to-action — open repo, submit form",
+      "html": "<button class=\"ds-btn-action\">↗ OPEN REPO</button>",
+      "css": ".ds-btn-action { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; padding: 8px 20px; border-radius: 7px; border: 1px solid rgba(0,255,242,.25); background: rgba(0,255,242,.08); color: #00fff2; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; } .ds-btn-action:hover { border-color: #00fff2; background: rgba(0,255,242,.18); box-shadow: 0 0 20px rgba(0,255,242,.15); transform: translateY(-1px); } .ds-btn-action:active { transform: scale(0.95); }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Search bar — filter projects by name, description, tags",
+      "html": "<div style=\"position:relative;max-width:480px\"><span style=\"position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#55557a;font-size:14px\">⌕</span><input class=\"ds-input-search\" type=\"text\" placeholder=\"Cari proyek...\"></div>",
+      "css": ".ds-input-search { width: 100%; padding: 10px 14px 10px 38px; background: rgba(13,13,26,.8); border: 1px solid #1a1a3a; border-radius: 8px; color: #e8e8f0; font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none; transition: all 0.3s; } .ds-input-search::placeholder { color: #55557a; } .ds-input-search:focus { border-color: #00fff2; box-shadow: 0 0 20px rgba(0,255,242,.15); }"
+    },
+    {
+      "name": "Feed Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Project feed card with category strip, icon, name, tags, GitHub stats",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-strip\"></div><div class=\"ds-card-icon\">◈</div><div class=\"ds-card-body\"><h3>Project Name <span class=\"ds-date\">19 Jun 2026</span></h3><p class=\"ds-desc\">Project description here...</p><div class=\"ds-tags\"><span class=\"ds-tag\">HTML</span><span class=\"ds-tag\">CSS</span><span class=\"ds-tag ds-tag-topic\">topic</span></div><div class=\"ds-meta\"><span>★ 12</span><span>⑂ 3</span><span class=\"ds-lang\" style=\"--lang:#f05138\">JavaScript</span></div></div></div>",
+      "css": ".ds-card { display: flex; align-items: flex-start; gap: 14px; background: linear-gradient(145deg, rgba(18,18,38,.92) 0%, rgba(12,12,28,.85) 100%); border: 1px solid #1a1a3a; border-radius: 12px; padding: 16px 20px; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden; animation: ds-fade 0.4s ease forwards; } .ds-card:hover { transform: translateY(-2px); border-color: rgba(0,255,242,.15); box-shadow: 0 4px 24px rgba(0,0,0,.3), 0 0 10px rgba(0,255,242,.15), 0 0 30px rgba(0,255,242,.05); } .ds-card:focus-visible { outline: 2px solid #00fff2; outline-offset: 2px; } .ds-card.selected { background: rgba(0,255,242,.06); border-color: #00fff2; box-shadow: 0 0 20px rgba(0,255,242,.1); } .ds-card-strip { width: 3px; align-self: stretch; border-radius: 2px; flex-shrink: 0; background: #00ff88; } .ds-card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; background: rgba(0,255,242,.12); } .ds-card-body { flex: 1; min-width: 0; } .ds-card-body h3 { font-size: 14px; font-weight: 700; color: #f0f0f8; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; } .ds-date { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(150,150,200,.4); font-weight: 400; } .ds-desc { font-size: 12px; color: #a0a0c0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; margin-top: 2px; } .ds-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; } .ds-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; background: rgba(80,80,160,.15); color: #9090b8; border: 1px solid rgba(80,80,160,.2); } .ds-tag-topic { background: rgba(176,0,255,.1); color: #bb88ee; border-color: rgba(176,0,255,.25); } .ds-meta { display: flex; gap: 10px; margin-top: 5px; flex-wrap: wrap; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8888aa; } .ds-lang::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--lang); margin-right: 3px; vertical-align: middle; } @keyframes ds-fade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Clickable tag/chip for filtering — default, hover, active",
+      "html": "<button class=\"ds-chip\">HTML <span class=\"ds-chip-count\">12</span></button><button class=\"ds-chip active\">CSS <span class=\"ds-chip-count\">8</span></button>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 4px; background: rgba(13,13,26,.85); border: 1px solid #1a1a3a; border-radius: 8px; padding: 3px 10px; color: #8888aa; font-family: 'JetBrains Mono', monospace; font-size: 10px; cursor: pointer; transition: all 0.25s; user-select: none; } .ds-chip:hover { border-color: #00fff2; color: #00fff2; } .ds-chip:focus-visible { outline: 2px solid #00fff2; outline-offset: 2px; } .ds-chip.active { background: rgba(0,255,242,.12); border-color: #00fff2; color: #00fff2; } .ds-chip-count { color: #55557a; margin-left: 3px; font-size: 9px; opacity: .6; } .ds-chip.active .ds-chip-count { color: #00fff2; opacity: .8; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "status-badge",
+      "description": "Project status indicator — Active / Staging / Paused variants",
+      "html": "<span class=\"ds-badge-active\">▶ ACTIVE</span>",
+      "css": ".ds-badge-active { font-family: 'JetBrains Mono', monospace; font-size: 8px; text-transform: uppercase; letter-spacing: .8px; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: rgba(0,255,136,.12); color: #00ff88; border: 1px solid rgba(0,255,136,.25); display: inline-block; } .ds-badge-staging { font-family: 'JetBrains Mono', monospace; font-size: 8px; text-transform: uppercase; letter-spacing: .8px; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: rgba(0,255,242,.12); color: #00fff2; border: 1px solid rgba(0,255,242,.2); display: inline-block; } .ds-badge-paused { font-family: 'JetBrains Mono', monospace; font-size: 8px; text-transform: uppercase; letter-spacing: .8px; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: rgba(255,255,0,.08); color: #ffd000; border: 1px solid rgba(255,255,0,.15); display: inline-block; }"
+    },
+    {
+      "name": "Ghost Icon Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Theme toggle / refresh icon button — minimal footprint",
+      "html": "<button class=\"ds-btn-ghost\" aria-label=\"Toggle theme\">☀</button>",
+      "css": ".ds-btn-ghost { background: none; border: 1px solid #1a1a3a; color: #8888aa; width: 30px; height: 28px; border-radius: 8px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s; } .ds-btn-ghost:hover { border-color: #00fff2; color: #00fff2; background: rgba(0,255,242,.08); } .ds-btn-ghost:focus-visible { outline: 2px solid #00fff2; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Dark Nexus Command Center",
+    "overview": "Niu-Dash hadir sebagai stasiun komando visual untuk seluruh ekosistem digital Niumination. Bukan dashboard biasa — ini adalah terminal yang hidup, dengan jiwa neon dan ketepatan teknis. Setiap elemen dirancang untuk memberikan kesadaran penuh terhadap keadaan ekosistem: berapa proyek yang aktif, mana yang stalled, repo GitHub baru apa yang terdeteksi, dan rilis apa yang sudah production.\n\nEstetika ini berakar pada budaya cyber/glitch — scanlines, grid overlay, partikel neon, dan efek glitch yang semuanya punya alasan fungsional. Boot sequence yang dramatis, clock widget yang berdenyut, dan pulse animation pada indikator status adalah bagian dari bahasa visual yang konsisten. Tapi tidak ada yang dekoratif tanpa tujuan: setiap efek memperkuat metafora \"command center.\"\n\nSistem ini secara eksplisit menolak estetika dashboard SaaS generik — tidak ada card shadow bulat, tidak ada navbar biru kalem, tidak tombol rounded-full dengan gradient. Sebaliknya, Niu-Dash memilih permukaan flat yang dipisahkan oleh border tipis, aksen neon yang hemat namun berdampak, dan tipografi monospace yang dominan.",
+    "keyCharacteristics": [
+      "Latar belakang hitam pekat (#050508) sebagai fondasi — kegelapan sebagai kanvas",
+      "Satu aksen primer dominan (Neon Cyan #00fff2) — jarang, konsisten, berisi",
+      "Empat aksen semantik (hijau/amber/merah/magenta) untuk status dan kategori",
+      "Tipografi monospace (JetBrains Mono) sebagai suara UI utama — bukan pilihan biasa untuk dashboard, dan itu disengaja",
+      "Flat secara default; depth dari glow dan interaksi, bukan dari shadow",
+      "Glitch dan efek neon sebagai vocabulary visual yang koheren, bukan tempelan"
+    ],
+    "rules": [
+      { "name": "The Rarity Rule", "body": "Neon Cyan digunakan pada ≤10% dari setiap layar. Kelangkaannya adalah inti kekuatannya — jika cyan ada di mana-mana, tidak ada yang menonjol.", "section": "colors" },
+      { "name": "The Glow Rule", "body": "Glow hanya muncul pada elemen stateful: indikator aktif, pulse clock, hover action, alert. Tidak ada glow dekoratif. Setiap glow punya alasan.", "section": "colors" },
+      { "name": "The Monospace UI Rule", "body": "Semua antarmuka fungsional menggunakan JetBrains Mono — sidebar, card, tombol, tag, stats, toast. Inter hanya untuk blok prosa di detail panel. Ini membedakan Niu-Dash dari dashboard lain yang menggunakan sans-serif untuk UI.", "section": "typography" },
+      { "name": "The No-Headline-Overshoot Rule", "body": "Heading display tidak pernah melebihi 28px pada desktop dan 22px pada mobile. Dashboard tidak perlu berteriak — informasi adalah produknya.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Tidak ada box-shadow pada keadaan diam. Card, sidebar, panel — semuanya flat. Depth hanya muncul sebagai respons terhadap interaksi (hover, active, selected).", "section": "elevation" },
+      { "name": "The No-Layered-Modal Rule", "body": "Form relis (rl-form-overlay) adalah satu-satunya overlay bertingkat. Tidak ada nested dialog, tooltip, atau popover yang bertumpuk. Setiap lapisan baru adalah pertimbangan serius.", "section": "elevation" }
+    ],
+    "dos": [
+      "Gunakan Neon Cyan (#00fff2) secara hemat — ≤10% permukaan. Biarkan kegelapan yang bicara.",
+      "Gunakan JetBrains Mono untuk semua elemen UI fungsional — sidebar, tombol, tag, stats.",
+      "Gunakan border 1px solid #1a1a3a sebagai pemisah permukaan — flat dan bersih.",
+      "Gunakan cardFade animation (opacity + translateY) untuk entry card — konsisten dan halus.",
+      "Gunakan spring curve cubic-bezier(0.175, 0.885, 0.32, 1.275) untuk tombol aksi — responsif.",
+      "Pertahankan konsistensi hover → neon-cyan di semua elemen interaktif.",
+      "Gunakan semantic color untuk kategori (green=ready, cyan=dev, amber=ideas, magenta=config, muted=legacy).",
+      "Pastikan setiap efek glitch/neon punya alasan fungsional — boot sequence, status indication, atmospheric depth."
+    ],
+    "donts": [
+      "Jangan gunakan box-shadow pada permukaan diam — flat by default.",
+      "Jangan gunakan gradient text (background-clip: text) — satu warna solid untuk keterbacaan.",
+      "Jangan tampilkan Generic SaaS dashboard elements — rounded-full buttons, card shadows, muted blue navbars, Bootstrap-style form controls.",
+      "Jangan buat dashboard yang terlihat seperti Linear, Notion, atau Stripe — ini stasiun komando, bukan productivity startup.",
+      "Jangan gunakan warna biru/navy korporat sebagai tema — ini dark/cyber/glitch, bukan enterprise dashboard.",
+      "Jangan overused cards — card adalah pilihan termalas. Gunakan card grid yang identik hanya saat benar-benar tepat.",
+      "Jangan gunakan side-stripe borders (border-left/right > 1px sebagai aksen) — gunakan full border, full background tint, atau tidak sama sekali. Satu-satunya pengecualian: category strip (3px) pada feed card.",
+      "Jangan tambahkan glassmorphism dekoratif — backdrop-filter hanya untuk header sticky dan toast.",
+      "Jangan gunakan font display (Orbitron) untuk elemen UI fungsional — hanya untuk identitas (logo, page title).",
+      "Jangan gunakan scrollbar non-default di luar yang sudah ditentukan — 4px cyan thumb saja.",
+      "Jangan animasi layout properti (width, height, top, left) — gunakan transform/opacity untuk performa."
+    ]
+  }
+}
