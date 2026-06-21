@@ -561,7 +561,7 @@
             <span class="bt-glitch">⚡NIU— —DASH</span>
         </div>
         <div class="bt-underline"></div>
-        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.7</div>
+        <div class="bt-sub" id="bt-sub">Dark Nexus v2.16.8</div>
     </div>
     <div class="boot-progress-wrap"><div class="boot-progress-bar" id="boot-bar"></div></div>
     <div class="boot-status" id="boot-status">initializing...</div>
@@ -686,7 +686,8 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.7',hash:'e3f6447',date:'2026-06-21T02:31:04+07:00',msg:"v2.16.7 — fix cross-category count mismatch: updateStats() uses flatProjects, autoCategorize() preserves curated PROJECTS data"};
+var NIU_VERSION = {v:'2.16.8',hash:'1152dc7',date:'2026-06-21T12:00:00+07:00',msg:"v2.16.8 — fix Ecosystem view empty list: dynamic count + flatProjects fallback + Kanban server launchd agent"};
+var NIU_VERSION = {v:'2.16.8',hash:'local',date:'2026-06-21T12:00:00+07:00',msg:"v2.16.8 — fix Ecosystem view empty list: hardcoded '30 projects'→dynamic count, fallback uses flatProjects instead of 404 URL, + Kanban server launchd agent"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // Error capture for debugging
 var _niuErrors=[];
@@ -2059,7 +2060,8 @@ function showEcosystem(){
 }
 function renderEcosystem(){
     var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
-    fi.innerHTML='⊞ <em>Ecosystem</em> — 30 projects'+(ecosystemLoaded&&ecosystemData?' · synced':'');
+    var ecoCount=(ecosystemData&&ecosystemData.projects)?ecosystemData.projects.length:'—';
+    fi.innerHTML='⊞ <em>Ecosystem</em> — '+ecoCount+' projects'+(ecosystemLoaded&&ecosystemData?' · synced':'');
     if(!ecosystemLoaded&&!ecosystemData){
         statsEl.innerHTML='<span class="fs-item" style="color:var(--amber)">⟳ Fetching ecosystem data...</span>';
         list.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--text-muted)"><div style="font-size:32px;margin-bottom:12px">⟳</div><p>Memuat data ekosistem...</p></div>';
@@ -2127,44 +2129,24 @@ function fetchEcosystemData(){
             document.getElementById('sb-eco-count').textContent=(d.projects?d.projects.length:0);
         })
         .catch(function(){
-            // Fallback: build from BACKLOG raw
-            // Kanban API unavailable, building from GitHub raw
-            ecosystemData={projects:[],git:0,dox:0,crons:0,tasks:0};
-            // Ambil BACKLOG.md dari raw GitHub
-            fetch('https://raw.githubusercontent.com/Niumination/Niumination/refs/heads/main/BACKLOG.md')
-                .then(function(r){return r.text();})
-                .then(function(txt){
-                    var lines=txt.split('\n');
-                    var currentPriority='P3';
-                    var projects=[];
-                    for(var i=0;i<lines.length;i++){
-                        var l=lines[i].trim();
-                        if(l.includes('P1')&&l.includes('Critical'))currentPriority='P1';
-                        else if(l.includes('P2')&&l.includes('Active'))currentPriority='P2';
-                        else if(l.includes('P3')&&l.includes('Minor'))currentPriority='P3';
-                        var m=l.match(/^-\s*\[(.)\]\s*\*\*(.+?)\*\*\s*—\s*(.+?)\s*—\s*@(\S+)/);
-                        if(m){
-                            var st=m[1].trim();
-                            var statusMap={' ':'pending','~':'in_progress','x':'completed','-':'cancelled'};
-                            projects.push({
-                                name:m[2],desc:m[3],
-                                tag:m[4],
-                                priority:currentPriority,
-                                status:statusMap[st]||'pending'
-                            });
-                        }
-                    }
-                    ecosystemData.projects=projects;
-                    ecosystemData.git=projects.length;
-                    ecosystemLoaded=true;
-                    renderEcosystem();
-                    document.getElementById('sb-eco-count').textContent=projects.length;
-                })
-                .catch(function(e){
-                    console.error('[Ecosystem] Fallback failed:',e);
-                    ecosystemLoaded=true;
-                    renderEcosystem();
-                });
+            // Fallback: build from local flatProjects (tersedia tanpa API)
+            var fbProjects=(typeof flatProjects!=='undefined'?flatProjects:[]).map(function(p){
+                return {
+                    name:p.name,
+                    desc:p.desc||'',
+                    status:p.status||'pending',
+                    priority:'P3',
+                    tier:3,
+                    git:p.repoUrl||p.repoName?('github.com/Niumination/'+(p.repoName||'')):null,
+                    dox:false,
+                    cron:false,
+                    deployUrl:p.website||null
+                };
+            });
+            ecosystemData={projects:fbProjects,git:0,dox:0,crons:0,tasks:0};
+            ecosystemLoaded=true;
+            renderEcosystem();
+            document.getElementById('sb-eco-count').textContent=fbProjects.length;
         });
 }
 
