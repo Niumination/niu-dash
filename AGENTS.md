@@ -3,7 +3,7 @@
 **Lokasi:** `projects/niu-dash/`
 **Stack:** Single-file HTML/CSS/JS Vanilla, PWA
 **Remote:** `github.com/Niumination/niu-dash`
-**Deploy:** 🟢 GH Pages — v2.16.7 | **Audit:** 27/27 ✅
+**Deploy:** 🟢 GH Pages — v2.16.8 | **Audit:** 27/27 ✅
 **HEAD:** e3f6447 | **Last Push:** 21 Jun 2026
 
 ## Overview
