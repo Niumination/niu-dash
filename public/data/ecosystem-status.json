@@ -1,21 +1,18 @@
 {
   "version": 2,
-  "generated_at": "2026-06-20T16:28:10+07:00",
-  "total_tasks": 51,
+  "generated_at": "2026-06-24T15:00:22+07:00",
+  "total_tasks": 55,
   "kanban": {
     "active": 0,
     "todo": 0,
-    "done": 4,
+    "done": 10,
     "archived": 0
   },
   "backlog": {
-    "total": 51,
-    "p1": 0
-0,
-    "p2": 0
-0,
+    "total": 55,
+    "p1": 0,
+    "p2": 0,
     "p3": 0
-0
   },
   "projects": [
     {
@@ -25,7 +22,7 @@
       "priority": "P1",
       "git": "Niumination/TEDEO",
       "dox": true,
-      "desc": "Delivery Service — T1-T4 critical bugs fixed, butuh deploy test"
+      "desc": "Delivery Service \u2014 T1-T4 critical bugs fixed, butuh deploy test"
     },
     {
       "name": "kune-ya.com",
@@ -34,7 +31,7 @@
       "priority": "P1",
       "git": "Niumination/kune-ya.com",
       "dox": true,
-      "desc": "AI Chat RAG — analytics & rate limiting"
+      "desc": "AI Chat RAG \u2014 analytics & rate limiting"
     },
     {
       "name": "PemdiAcehTengah",
@@ -43,7 +40,7 @@
       "priority": "P1",
       "git": "Niumination/PemdiAcehTengah",
       "dox": true,
-      "desc": "Portal Pemda Aceh Tengah — 52 OPD, 70 pages"
+      "desc": "Portal Pemda Aceh Tengah \u2014 52 OPD, 70 pages"
     },
     {
       "name": "niu-vermilion",
@@ -52,7 +49,7 @@
       "priority": "P1",
       "git": "Niumination/Niu-Vermilion",
       "dox": true,
-      "desc": "Second Brain — V1-V5 auth fixed"
+      "desc": "Second Brain \u2014 V1-V5 auth fixed"
     },
     {
       "name": "Niu-Flow",
@@ -61,7 +58,7 @@
       "priority": "P2",
       "git": "Niumination/Niu-Flow",
       "dox": true,
-      "desc": "JCode bridge — pipeline paralel, 5 commits"
+      "desc": "JCode bridge \u2014 pipeline paralel, 5 commits"
     },
     {
       "name": "niu-dash",
@@ -71,7 +68,7 @@
       "git": "Niumination/niu-dash",
       "dox": true,
       "deployUrl": "https://niumination.github.io/niu-dash",
-      "desc": "Ecosystem dashboard — v2.16.5, 22/22 audit"
+      "desc": "Ecosystem dashboard \u2014 v2.16.8, 27/27 audit \u2705"
     },
     {
       "name": "Niu-LKH",
@@ -81,7 +78,7 @@
       "git": "Niumination/Niu-LKH",
       "dox": true,
       "deployUrl": "https://niumination.github.io/Niu-LKH",
-      "desc": "Laporan Kegiatan Harian — v3.1.1 ✅ 100%"
+      "desc": "Laporan Kegiatan Harian \u2014 v3.1.1 \u2705 100%"
     },
     {
       "name": "Flame-ADE",
@@ -90,7 +87,7 @@
       "priority": "P2",
       "git": "Niumination/Flame-ADE",
       "dox": true,
-      "desc": "Tauri/Rust v1.3.0 — AI-native terminal"
+      "desc": "Tauri/Rust v1.3.0 \u2014 AI-native terminal"
     },
     {
       "name": "niu-cast",
@@ -108,7 +105,43 @@
       "priority": "P2",
       "git": "Niumination/brain",
       "dox": true,
-      "desc": "Obsidian Vault — 14 inbox daily"
+      "desc": "Obsidian Vault \u2014 14 inbox daily"
+    },
+    {
+      "name": "niumination-workspace",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/niumination-workspace",
+      "dox": true,
+      "desc": "Next.js 16 workspace \u2014 4 commits pushed, 110 proyek sync"
+    },
+    {
+      "name": "niu-kanban-dash",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/niu-kanban-dash",
+      "dox": true,
+      "desc": "Vite/React kanban dashboard \u2014 pushed to GitHub"
+    },
+    {
+      "name": "orchestrator",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/orchestrator",
+      "dox": true,
+      "desc": "Python multi-agent \u2014 pushed to GitHub"
+    },
+    {
+      "name": "Ultra",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/ultra-automation",
+      "dox": true,
+      "desc": "Puppeteer browser automation \u2014 pushed to GitHub"
     }
   ]
 }
