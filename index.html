@@ -686,7 +686,7 @@
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.8',hash:'f58fb66',date:'2026-06-24T15:00:26+07:00',msg:"sync: ecosystem status — +4 new repos pushed to GitHub (niumination-workspace, niu-kanban-dash, orchestrator, Ultra)"};
+var NIU_VERSION = {v:'2.16.8',hash:'80d4120',date:'2026-06-24T15:25:26+07:00',msg:"sync: ecosystem status — +3 Production/ projects (kune-ya, niu-vermilion, mac-web-dash)"};
 var NIU_VERSION = {v:'2.16.8',hash:'local',date:'2026-06-21T12:00:00+07:00',msg:"v2.16.8 — fix Ecosystem view empty list: hardcoded '30 projects'→dynamic count, fallback uses flatProjects instead of 404 URL, + Kanban server launchd agent"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // Error capture for debugging
@@ -721,7 +721,11 @@ const PROJECTS = {
         { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project - PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
         { icon:'☆', name:'acehtengah-web', path:'/Users/zaryu/Desktop/Niumination/projects/zen/acehtengah-web/', desc:'Website statis multi-halaman Aceh Tengah - HTML murni, berita, layanan publik.', tags:['HTML','CSS','Website','AcehTengah'], date:'2026' },
         { icon:'☆', name:'HermesV-Github', path:'https://github.com/Niumination/HermesV-Github', desc:'Hermes Agent Portable on Github Codespace.', tags:['Hermes','Codespace','Portable'], date:'6 Jun 2026' },  // NEW 6 Jun 2026
-        { icon:'☆', name:'niu-private', path:'https://github.com/Niumination/niu-private', desc:'Niu Private — Document Vault & Kanban Project Board untuk dokumentasi pribadi + project tracking.', tags:['TypeScript','Vault','Kanban','Document'], date:'6 Jun 2026', website:'https://niumination.github.io/niu-private' }  // NEW 6 Jun 2026
+        { icon:'☆', name:'niu-private', path:'https://github.com/Niumination/niu-private', desc:'Niu Private — Document Vault & Kanban Project Board untuk dokumentasi pribadi + project tracking.', tags:['TypeScript','Vault','Kanban','Document'], date:'6 Jun 2026', website:'https://niumination.github.io/niu-private' },  // NEW 6 Jun 2026
+        { icon:'☆', name:'arch-web-dashboard', path:'https://github.com/Niumination/arch-web-dashboard', desc:'Arch Linux web dashboard — monitoring & system management untuk Arch Linux.', tags:['TypeScript','Dashboard','Linux','Web'], date:'Jun 2026' },
+        { icon:'☆', name:'mac-web-dashboard', path:'https://github.com/Niumination/mac-web-dashboard', desc:'macOS web dashboard — monitoring & system management untuk macOS.', tags:['TypeScript','Dashboard','macOS','Web'], date:'Jun 2026' },
+        { icon:'☆', name:'AI-First-OS', path:'https://github.com/Niumination/AI-First-OS', desc:'Arch Linux ISO builder — Sistem operasi dengan Hermes Agent sebagai warga negara kelas satu.', tags:['Shell','Linux','Arch','ISO','AI'], date:'Jun 2026' },
+        { icon:'☆', name:'ai-file-organizer-android', path:'https://github.com/niumination/ai-file-organizer-android', desc:'AI File Organizer for Android — merapikan file SD Card / internal storage pakai Google Gemini AI. Kotlin, Jetpack Compose, SAF Scoped Storage.', tags:['Kotlin','Android','AI','Gemini','Compose'], date:'Jun 2026' }
     ],
     dev: [
         { icon:'☪', name:'Gayo Mengaji', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/Aplikasi Gayo Mengaji/', desc:'Aplikasi Al-Quran digital untuk ASN Aceh Tengah. Flutter + Node.js + PostgreSQL.', tags:['Flutter','Node.js','PostgreSQL','Mobile'], date:'5 Apr 2026' },
@@ -747,7 +751,7 @@ const PROJECTS = {
         { icon:'⎔', name:'SPBE-DevOps-Academy', path:'https://github.com/Niumination/SPBE-DevOps-Academy', desc:'Akademi DevOps untuk SPBE - pembelajaran DevOps pemerintahan.', tags:['DevOps','SPBE','Academy'], date:'2026' },
         { icon:'⎔', name:'Devs-Niu', path:'https://github.com/Niumination/Devs-Niu', desc:'Developer portfolio / hub untuk semua project Niumination.', tags:['Dev','Portfolio','Hub'], date:'2026' },
         { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta - Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
-        { icon:'⚡', name:'Niu-Dash', path:'/Users/zaryu/Desktop/Niumination/projects/niu-dash/index.html', desc:'Dark web glitch dashboard tracker - 105+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'19 Jun 2026' },
+        { icon:'⚡', name:'Niu-Dash', path:'https://github.com/Niumination/niu-dash', desc:'Dark web glitch dashboard tracker — 105+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'19 Jun 2026', website:'https://niumination.github.io/niu-dash' },
         { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework. 52 OPD, 4.507 ASN, 63 pages.', tags:['Next.js','GovTech','AcehTengah','Portal','Vercel'], date:'Jun 2026', website:'https://pemdi-aceh-tengah.vercel.app' },
         { icon:'△', name:'niu-vermilion', path:'https://github.com/niumination/niu-vermilion', desc:'Second Brain Ecosystem — Knowledge Management web app. Next.js 16 + React 19 + Supabase + TipTap. 22 routes, Graph View, Notes, Tasks, Bookmarks.', tags:['Next.js','Supabase','TipTap','SecondBrain','Vercel'], date:'Jun 2026' },
         { icon:'△', name:'VirtualAssistance', path:'https://github.com/Niumination/VirtualAssistance', desc:'Virtual Assistance web3 app - Next.js + TypeScript.', tags:['Next.js','Web3','TypeScript'], date:'Jun 2026' },
@@ -756,11 +760,12 @@ const PROJECTS = {
         { icon:'△', name:'NiuTerm', path:'/Users/zaryu/Desktop/Niumination/projects/niuterm/', desc:'Tauri terminal emulator - niuterm v0.1.0.', tags:['Rust','Tauri','Terminal'], date:'2026' },
         { icon:'△', name:'niude', path:'/Users/zaryu/Desktop/Niumination/projects/niude/', desc:'Tauri app v0.1.0 - desktop app eksperimental.', tags:['Rust','Tauri','Desktop'], date:'2026' },
         { icon:'△', name:'Niu-Flow', path:'/Users/zaryu/Desktop/Niumination/Niu-Flow/', desc:'Multi-agent pipeline orchestration — integrasi Hermes + JCode + Codex. Parallel ThreadPoolExecutor, GitHub auto-sync.', tags:['Python','Pipeline','Orchestrator','AI'], date:'Jun 2026' },
-        { icon:'△', name:'JHermUSB-portable', path:'/Users/zaryu/Desktop/Niumination/JHermUSB-portable/', desc:'Hermes Agent USB portable variant — cross-platform launcher, docs, scripts.', tags:['Hermes','USB','Portable','Cross-Platform'], date:'Jun 2026' },
+        { icon:'△', name:'JHermUSB-portable', path:'https://github.com/Niumination/JHermUSB-portable', desc:'Hermes Agent USB portable variant — cross-platform launcher, docs, scripts.', tags:['Hermes','USB','Portable','Cross-Platform'], date:'Jun 2026' },
         { icon:'△', name:'Orchestrator', path:'/Users/zaryu/Desktop/Niumination/projects/orchestrator/', desc:'Python task orchestrator — scheduler, task queue, config JSON, logging.', tags:['Python','Scheduler','Orchestrator','Automation'], date:'Jun 2026' },
         { icon:'△', name:'street-racer-offline', path:'/Users/zaryu/Desktop/Niumination/aistudio-google/street-racer-offline/', desc:'Android racing game — Kotlin, Jetpack Compose, Gradle. AI Studio Google.', tags:['Android','Kotlin','Game','Compose'], date:'Jun 2026' },
         { icon:'△', name:'TEDEO', path:'/Users/zaryu/Desktop/Niumination/TEDEO/', desc:'Delivery Service lokal Kabupaten Aceh Tengah — Expo monorepo (mobile, web, backend, Prisma).', tags:['Expo','React Native','Monorepo','Prisma','Delivery','AcehTengah'], date:'Jun 2026' },
-        { icon:'△', name:'TEDEO-Kanban', path:'/Users/zaryu/Desktop/Niumination/TEDEO-Kanban/', desc:'Kanban Board untuk tracking progress TEDEO Delivery Service — Next.js PWA, drag-and-drop.', tags:['Next.js','PWA','Kanban','React','AcehTengah'], date:'Jun 2026' },  // NEW Jun 2026
+        { icon:'△', name:'TEDEO-Kanban', path:'https://github.com/Niumination/TEDEO-Kanban', desc:'Kanban Board untuk tracking progress TEDEO Delivery Service — Next.js PWA, drag-and-drop.', tags:['Next.js','PWA','Kanban','React','AcehTengah'], date:'Jun 2026' },  // NEW Jun 2026
+        { icon:'△', name:'niu-cast', path:'https://github.com/Niumination/niu-cast', desc:'Niu Cast — Python-based project untuk Niumination ecosystem.', tags:['Python','Project','Niu'], date:'Jun 2026' },
         { icon:'△', name:'kune-ya.com', path:'https://github.com/Niumination/kune-ya.com', desc:'Situs pribadi kune-ya.com — Next.js 15 full-stack dengan auth (next-auth), database (Prisma+PostgreSQL), middleware, dan Prisma ORM.', tags:['Next.js','Prisma','Fullstack','TypeScript','Web'], date:'6 Jun 2026' }  // NEW 6 Jun 2026
     ],
     ideas: [
