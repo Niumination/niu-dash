@@ -1,10 +1,10 @@
 # Niu-Dash — Project AGENTS.md
 
-**Lokasi:** `projects/niu-dash/`
+**Lokasi:** `Production/niu-dash/`
 **Stack:** Single-file HTML/CSS/JS Vanilla, PWA
 **Remote:** `github.com/Niumination/niu-dash`
 **Deploy:** 🟢 GH Pages — v2.16.8 | **Audit:** 27/27 ✅
-**HEAD:** e3f6447 | **Last Push:** 21 Jun 2026
+**HEAD:** 40fdc46 (clean — latest at Production/) | **Last Push:** 22 Jun 2026 (moved to Production/)
 
 ## Overview
 

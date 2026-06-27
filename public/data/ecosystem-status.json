@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "generated_at": "2026-06-24T15:25:13+07:00",
-  "total_tasks": 56,
+  "generated_at": "2026-06-27T13:18:35+07:00",
+  "total_tasks": 55,
   "kanban": {
     "active": 0,
     "todo": 0,
-    "done": 10,
+    "done": 18,
     "archived": 0
   },
   "backlog": {
-    "total": 56,
+    "total": 55,
     "p1": 0,
     "p2": 0,
     "p3": 0
@@ -122,7 +122,7 @@
       "status": "done",
       "priority": "P3",
       "git": "Niumination/niu-kanban-dash",
-      "dox": true,
+      "dox": false,
       "desc": "Vite/React kanban dashboard \u2014 pushed to GitHub"
     },
     {
@@ -131,7 +131,7 @@
       "status": "done",
       "priority": "P3",
       "git": "Niumination/orchestrator",
-      "dox": true,
+      "dox": false,
       "desc": "Python multi-agent \u2014 pushed to GitHub"
     },
     {
@@ -142,6 +142,97 @@
       "git": "Niumination/ultra-automation",
       "dox": true,
       "desc": "Puppeteer browser automation \u2014 pushed to GitHub"
+    },
+    {
+      "name": "x-downloader",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P1",
+      "git": "Niumination/x-downloader",
+      "dox": true,
+      "desc": "v2.0 FastAPI+Next.js 16+Three.js+Tauri 2 \u2014 published to GitHub"
+    },
+    {
+      "name": "mac-web-dashboard",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P2",
+      "git": "Niumination/mac-web-dashboard",
+      "dox": false,
+      "desc": "macOS Dashboard v1.0.0 \u2014 under development, 10 dirty"
+    },
+    {
+      "name": "JHermUSB-portable",
+      "tier": 1,
+      "status": "done",
+      "priority": "P2",
+      "git": "Niumination/JHermUSB-portable",
+      "dox": false,
+      "desc": "Hermes Agent portable \u2014 652K"
+    },
+    {
+      "name": "ai-first-os",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/AI-First-OS",
+      "dox": false,
+      "desc": "Arch Linux ISO builder \u2014 v1.0.0"
+    },
+    {
+      "name": "arch-web-dashboard",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/arch-web-dashboard",
+      "dox": false,
+      "desc": "Arch Linux Dashboard v1.0.0"
+    },
+    {
+      "name": "ai-file-manager-android",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/ai-file-organizer-android",
+      "dox": false,
+      "desc": "Android Kotlin \u2014 AI File Organizer, Gemini OCR"
+    },
+    {
+      "name": "TEDEO-Kanban",
+      "tier": 2,
+      "status": "done",
+      "priority": "P2",
+      "git": "Niumination/TEDEO-Kanban",
+      "dox": false,
+      "desc": "Kanban board untuk TEDEO \u2014 pushed to GitHub"
+    },
+    {
+      "name": "AuditTI-AT",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/AuditTI-AT",
+      "dox": false,
+      "deployUrl": "https://niumination.github.io/AuditTI-AT",
+      "desc": "Audit TI Aceh Tengah \u2014 GH Pages live"
+    },
+    {
+      "name": "niuterm",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/niu-term",
+      "dox": true,
+      "desc": "Tauri terminal tool"
+    },
+    {
+      "name": "terax-ai",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/terax-ai",
+      "dox": true,
+      "desc": "Lightweight ADE fork (TS)"
     }
   ]
 }
