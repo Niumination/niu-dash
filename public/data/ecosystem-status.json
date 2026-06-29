@@ -1,18 +1,31 @@
 {
   "version": 2,
-  "generated_at": "2026-06-27T13:18:35+07:00",
-  "total_tasks": 55,
-  "kanban": {
-    "active": 0,
-    "todo": 0,
-    "done": 18,
-    "archived": 0
+  "generated_at": "2026-06-29T11:30:50+07:00",
+  "total_tasks": 114,
+  "filesystem": {
+    "total_items": 39,
+    "git_repos": 30,
+    "non_git": 9,
+    "disk_gb": 7.3,
+    "production_dirs": 10,
+    "project_dirs": 20
   },
-  "backlog": {
-    "total": 55,
-    "p1": 0,
-    "p2": 0,
-    "p3": 0
+  "kanban": {
+    "ready": 95,
+    "done": 18,
+    "completed": 1,
+    "total": 114
+  },
+  "priority_distribution": {
+    "p1": 2,
+    "p2": 9,
+    "p3": 44,
+    "unset": 59
+  },
+  "services": {
+    "kanban_server": "running (PID 578, :5199)",
+    "cron_jobs": 3,
+    "dox_files": 26
   },
   "projects": [
     {
@@ -22,53 +35,41 @@
       "priority": "P1",
       "git": "Niumination/TEDEO",
       "dox": true,
-      "desc": "Delivery Service \u2014 T1-T4 critical bugs fixed, butuh deploy test"
+      "head": "8c0f6a0",
+      "desc": "Delivery Service Express/React/PostgreSQL — T1-T4 ALL FIXED ✅ — butuh test plan + deploy"
     },
     {
       "name": "kune-ya.com",
       "tier": 1,
-      "status": "in_progress",
+      "status": "done",
       "priority": "P1",
       "git": "Niumination/kune-ya.com",
       "dox": true,
-      "desc": "AI Chat RAG \u2014 analytics & rate limiting"
+      "head": "52f432e",
+      "deployUrl": "https://kune-ya.com",
+      "desc": "AI Chat RAG Next.js 14 — analytics & rate limiting ✅ — Vercel live"
     },
     {
       "name": "PemdiAcehTengah",
       "tier": 1,
       "status": "in_progress",
-      "priority": "P1",
+      "priority": "P2",
       "git": "Niumination/PemdiAcehTengah",
       "dox": true,
-      "desc": "Portal Pemda Aceh Tengah \u2014 52 OPD, 70 pages"
+      "head": "d480fc8",
+      "deployUrl": "https://pemdi-aceh-tengah.vercel.app",
+      "desc": "Portal Pemda Aceh Tengah — 52 OPD, 70 pages — Next.js 14, Supabase"
     },
     {
       "name": "niu-vermilion",
       "tier": 1,
       "status": "in_progress",
-      "priority": "P1",
+      "priority": "P2",
       "git": "Niumination/Niu-Vermilion",
       "dox": true,
-      "desc": "Second Brain \u2014 V1-V5 auth fixed"
-    },
-    {
-      "name": "Niu-Flow",
-      "tier": 1,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "Niumination/Niu-Flow",
-      "dox": true,
-      "desc": "JCode bridge \u2014 pipeline paralel, 5 commits"
-    },
-    {
-      "name": "niu-dash",
-      "tier": 1,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "Niumination/niu-dash",
-      "dox": true,
-      "deployUrl": "https://niumination.github.io/niu-dash",
-      "desc": "Ecosystem dashboard \u2014 v2.16.8, 27/27 audit \u2705"
+      "head": "6f2f036",
+      "deployUrl": "https://niu-vermilion.vercel.app",
+      "desc": "Second Brain Next.js 16 — V1-V5 auth bugs fixed ✅ — Vercel live"
     },
     {
       "name": "Niu-LKH",
@@ -77,8 +78,30 @@
       "priority": "P2",
       "git": "Niumination/Niu-LKH",
       "dox": true,
+      "head": "e7f3454",
       "deployUrl": "https://niumination.github.io/Niu-LKH",
-      "desc": "Laporan Kegiatan Harian \u2014 v3.1.1 \u2705 100%"
+      "desc": "Laporan Kegiatan Harian v3.1.1 — React/Vite/Supabase — GH Pages live ✅"
+    },
+    {
+      "name": "niu-dash",
+      "tier": 1,
+      "status": "done",
+      "priority": "P2",
+      "git": "Niumination/niu-dash",
+      "dox": true,
+      "head": "206f607",
+      "deployUrl": "https://niumination.github.io/niu-dash",
+      "desc": "Ecosystem dashboard v2.16.8 — dark glitch, PWA, 27/27 audit ✅"
+    },
+    {
+      "name": "Niu-Flow",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P2",
+      "git": "Niumination/niu-flow",
+      "dox": true,
+      "head": "0a52845",
+      "desc": "JCode bridge — pipeline paralel, Python — 5 commits"
     },
     {
       "name": "Flame-ADE",
@@ -87,7 +110,8 @@
       "priority": "P2",
       "git": "Niumination/Flame-ADE",
       "dox": true,
-      "desc": "Tauri/Rust v1.3.0 \u2014 AI-native terminal"
+      "head": "ba9101c",
+      "desc": "Tauri/Rust desktop app v1.3.0 — AI-native terminal"
     },
     {
       "name": "niu-cast",
@@ -96,7 +120,8 @@
       "priority": "P2",
       "git": "Niumination/niu-cast",
       "dox": true,
-      "desc": "Android ADB Tool & Screen Mirror v1.1.1"
+      "head": "afe3c04",
+      "desc": "Android ADB Tool & Screen Mirror v1.1.1 — PyQt5"
     },
     {
       "name": "brain",
@@ -105,61 +130,8 @@
       "priority": "P2",
       "git": "Niumination/brain",
       "dox": true,
-      "desc": "Obsidian Vault \u2014 14 inbox daily"
-    },
-    {
-      "name": "niumination-workspace",
-      "tier": 2,
-      "status": "done",
-      "priority": "P3",
-      "git": "Niumination/niumination-workspace",
-      "dox": true,
-      "desc": "Next.js 16 workspace \u2014 4 commits pushed, 110 proyek sync"
-    },
-    {
-      "name": "niu-kanban-dash",
-      "tier": 2,
-      "status": "done",
-      "priority": "P3",
-      "git": "Niumination/niu-kanban-dash",
-      "dox": false,
-      "desc": "Vite/React kanban dashboard \u2014 pushed to GitHub"
-    },
-    {
-      "name": "orchestrator",
-      "tier": 2,
-      "status": "done",
-      "priority": "P3",
-      "git": "Niumination/orchestrator",
-      "dox": false,
-      "desc": "Python multi-agent \u2014 pushed to GitHub"
-    },
-    {
-      "name": "Ultra",
-      "tier": 2,
-      "status": "done",
-      "priority": "P3",
-      "git": "Niumination/ultra-automation",
-      "dox": true,
-      "desc": "Puppeteer browser automation \u2014 pushed to GitHub"
-    },
-    {
-      "name": "x-downloader",
-      "tier": 1,
-      "status": "in_progress",
-      "priority": "P1",
-      "git": "Niumination/x-downloader",
-      "dox": true,
-      "desc": "v2.0 FastAPI+Next.js 16+Three.js+Tauri 2 \u2014 published to GitHub"
-    },
-    {
-      "name": "mac-web-dashboard",
-      "tier": 1,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "Niumination/mac-web-dashboard",
-      "dox": false,
-      "desc": "macOS Dashboard v1.0.0 \u2014 under development, 10 dirty"
+      "head": "",
+      "desc": "Obsidian Vault — 14 inbox daily, mirror docs"
     },
     {
       "name": "JHermUSB-portable",
@@ -168,7 +140,58 @@
       "priority": "P2",
       "git": "Niumination/JHermUSB-portable",
       "dox": false,
-      "desc": "Hermes Agent portable \u2014 652K"
+      "head": "f5fa50b",
+      "desc": "Hermes Agent portable — Shell — 652K, SSH remote"
+    },
+    {
+      "name": "mac-web-dashboard",
+      "tier": 1,
+      "status": "in_progress",
+      "priority": "P2",
+      "git": "Niumination/mac-web-dashboard",
+      "dox": false,
+      "head": "1fd937c",
+      "desc": "macOS Dashboard v1.0.0 — system monitoring, HTML/CSS/JS"
+    },
+    {
+      "name": "niumination-workspace",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/niumination-workspace",
+      "dox": true,
+      "head": "3deb602",
+      "desc": "Next.js 16 workspace — 4 commits, Prisma, Three.js — ✅ GitHub"
+    },
+    {
+      "name": "niu-kanban-dash",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/niu-kanban-dash",
+      "dox": false,
+      "head": "e5032f5",
+      "desc": "Vite/React kanban dashboard — React/Vite, kanban server integration"
+    },
+    {
+      "name": "orchestrator",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/orchestrator",
+      "dox": false,
+      "head": "17aeb97",
+      "desc": "Python multi-agent system — ✅ GitHub — initial commit"
+    },
+    {
+      "name": "Ultra",
+      "tier": 2,
+      "status": "done",
+      "priority": "P3",
+      "git": "Niumination/ultra-automation",
+      "dox": true,
+      "head": "bc8fd35",
+      "desc": "Puppeteer browser automation — ✅ GitHub"
     },
     {
       "name": "ai-first-os",
@@ -177,7 +200,8 @@
       "priority": "P3",
       "git": "Niumination/AI-First-OS",
       "dox": false,
-      "desc": "Arch Linux ISO builder \u2014 v1.0.0"
+      "head": "5e722eb",
+      "desc": "Arch Linux ISO builder v1.0.0"
     },
     {
       "name": "arch-web-dashboard",
@@ -186,7 +210,8 @@
       "priority": "P3",
       "git": "Niumination/arch-web-dashboard",
       "dox": false,
-      "desc": "Arch Linux Dashboard v1.0.0"
+      "head": "c056e9d",
+      "desc": "Arch Linux Web Dashboard v1.0.0 — Next.js 14"
     },
     {
       "name": "ai-file-manager-android",
@@ -195,7 +220,8 @@
       "priority": "P3",
       "git": "Niumination/ai-file-organizer-android",
       "dox": false,
-      "desc": "Android Kotlin \u2014 AI File Organizer, Gemini OCR"
+      "head": "8b441da",
+      "desc": "Android Kotlin — AI File Organizer, Gemini OCR — ✅ Production/"
     },
     {
       "name": "TEDEO-Kanban",
@@ -204,7 +230,9 @@
       "priority": "P2",
       "git": "Niumination/TEDEO-Kanban",
       "dox": false,
-      "desc": "Kanban board untuk TEDEO \u2014 pushed to GitHub"
+      "head": "1bbc96d",
+      "deployUrl": "https://niumination.github.io/TEDEO-Kanban",
+      "desc": "Kanban board untuk TEDEO — GH Pages live"
     },
     {
       "name": "AuditTI-AT",
@@ -213,17 +241,19 @@
       "priority": "P3",
       "git": "Niumination/AuditTI-AT",
       "dox": false,
+      "head": "c266c40",
       "deployUrl": "https://niumination.github.io/AuditTI-AT",
-      "desc": "Audit TI Aceh Tengah \u2014 GH Pages live"
+      "desc": "Audit TI Aceh Tengah — GH Pages live, JS/HTML"
     },
     {
       "name": "niuterm",
       "tier": 2,
       "status": "done",
       "priority": "P3",
-      "git": "Niumination/niu-term",
+      "git": "Niumination/NiuTerm",
       "dox": true,
-      "desc": "Tauri terminal tool"
+      "head": "2a59b03",
+      "desc": "Tauri terminal tool — initial commit"
     },
     {
       "name": "terax-ai",
@@ -232,7 +262,88 @@
       "priority": "P3",
       "git": "Niumination/terax-ai",
       "dox": true,
-      "desc": "Lightweight ADE fork (TS)"
+      "head": "3621426",
+      "desc": "Lightweight ADE fork (TypeScript)"
+    },
+    {
+      "name": "x-downloader",
+      "tier": 2,
+      "status": "in_progress",
+      "priority": "P3",
+      "git": "Niumination/x-downloader",
+      "dox": true,
+      "head": "a51639c",
+      "desc": "FastAPI/Next.js/Three.js/Tauri 2 downloader — polish UI pending"
+    },
+    {
+      "name": "niutui",
+      "tier": 2,
+      "status": "in_progress",
+      "priority": "P3",
+      "git": "Niumination/niutui",
+      "dox": false,
+      "head": "d3d63ff",
+      "desc": "Rust/Cargo TUI — initial scaffold — butuh init remote"
+    },
+    {
+      "name": "niu-studio",
+      "tier": 2,
+      "status": "in_progress",
+      "priority": "P3",
+      "git": "Niumination/niu-studio",
+      "dox": false,
+      "head": "1fc7196",
+      "desc": "Tauri/React creative studio — pnpm workspace"
+    },
+    {
+      "name": "niude",
+      "tier": 2,
+      "status": "in_progress",
+      "priority": "P3",
+      "git": "Niumination/niude",
+      "dox": false,
+      "head": "c083415",
+      "desc": "Tauri app"
+    },
+    {
+      "name": "maze-3d",
+      "tier": 2,
+      "status": "pending",
+      "priority": "P3",
+      "git": "Niumination/Maze-3D-Game---Web-Based",
+      "dox": false,
+      "head": "a0a69af",
+      "desc": "3D web maze game — GH Pages ready"
+    },
+    {
+      "name": "zen",
+      "tier": 2,
+      "status": "pending",
+      "priority": "P3",
+      "git": "Niumination/zen",
+      "dox": false,
+      "head": "4ba4723",
+      "desc": "acehtengah-web static subfolder"
+    },
+    {
+      "name": "arena.ai",
+      "tier": 2,
+      "status": "pending",
+      "priority": "P3",
+      "git": null,
+      "dox": false,
+      "head": "",
+      "desc": "AI Arena — dashboard.html (no remote)"
+    },
+    {
+      "name": "aistudio-google",
+      "tier": 2,
+      "status": "pending",
+      "priority": "P3",
+      "git": null,
+      "dox": false,
+      "head": "",
+      "desc": "Game files — street-racer-offline (no remote)"
     }
   ]
 }

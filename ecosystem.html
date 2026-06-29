@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIUMINATION // ECOSYSTEM</title>
-    <meta name="description" content="Niumination Ecosystem Overview — 28 proyek (20 git + 8 non-git)">
+    <meta name="description" content="Niumination Ecosystem Overview — 39 item di filesystem (30 git + 9 non-git)">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         html{background:#050508;color:#e8e8f0;font-family:'Inter','Segoe UI',sans-serif;font-size:14px;scroll-behavior:smooth}
@@ -43,26 +43,21 @@
 </head>
 <body>
     <h1>⚡ NIUMINATION // ECOSYSTEM</h1>
-    <p class="subtitle">28 item lokal (20 git + 8 non-git) · Remote ~20 repositori · Diperbarui 20 Jun 2026</p>
+    <p class="subtitle">39 item di filesystem (30 git + 9 non-git) · 10 🏭 Production · 20 projects · Diperbarui 27 Jun 2026</p>
 
     <div class="stats-row">
-        <div class="stat-card green"><div class="num">3</div><div class="lbl">✅ Done</div></div>
-        <div class="stat-card amber"><div class="num">12</div><div class="lbl">🔄 Active</div></div>
-        <div class="stat-card"><div class="num">36</div><div class="lbl">⏳ Pending</div></div>
-        <div class="stat-card"><div class="num">6</div><div class="lbl">⚙️ Cron Active</div></div>
-        <div class="stat-card green"><div class="num">10</div><div class="lbl">📋 Tier 1 DOX</div></div>
+        <div class="stat-card green"><div class="num">19</div><div class="lbl">✅ Done</div></div>
+        <div class="stat-card amber"><div class="num">10</div><div class="lbl">🔄 Active</div></div>
+        <div class="stat-card"><div class="num">5</div><div class="lbl">⏳ Pending</div></div>
+        <div class="stat-card"><div class="num">3</div><div class="lbl">⚙️ Cron Jobs</div></div>
+        <div class="stat-card green"><div class="num">26</div><div class="lbl">📋 DOX Files</div></div>
     </div>
 
     <div class="cron-section">
-        <h3>⏰ Scheduled Crons</h3>
-        <div class="cron-item"><span class="schedule">every 5m</span><span>Niu-Kanban-Dash Watchdog — pantau server</span></div>
-        <div class="cron-item"><span class="schedule">every 1h</span><span>Hermes Heartbeat — keep-alive hermes</span></div>
-        <div class="cron-item"><span class="schedule">every 1h</span><span>Kanban Backlog Sync — BACKLOG → kanban.db</span></div>
-        <div class="cron-item"><span class="schedule">every 6h</span><span>Ecosystem Health Check — disk, git, deploy</span></div>
-        <div class="cron-item"><span class="schedule">every 6h</span><span>Remote Poller — deteksi perubahan remote</span></div>
-        <div class="cron-item"><span class="schedule">08:00 daily</span><span>Daily Heartbeat — ringkasan ekosistem harian</span></div>
-        <div class="cron-item"><span class="schedule">Sun 08:00</span><span>Gitleaks Weekly — secret scan seluruh repo</span></div>
-        <div class="cron-item"><span class="schedule">21:00 daily</span><span>Brain Daily Capture — backup catatan harian</span></div>
+        <h3>⏰ Registered Crons</h3>
+        <div class="cron-item"><span class="schedule">21:00 daily</span><span>Brain Daily Capture — ⚠️ Error last run</span></div>
+        <div class="cron-item"><span class="schedule">every 6h</span><span>Memory Checkpoint — ⚠️ Delivery error</span></div>
+        <div class="cron-item"><span class="schedule">Mon 08:00</span><span>Niu-Flow Weekly Audit — ⏳ Never ran</span></div>
     </div>
 
     <div class="section" id="tier1">
@@ -89,31 +84,38 @@
 
 <script>
 const projects = [
-  // === Tier 1 (DOX Complete) ===
-  {name:'TEDEO', desc:'Delivery Service — Express/React/MySQL', tier:1, stack:['Express','Prisma','Socket.IO','MySQL','Expo'], status:'in_progress', gh:'Niumination/TEDEO', deploy:'local'},
-  {name:'kune-ya.com', desc:'AI Chat RAG — Next.js 15, Prisma, PostgreSQL', tier:1, stack:['Next.js','Prisma','PostgreSQL','Tailwind','Vercel'], status:'in_progress', gh:'Niumination/kune-ya.com', deploy:'vercel'},
-  {name:'Niu-Dash', desc:'Dark Nexus Dashboard — Single-file HTML/JS/CSS PWA', tier:1, stack:['Vanilla JS','PWA','GitHub API'], status:'in_progress', gh:'Niumination/niu-dash', deploy:'gh-pages', ver:'v2.16.5'},
-  {name:'Niu-Flow', desc:'JCode Bridge Pipeline — paralel + retry + QC', tier:1, stack:['Python','JCode Bash','Hermes Agent'], status:'in_progress', gh:'Niumination/niu-flow', deploy:'local'},
-  {name:'niu-vermilion', desc:'Second Brain — Notes, Tasks, Bookmarks, Graph', tier:1, stack:['Next.js','Supabase','TipTap','Prisma'], status:'in_progress', gh:'Niumination/niu-vermilion', deploy:'local', ver:'65%'},
-  {name:'PemdiAcehTengah', desc:'Portal Pemda Aceh Tengah — 52 OPD, 70 pages', tier:1, stack:['Next.js 14','React 18','Pure CSS'], status:'in_progress', gh:'Niumination/PemdiAcehTengah', deploy:'vercel', ver:'6 Quick Win ✅'},
-  {name:'niu-cast', desc:'Android Screen Mirror — Gaming Edition', tier:1, stack:['Python','PyQt5','ADB'], status:'pending', gh:'Niumination/niu-cast', deploy:'local', ver:'v1.1.1'},
-  {name:'Flame-ADE', desc:'AI-native Terminal Emulator', tier:1, stack:['Tauri 2','Rust','React 19','TypeScript'], status:'in_progress', gh:'Niumination/Flame-ADE', deploy:'desktop', ver:'v1.3.0'},
+  // === Tier 1 (10 🏭 Production) ===
+  {name:'TEDEO', desc:'Delivery Service — Express/React/PostgreSQL — T1-T4 FIXED', tier:1, stack:['Express','React','PostgreSQL'], status:'in_progress', gh:'Niumination/TEDEO', deploy:'local'},
+  {name:'kune-ya.com', desc:'AI Chat RAG — Next.js 14, Prisma, PostgreSQL — Vercel live', tier:1, stack:['Next.js','Prisma','PostgreSQL','Vercel'], status:'done', gh:'Niumination/kune-ya.com', deploy:'vercel'},
+  {name:'PemdiAcehTengah', desc:'Portal Pemda Aceh Tengah — 52 OPD, 70 pages, Next.js 14', tier:1, stack:['Next.js 14','React 18','Supabase'], status:'in_progress', gh:'Niumination/PemdiAcehTengah', deploy:'vercel', ver:'6 Quick Win ✅'},
+  {name:'niu-vermilion', desc:'Second Brain — V1-V5 auth bugs fixed, Vercel live', tier:1, stack:['Next.js 16','Supabase','TipTap','Prisma'], status:'in_progress', gh:'Niumination/Niu-Vermilion', deploy:'vercel'},
   {name:'Niu-LKH', desc:'Laporan Kegiatan Harian — ✅ 100% Done 🎉', tier:1, stack:['React 19','Vite 6','Tailwind v4','Supabase'], status:'done', gh:'Niumination/Niu-LKH', deploy:'gh-pages', ver:'v3.1.1'},
-  {name:'brain', desc:'Obsidian Vault — Knowledge base & catatan harian', tier:1, stack:['Markdown','Obsidian','Git'], status:'in_progress', gh:'Niumination/brain', deploy:'local'},
-  // === Tier 2 ===
-  {name:'TEDEO-Kanban', desc:'Kanban untuk TEDEO — Vite/React/Zustand', tier:2, stack:['React','Zustand','@dnd-kit','PWA'], status:'in_progress', gh:'Niumination/TEDEO-Kanban'},
-  {name:'JHermUSB-portable', desc:'Hermes Agent Portable USB — launcher + config', tier:2, stack:['Shell','Hermes Agent v25'], status:'active', gh:'Niumination/JHermUSB-portable'},
-  {name:'AuditTI-AT', desc:'Audit TI Aceh Tengah — GH Pages Live', tier:2, stack:['JS','HTML','CSS'], status:'active', gh:'Niumination/AuditTI-AT', deploy:'gh-pages'},
-  {name:'terax-ai', desc:'Lightweight ADE fork (TypeScript)', tier:2, stack:['TypeScript','Tauri'], status:'pending', gh:'Niumination/terax-ai'},
-  {name:'niutui', desc:'Rust CLI/TUI app — terminal interface', tier:2, stack:['Rust','CLI','TUI'], status:'pending', gh:'Niumination/niutui'},
-  {name:'maze-3d', desc:'3D Web Maze Game', tier:2, stack:['Three.js','WebGL'], status:'pending', gh:'Niumination/maze-3d', deploy:'gh-pages'},
-  {name:'niu-studio', desc:'Creative Studio — Tauri/React', tier:2, stack:['Tauri','React'], status:'pending'},
-  {name:'niude', desc:'Tauri desktop app', tier:2, stack:['Tauri'], status:'pending'},
-  {name:'niuterm', desc:'Tauri terminal tool', tier:2, stack:['Tauri'], status:'pending'},
-  {name:'zen', desc:'acehtengah-web/', tier:2, stack:['HTML','CSS'], status:'pending'},
-  {name:'niu-kanban-dash', desc:'React/Vite Dashboard — ❌ NO GIT', tier:2, stack:['React','Vite','SQLite'], status:'pending'},
-  {name:'orchestrator', desc:'Python multi-agent — ❌ NO GIT', tier:2, stack:['Python'], status:'pending'},
-  // === Remote-Only ===
+  {name:'niu-dash', desc:'Dark Nexus Dashboard — v2.16.8, PWA, Audit 27/27 ✅', tier:1, stack:['Vanilla JS','PWA','GitHub API'], status:'done', gh:'Niumination/niu-dash', deploy:'gh-pages', ver:'v2.16.8'},
+  {name:'Niu-Flow', desc:'JCode Bridge Pipeline — paralel + retry + QC', tier:1, stack:['Python','JCode Bash','Hermes Agent'], status:'in_progress', gh:'Niumination/niu-flow', deploy:'local'},
+  {name:'niu-cast', desc:'Android Screen Mirror — Gaming Edition v1.1.1', tier:1, stack:['Python','PyQt5','ADB'], status:'in_progress', gh:'Niumination/niu-cast', deploy:'local'},
+  {name:'Flame-ADE', desc:'AI-native Terminal Emulator v1.3.0', tier:1, stack:['Tauri 2','Rust','React 19','TypeScript'], status:'in_progress', gh:'Niumination/Flame-ADE', deploy:'desktop'},
+  {name:'JHermUSB-portable', desc:'Hermes Agent Portable USB — 652K, SSH remote', tier:1, stack:['Shell','Hermes Agent'], status:'done', gh:'Niumination/JHermUSB-portable'},
+  {name:'brain', desc:'Obsidian Vault — Knowledge base & catatan harian', tier:1, stack:['Markdown','Obsidian','Git'], status:'in_progress', gh:'Niumination/brain'},
+  // === Tier 2 — Experimental & Tools ===
+  {name:'niumination-workspace', desc:'Next.js 16 workspace — Prisma, Three.js, 4 commits', tier:2, stack:['Next.js 16','Prisma','Three.js','Tailwind'], status:'done', gh:'Niumination/niumination-workspace'},
+  {name:'mac-web-dashboard', desc:'macOS Dashboard v1.0.0 — system monitoring', tier:2, stack:['HTML','CSS','JS'], status:'in_progress', gh:'Niumination/mac-web-dashboard'},
+  {name:'TEDEO-Kanban', desc:'Kanban untuk TEDEO — Vite/React', tier:2, stack:['React','Zustand','@dnd-kit','PWA'], status:'done', gh:'Niumination/TEDEO-Kanban', deploy:'gh-pages'},
+  {name:'AuditTI-AT', desc:'Audit TI Aceh Tengah — GH Pages Live', tier:2, stack:['JS','HTML','CSS'], status:'done', gh:'Niumination/AuditTI-AT', deploy:'gh-pages'},
+  {name:'Ultra', desc:'Ultra Automation — Puppeteer browser automation', tier:2, stack:['Puppeteer','Node.js'], status:'done', gh:'Niumination/ultra-automation'},
+  {name:'orchestrator', desc:'Python multi-agent system — ✅ GitHub', tier:2, stack:['Python'], status:'done', gh:'Niumination/orchestrator'},
+  {name:'niu-kanban-dash', desc:'React/Vite kanban dashboard — ✅ GitHub', tier:2, stack:['React','Vite','SQLite'], status:'done', gh:'Niumination/niu-kanban-dash'},
+  {name:'x-downloader', desc:'FastAPI/Next.js/Three.js/Tauri 2 — polish UI pending', tier:2, stack:['FastAPI','Next.js','Three.js','Tauri 2'], status:'in_progress', gh:'Niumination/x-downloader'},
+  {name:'ai-first-os', desc:'Arch Linux ISO builder v1.0.0', tier:2, stack:['Arch Linux','Shell'], status:'done', gh:'Niumination/AI-First-OS'},
+  {name:'arch-web-dashboard', desc:'Arch Linux Web Dashboard v1.0.0 — Next.js 14', tier:2, stack:['Next.js 14'], status:'done', gh:'Niumination/arch-web-dashboard'},
+  {name:'ai-file-manager-android', desc:'Android File Organizer — Kotlin/Gemini OCR', tier:2, stack:['Kotlin','Gemini','Android'], status:'done', gh:'Niumination/ai-file-organizer-android'},
+  {name:'terax-ai', desc:'Lightweight ADE fork (TypeScript)', tier:2, stack:['TypeScript','Tauri'], status:'done', gh:'Niumination/terax-ai'},
+  {name:'niuterm', desc:'Tauri terminal tool', tier:2, stack:['Tauri'], status:'done', gh:'Niumination/NiuTerm'},
+  {name:'niutui', desc:'Rust CLI/TUI app — butuh init remote', tier:2, stack:['Rust','CLI','TUI'], status:'in_progress', gh:'Niumination/niutui'},
+  {name:'niu-studio', desc:'Creative Studio — Tauri/React, pnpm', tier:2, stack:['Tauri','React'], status:'in_progress', gh:'Niumination/niu-studio'},
+  {name:'niude', desc:'Tauri desktop app', tier:2, stack:['Tauri'], status:'in_progress', gh:'Niumination/niude'},
+  {name:'maze-3d', desc:'3D Web Maze Game — GH Pages ready', tier:2, stack:['Three.js','WebGL'], status:'pending', gh:'Niumination/Maze-3D-Game---Web-Based', deploy:'gh-pages'},
+  {name:'zen', desc:'acehtengah-web/', tier:2, stack:['HTML','CSS'], status:'pending', gh:'Niumination/zen'},
+  // === Remote-Only (GitHub, no local) ===
   {name:'kms-spbe', desc:'SPBE Knowledge Management', tier:3, status:'live', gh:'Niumination/kms-spbe', deploy:'vercel'},
   {name:'DiskominfoAT', desc:'Diskominfo Aceh Tengah', tier:3, status:'live', gh:'Niumination/DiskominfoAT', deploy:'gh-pages'},
   {name:'Diskominfo-Web', desc:'Diskominfo Web', tier:3, status:'live', gh:'Niumination/Diskominfo-Web', deploy:'gh-pages'},
