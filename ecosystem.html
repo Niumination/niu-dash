@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIUMINATION // ECOSYSTEM</title>
-    <meta name="description" content="Niumination Ecosystem Overview — 39 item di filesystem (30 git + 9 non-git)">
+    <meta name="description" content="Niumination Ecosystem Overview — project portfolio auto-generated stats">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         html{background:#050508;color:#e8e8f0;font-family:'Inter','Segoe UI',sans-serif;font-size:14px;scroll-behavior:smooth}
@@ -43,14 +43,14 @@
 </head>
 <body>
     <h1>⚡ NIUMINATION // ECOSYSTEM</h1>
-    <p class="subtitle">39 item di filesystem (30 git + 9 non-git) · 10 🏭 Production · 20 projects · Diperbarui 27 Jun 2026</p>
+    <p class="subtitle" id="subtitle">Memuat data...</p>
 
-    <div class="stats-row">
-        <div class="stat-card green"><div class="num">19</div><div class="lbl">✅ Done</div></div>
-        <div class="stat-card amber"><div class="num">10</div><div class="lbl">🔄 Active</div></div>
-        <div class="stat-card"><div class="num">5</div><div class="lbl">⏳ Pending</div></div>
-        <div class="stat-card"><div class="num">3</div><div class="lbl">⚙️ Cron Jobs</div></div>
-        <div class="stat-card green"><div class="num">26</div><div class="lbl">📋 DOX Files</div></div>
+    <div class="stats-row" id="stats-row">
+        <div class="stat-card green"><div class="num" id="stat-done">—</div><div class="lbl">✅ Done</div></div>
+        <div class="stat-card amber"><div class="num" id="stat-active">—</div><div class="lbl">🔄 Active</div></div>
+        <div class="stat-card"><div class="num" id="stat-pending">—</div><div class="lbl">⏳ Pending</div></div>
+        <div class="stat-card"><div class="num" id="stat-cron">3</div><div class="lbl">⚙️ Cron Jobs</div></div>
+        <div class="stat-card green"><div class="num" id="stat-dox">—</div><div class="lbl">📋 DOX Files</div></div>
     </div>
 
     <div class="cron-section">
@@ -147,6 +147,28 @@ function renderCard(p) {
     </div>
   </div>`;
 }
+
+// Hitung stats + tanggal otomatis
+const done = projects.filter(p => p.status==='done' || p.status==='live').length;
+const active = projects.filter(p => p.status==='in_progress' || p.status==='active').length;
+const pending = projects.filter(p => p.status==='pending' || p.status==='stale').length;
+const withDox = projects.filter(p => p.tier === 1).length; // Tier 1 = DOX complete
+
+const total = projects.length;
+const gitCount = projects.filter(p => p.gh).length;
+const now = new Date();
+const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+document.getElementById('subtitle').textContent =
+  `${total} item di filesystem · ${gitCount} git · ${active} 🔄 Active · ${done} ✅ Done · Diperbarui ${dateStr} ${timeStr}`;
+
+document.getElementById('stat-done').textContent = done;
+document.getElementById('stat-active').textContent = active;
+document.getElementById('stat-pending').textContent = pending;
+document.getElementById('stat-dox').textContent = withDox;
 
 document.getElementById('tier1-grid').innerHTML = projects.filter(p => p.tier === 1).map(renderCard).join('');
 document.getElementById('tier2-grid').innerHTML = projects.filter(p => p.tier === 2).map(renderCard).join('');
