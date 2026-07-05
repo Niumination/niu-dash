@@ -39,6 +39,20 @@
         .font-mono{font-family:'JetBrains Mono',monospace}
         .glow-cyan{text-shadow:0 0 7px rgba(0,255,242,.6),0 0 20px rgba(0,255,242,.3)}
 
+        /* ===== FULLSTACK LAYOUT UPGRADE ===== */
+        .glass{border:1px solid var(--border);background:rgba(255,255,255,.03);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+        .card-hover{transition:all .25s cubic-bezier(.23,1,.32,1)}
+        .card-hover:hover{transform:translateY(-4px)!important;box-shadow:0 20px 25px -5px rgba(0,0,0,.4),0 8px 10px -6px rgba(0,0,0,.3);border-color:var(--cyan)!important}
+        .footer-bar{position:fixed;bottom:0;left:0;right:0;z-index:60;height:34px;background:rgba(5,5,8,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.06);display:none;align-items:center;padding:0 24px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.3);justify-content:space-between;letter-spacing:.5px}
+        @media(min-width:768px){.footer-bar{display:flex}}
+        .app-layout{padding-bottom:34px}
+        .sidebar{background:rgba(5,5,8,.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+        .sidebar .sb-logo{font-size:16px;background:linear-gradient(135deg,#00fff2,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .sidebar .sb-logo span{background:0 0;-webkit-text-fill-color:initial;color:var(--red)}
+        .sb-nav button.active{background:rgba(0,255,242,.12)!important;border-color:var(--cyan)!important;box-shadow:inset 0 0 20px rgba(0,255,242,.06)}
+        .feed-card{border-radius:12px!important}
+        .feed-card.card-hover:hover{border-color:var(--cyan)!important;box-shadow:0 0 25px rgba(0,255,242,.08),0 20px 25px -5px rgba(0,0,0,.3)!important}
+
         /* ===== BOOT OVERLAY ===== */
         .boot-overlay{position:fixed;inset:0;z-index:var(--z-boot);background:var(--bg-primary);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;transition:opacity .8s,visibility .8s}
         .boot-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -218,7 +232,7 @@
         .feed-stats .fs-item strong{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;margin-right:4px}
 
         /* ===== FEED CARDS ===== */
-        .feed-cards{display:flex;flex-direction:column;gap:10px;content-visibility:auto;contain-intrinsic-size:200px}
+        .feed-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px;content-visibility:auto;contain-intrinsic-size:200px}
         
         /* ===== ACTIVITY FEED ===== */
         .activity-feed{background:linear-gradient(145deg,rgba(18,18,38,.92) 0%,rgba(12,12,28,.85) 100%);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden}
@@ -685,8 +699,14 @@
 
 </div>
 
+<!-- ===== FOOTER BAR ===== -->
+<div class="footer-bar">
+    <span>NIUMINATION • DARK NEXUS v16.9</span>
+    <span>ACEH TENGAH • <span id="footer-year">2026</span></span>
+</div>
+
 <script>
-var NIU_VERSION = {v:'2.16.9',hash:'afdcce4',date:'2026-07-05T17:00:54+07:00',msg:"Ecosystem sync: x-downloader Phase 3 + DMG release"};
+var NIU_VERSION = {v:'2.16.9',hash:'3317cfc',date:'2026-07-05T22:27:53+07:00',msg:"update: ecosystem.html auto-date + auto-stats — no more hardcoded '27 Jun 2026', hitung dinamis dari project array"};
 var NIU_VERSION = {v:'2.16.9',hash:'local',date:'2026-06-24T21:30:00+07:00',msg:"v2.16.9 — add arch-web-dashboard, mac-web-dashboard, AI-First-OS, ai-file-organizer-android, niu-cast; update GitHub URLs for JHermUSB-portable, TEDEO-Kanban, Niu-Dash + GH Pages"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
 // Error capture for debugging
@@ -1289,7 +1309,7 @@ function renderFeed(filter,statusFilter,searchText){
                 _cardCache[idx]=cardHtml;
             }
             var card=document.createElement('div');
-            card.className='feed-card '+p.category+(selectedIndex===idx?' selected':'');
+            card.className='feed-card '+p.category+(selectedIndex===idx?' selected':'')+' card-hover';
             card.setAttribute('onclick',"selectProject("+idx+")");
             card.setAttribute('onkeydown',"if(event.key==='Enter'||event.key===' '){event.preventDefault();selectProject("+idx+")}");
             card.setAttribute('tabindex','0');
