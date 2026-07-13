@@ -1,0 +1,2207 @@
+var NIU_VERSION = {v:'2.16.9',hash:'1c20433',date:'2026-07-05T23:10:57+07:00',msg:"layout: fullstack design upgrade — glass sidebar, responsive grid, card hover translateY(-4px), footer bar, gradient logo"};
+var NIU_VERSION = {v:'2.16.9',hash:'local',date:'2026-06-24T21:30:00+07:00',msg:"v2.16.9 — add arch-web-dashboard, mac-web-dashboard, AI-First-OS, ai-file-organizer-android, niu-cast; update GitHub URLs for JHermUSB-portable, TEDEO-Kanban, Niu-Dash + GH Pages"};
+document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
+// Error capture for debugging
+var _niuErrors=[];
+function _niuLog(e){var msg=e.message||e||'?';_niuErrors.push(msg);try{var d=document.getElementById('_niuErr');if(d)d.textContent=_niuErrors.join(' | ');}catch(_){}}
+window.addEventListener('error',function(e){_niuLog(e.error||e);});
+// ===== PROJECT DATA (105+ projects, 5 categories) =====
+const PROJECTS = {
+    ready: [
+        { icon:'◈', name:'Meum', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Documents-Mac/Mac-Project/Meum/index.html', desc:'Halaman welcome Matrix-style dengan animasi particle dan CRT effect.', tags:['HTML','CSS','Canvas','Matrix'], date:'24 Feb 2026' },
+        { icon:'⊞', name:'DevFlow / niu-portal', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/niu-portal/index.html', desc:'Landing page manajemen proyek dengan Linear Design System. Dark theme responsive.', tags:['HTML','CSS','JS','Linear DS'], date:'3 Mei 2026' },
+        { icon:'◆', name:'Portfolio 3D', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/portfolio-3d/index.html', desc:'Portofolio interaktif 3D dengan animasi modern.', tags:['HTML','CSS','JS','3D'], date:'10 Mei 2026' },
+        { icon:'◈', name:'Maze Game (Vite)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/claude-projects-or/maze-game/', desc:'Game maze HTML5 + Vite + React. Maze procedural generator.', tags:['HTML5','Vite','Game','React'], date:'3 Mei 2026' },
+        { icon:'⎔', name:'zhtop', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/pi/zhtop/', desc:'Tool terminal Node.js untuk monitoring and visualisasi data via CLI.', tags:['Node.js','CLI','Terminal'], date:'10 Mei 2026' },
+        { icon:'⊚', name:'Niumination Portal - Diskominfo', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Rekomendasi-Aplikasi-ASN-Daerah.html', desc:'Portal Dinas Kominfo Aceh Tengah. Tailwind CSS, tracker IPD, SPBE, sidebar menu.', tags:['HTML','Tailwind','Portal','ASN'], date:'11 Mei 2026' },
+        { icon:'⌁', name:'CPUFriendFriend', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/CPUFriendFriend/', desc:'Python script optimasi power management Hackintosh.', tags:['Python','Hackintosh','CPU','Kext'], date:'14 Mei 2026' },
+        { icon:'☆', name:'Niu-Startpage', path:'https://github.com/Niumination/Niu-Startpage', desc:'Gateway pribadi ke internet. Startpage minimal + search + bookmark.', tags:['HTML','Startpage','GitHub'], date:'2026', website:'https://niumination.github.io/Niu-Startpage' },
+        { icon:'☆', name:'zaryu.startpage', path:'https://github.com/Niumination/zaryu.startpage', desc:'Aesthetic startpage Catppuccin style, clean minimal, hosted GitHub Pages.', tags:['HTML','CSS','Catppuccin','Pages'], date:'2026', website:'https://niumination.github.io/zaryu.startpage' },
+        { icon:'☆', name:'NiuHomePage', path:'https://github.com/Niumination/NiuHomePage', desc:'Homepage personal karena pengen punya homepage sendiri.', tags:['HTML','CSS','Homepage'], date:'2026', website:'https://niumination.github.io/NiuHomePage' },
+        { icon:'☆', name:'SilentSDDM', path:'https://github.com/Niumination/SilentSDDM', desc:'SDDM theme highly customizable untuk Arch / Hyprland.', tags:['SDDM','Theme','Linux','QML'], date:'2026' },
+        { icon:'☆', name:'Maze-3D-Game', path:'https://github.com/Niumination/Maze-3D-Game---Web-Based', desc:'Game maze 3D berbasis web. Labyrinth interaktif dalam 3D.', tags:['Web','3D','Game','Maze'], date:'2026' },
+        { icon:'☆', name:'Niu-Cyber-Search-Engine', path:'https://github.com/Niumination/Niu-Cyber-Search-Engine', desc:'Cyber search engine app pertama. Tema cyber/dark.', tags:['Search','Web','Cyber'], date:'2026' },
+        { icon:'☆', name:'Niu-LKH', path:'https://github.com/Niumination/Niu-LKH', desc:'Laporan Kegiatan Harian - Afrizal Munthe. ✓ DONE. Supabase cloud backup, GH Pages. Vite + React 19 + Tailwind v4.', tags:['Web','Laporan','ASN','React','Done'], date:'19 Jun 2026', website:'https://niumination.github.io/Niu-LKH' },
+        { icon:'☆', name:'niu-speedtest', path:'https://github.com/Niumination/niu-speedtest', desc:'Aplikasi speed test kecepatan jaringan berbasis Python.', tags:['Speedtest','Python','Network'], date:'2026' },
+        { icon:'☆', name:'Bella', path:'https://github.com/Niumination/Bella', desc:'Bella is best - project personal.', tags:['Project','Personal'], date:'2026' },
+        { icon:'☆', name:'DiskominfoAT', path:'https://github.com/Niumination/DiskominfoAT', desc:'Website Diskominfo Aceh Tengah. Dibangun dengan Cursor + ContinueDev.', tags:['Website','Kominfo','GovTech'], date:'2026' },
+        { icon:'☆', name:'Database-DiskominfoAT', path:'https://github.com/Niumination/Database-DiskominfoAT', desc:'Database untuk website DiskominfoAT - struktur and skema data.', tags:['Database','SQL','Kominfo'], date:'2026' },
+        { icon:'☆', name:'Rekapitulasi-SPBE', path:'https://github.com/Niumination/Rekapitulasi-SPBE', desc:'Aplikasi rekap SPBE (Sistem Pemerintahan Berbasis Elektronik).', tags:['SPBE','GovTech','Rekap'], date:'2026' },
+        { icon:'☆', name:'AuditTI-AT', path:'https://github.com/Niumination/AuditTI-AT', desc:'IT Procurement Audit Kabupaten Aceh Tengah pakai AI. Sumber dari LPSE.', tags:['Audit','LPSE','AI','GovTech'], date:'2026' },
+        { icon:'☆', name:'Prakom-Surgawi', path:'https://github.com/Niumination/Prakom-Surgawi', desc:'Anything you want - project Pranata Komputer.', tags:['Project','ASN','Prakom'], date:'2026' },
+        { icon:'☆', name:'cyb3rgh0u1.github.io', path:'https://github.com/Niumination/cyb3rgh0u1.github.io', desc:'GitHub Pages - cyber/ghoul themed.', tags:['Pages','Cyber','GitHub'], date:'2026', website:'https://cyb3rgh0u1.github.io' },
+        { icon:'☆', name:'PAGASUS-PRO', path:'https://github.com/Niumination/PAGASUS-PRO', desc:'Fork project - PAGASUS PRO.', tags:['Fork','Project'], date:'2026' },
+        { icon:'☆', name:'acehtengah-web', path:'/Users/zaryu/Desktop/Niumination/projects/zen/acehtengah-web/', desc:'Website statis multi-halaman Aceh Tengah - HTML murni, berita, layanan publik.', tags:['HTML','CSS','Website','AcehTengah'], date:'2026' },
+        { icon:'☆', name:'HermesV-Github', path:'https://github.com/Niumination/HermesV-Github', desc:'Hermes Agent Portable on Github Codespace.', tags:['Hermes','Codespace','Portable'], date:'6 Jun 2026' },  // NEW 6 Jun 2026
+        { icon:'☆', name:'niu-private', path:'https://github.com/Niumination/niu-private', desc:'Niu Private — Document Vault & Kanban Project Board untuk dokumentasi pribadi + project tracking.', tags:['TypeScript','Vault','Kanban','Document'], date:'6 Jun 2026', website:'https://niumination.github.io/niu-private' },  // NEW 6 Jun 2026
+        { icon:'☆', name:'arch-web-dashboard', path:'https://github.com/Niumination/arch-web-dashboard', desc:'Arch Linux web dashboard — monitoring & system management untuk Arch Linux.', tags:['TypeScript','Dashboard','Linux','Web'], date:'Jun 2026' },
+        { icon:'☆', name:'mac-web-dashboard', path:'https://github.com/Niumination/mac-web-dashboard', desc:'macOS web dashboard — monitoring & system management untuk macOS.', tags:['TypeScript','Dashboard','macOS','Web'], date:'Jun 2026' },
+        { icon:'☆', name:'AI-First-OS', path:'https://github.com/Niumination/AI-First-OS', desc:'Arch Linux ISO builder — Sistem operasi dengan Hermes Agent sebagai warga negara kelas satu.', tags:['Shell','Linux','Arch','ISO','AI'], date:'Jun 2026' },
+        { icon:'☆', name:'ai-file-organizer-android', path:'https://github.com/niumination/ai-file-organizer-android', desc:'AI File Organizer for Android — merapikan file SD Card / internal storage pakai Google Gemini AI. Kotlin, Jetpack Compose, SAF Scoped Storage.', tags:['Kotlin','Android','AI','Gemini','Compose'], date:'Jun 2026' }
+    ],
+    dev: [
+        { icon:'☪', name:'Gayo Mengaji', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/project-copilot/Aplikasi Gayo Mengaji/', desc:'Aplikasi Al-Quran digital untuk ASN Aceh Tengah. Flutter + Node.js + PostgreSQL.', tags:['Flutter','Node.js','PostgreSQL','Mobile'], date:'5 Apr 2026' },
+        { icon:'⊚', name:'Niumination Portal (Fullstack)', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/niumination-portal/', desc:'Portal React + Express. Dashboard IPD, task tracker, SPBE, arsip.', tags:['React','Express','Vite','Fullstack'], date:'28 Apr 2026' },
+        { icon:'⌘', name:'ClaudeCode / claw-code', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ClaudeLeak/claudecode/', desc:'AI coding agent Python/Rust. Multi-provider LLM, multi-agent system.', tags:['Python','Rust','CLI','AI','LLM'], date:'26 Apr 2026' },
+        { icon:'△', name:'Flame-ADE', path:'https://github.com/Niumination/Flame-ADE', desc:'AI-native terminal emulator 7MB. Tauri 2 + Rust + React 19. BYOK AI, no telemetry.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
+        { icon:'△', name:'terax-ai', path:'https://github.com/Niumination/terax-ai', desc:'Lightweight AI terminal emulator 7MB. Rust + Tauri + React.', tags:['Rust','Tauri','React','Terminal','AI'], date:'2026' },
+        { icon:'△', name:'flame-code', path:'https://github.com/Niumination/flame-code', desc:'My First Build, Using AI - project eksperimen AI coding pertama.', tags:['AI','Code','Experiment','TypeScript'], date:'2026' },
+        { icon:'△', name:'jcode', path:'https://github.com/Niumination/jcode', desc:'Coding Agent Harness - framework AI coding agent.', tags:['AI','Agent','Framework'], date:'2026' },
+        { icon:'△', name:'skills', path:'https://github.com/Niumination/skills', desc:'Skills for Real Engineers - dari .claude directory langsung.', tags:['Skills','Claude','AI','Config'], date:'2026' },
+        { icon:'△', name:'G0DM0D3', path:'https://github.com/Niumination/G0DM0D3', desc:'LIBERATED AI CHAT - AI chat bebas tanpa batasan.', tags:['AI','Chat','Uncensored'], date:'2026' },
+        { icon:'△', name:'disunday', path:'https://github.com/Niumination/disunday', desc:'Kontrol opencode dari Discord. Kelola AI coding 24/7 via Discord.', tags:['Discord','AI','Bot','opencode'], date:'2026' },
+        { icon:'△', name:'free-vps', path:'https://github.com/Niumination/free-vps', desc:'Project VPS gratis. Setup cloud infrastructure free tier.', tags:['VPS','Cloud','DevOps'], date:'2026' },
+        { icon:'△', name:'Free-Claude-Opus', path:'https://github.com/Niumination/Free-Claude-Opus', desc:'Akses gratis Claude Opus - eksperimen free tier AI premium.', tags:['AI','Claude','Free'], date:'2026' },
+        { icon:'△', name:'Continue-Agent', path:'https://github.com/Niumination/Continue-Agent', desc:'Continue agent integration - AI coding assistant untuk editor.', tags:['AI','Continue','Agent'], date:'2026' },
+        { icon:'△', name:'cursor-free-vip', path:'https://github.com/Niumination/cursor-free-vip', desc:'Reset Cursor AI MachineID and Bypass Higher Token Limit.', tags:['Cursor','AI','VIP','Tool'], date:'2026' },
+        { icon:'△', name:'unlimited-claude-AI', path:'https://github.com/Niumination/unlimited-claude-AI', desc:'Claude AI unlimited - no backend, no server costs, 100% free.', tags:['AI','Claude','Free','Unlimited'], date:'2026' },
+        { icon:'△', name:'Activate-Office-365', path:'https://github.com/Niumination/Activate-Office-365-on-Windows-10-11', desc:'Leverage the cloud - aktivasi Office 365 di Windows.', tags:['Office','Windows','Tool'], date:'2026' },
+        { icon:'△', name:'docker-mcp-tutorial', path:'https://github.com/Niumination/docker-mcp-tutorial', desc:'Tutorial lengkap membangun MCP server dengan Docker - dari NetworkChuck.', tags:['Docker','MCP','Tutorial'], date:'2026' },
+        { icon:'△', name:'mcp-for-beginners', path:'https://github.com/Niumination/mcp-for-beginners-Microsoft', desc:'Open-source curriculum MCP fundamentals - dari Microsoft. 2GB.', tags:['MCP','Microsoft','Curriculum','AI'], date:'2026' },
+        { icon:'⎔', name:'Diskominfo-Web', path:'https://github.com/Niumination/Diskominfo-Web', desc:'Alternatif website Diskominfo Aceh Tengah.', tags:['Web','Kominfo','GovTech'], date:'2026' },
+        { icon:'⎔', name:'kms-spbe', path:'https://github.com/Niumination/kms-spbe', desc:'Knowledge Management System untuk SPBE.', tags:['KMS','SPBE','GovTech'], date:'2026' },
+        { icon:'⎔', name:'SPBE-DevOps-Academy', path:'https://github.com/Niumination/SPBE-DevOps-Academy', desc:'Akademi DevOps untuk SPBE - pembelajaran DevOps pemerintahan.', tags:['DevOps','SPBE','Academy'], date:'2026' },
+        { icon:'⎔', name:'Devs-Niu', path:'https://github.com/Niumination/Devs-Niu', desc:'Developer portfolio / hub untuk semua project Niumination.', tags:['Dev','Portfolio','Hub'], date:'2026' },
+        { icon:'⎔', name:'Automata', path:'https://github.com/Niumination/Automata', desc:'Website Otomisasi Manajemen Talenta - Pranata Komputer Diskominfo.', tags:['Web','ASN','Talenta','Otomasi'], date:'2026' },
+        { icon:'⚡', name:'Niu-Dash', path:'https://github.com/Niumination/niu-dash', desc:'Dark web glitch dashboard tracker — 105+ project terinventarisasi.', tags:['HTML','CSS','JS','Dashboard','Tracker'], date:'19 Jun 2026', website:'https://niumination.github.io/niu-dash' },
+        { icon:'△', name:'PemdiAcehTengah', path:'https://github.com/Niumination/PemdiAcehTengah', desc:'Portal Pemetaan Proses Bisnis Aceh Tengah. Next.js + Vercel. PPB framework. 52 OPD, 4.507 ASN, 63 pages.', tags:['Next.js','GovTech','AcehTengah','Portal','Vercel'], date:'Jun 2026', website:'https://pemdi-aceh-tengah.vercel.app' },
+        { icon:'△', name:'niu-vermilion', path:'https://github.com/niumination/niu-vermilion', desc:'Second Brain Ecosystem — Knowledge Management web app. Next.js 16 + React 19 + Supabase + TipTap. 22 routes, Graph View, Notes, Tasks, Bookmarks.', tags:['Next.js','Supabase','TipTap','SecondBrain','Vercel'], date:'Jun 2026' },
+        { icon:'△', name:'VirtualAssistance', path:'https://github.com/Niumination/VirtualAssistance', desc:'Virtual Assistance web3 app - Next.js + TypeScript.', tags:['Next.js','Web3','TypeScript'], date:'Jun 2026' },
+        { icon:'△', name:'niu-studio', path:'/Users/zaryu/Desktop/Niumination/projects/niu-studio/', desc:'Tauri + React studio app - eksperimen desktop hybrid.', tags:['Tauri','React','Desktop','Studio'], date:'2026' },
+        { icon:'△', name:'NiuTUI', path:'/Users/zaryu/Desktop/Niumination/projects/niutui/', desc:'Rust CLI/TUI app - terminal interface untuk Niu ecosystem.', tags:['Rust','CLI','TUI'], date:'2026' },
+        { icon:'△', name:'NiuTerm', path:'/Users/zaryu/Desktop/Niumination/projects/niuterm/', desc:'Tauri terminal emulator - niuterm v0.1.0.', tags:['Rust','Tauri','Terminal'], date:'2026' },
+        { icon:'△', name:'niude', path:'/Users/zaryu/Desktop/Niumination/projects/niude/', desc:'Tauri app v0.1.0 - desktop app eksperimental.', tags:['Rust','Tauri','Desktop'], date:'2026' },
+        { icon:'△', name:'Niu-Flow', path:'/Users/zaryu/Desktop/Niumination/Niu-Flow/', desc:'Multi-agent pipeline orchestration — integrasi Hermes + JCode + Codex. Parallel ThreadPoolExecutor, GitHub auto-sync.', tags:['Python','Pipeline','Orchestrator','AI'], date:'Jun 2026' },
+        { icon:'△', name:'JHermUSB-portable', path:'https://github.com/Niumination/JHermUSB-portable', desc:'Hermes Agent USB portable variant — cross-platform launcher, docs, scripts.', tags:['Hermes','USB','Portable','Cross-Platform'], date:'Jun 2026' },
+        { icon:'△', name:'Orchestrator', path:'/Users/zaryu/Desktop/Niumination/projects/orchestrator/', desc:'Python task orchestrator — scheduler, task queue, config JSON, logging.', tags:['Python','Scheduler','Orchestrator','Automation'], date:'Jun 2026' },
+        { icon:'△', name:'street-racer-offline', path:'/Users/zaryu/Desktop/Niumination/aistudio-google/street-racer-offline/', desc:'Android racing game — Kotlin, Jetpack Compose, Gradle. AI Studio Google.', tags:['Android','Kotlin','Game','Compose'], date:'Jun 2026' },
+        { icon:'△', name:'TEDEO', path:'/Users/zaryu/Desktop/Niumination/TEDEO/', desc:'Delivery Service lokal Kabupaten Aceh Tengah — Expo monorepo (mobile, web, backend, Prisma).', tags:['Expo','React Native','Monorepo','Prisma','Delivery','AcehTengah'], date:'Jun 2026' },
+        { icon:'△', name:'TEDEO-Kanban', path:'https://github.com/Niumination/TEDEO-Kanban', desc:'Kanban Board untuk tracking progress TEDEO Delivery Service — Next.js PWA, drag-and-drop.', tags:['Next.js','PWA','Kanban','React','AcehTengah'], date:'Jun 2026' },  // NEW Jun 2026
+        { icon:'△', name:'niu-cast', path:'https://github.com/Niumination/niu-cast', desc:'Niu Cast — Python-based project untuk Niumination ecosystem.', tags:['Python','Project','Niu'], date:'Jun 2026' },
+        { icon:'△', name:'kune-ya.com', path:'https://github.com/Niumination/kune-ya.com', desc:'Situs pribadi kune-ya.com — Next.js 15 full-stack dengan auth (next-auth), database (Prisma+PostgreSQL), middleware, dan Prisma ORM.', tags:['Next.js','Prisma','Fullstack','TypeScript','Web'], date:'6 Jun 2026' }  // NEW 6 Jun 2026
+    ],
+    ideas: [
+        { icon:'⎇', name:'Hackintosh ThinkPad X13', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Hackintosh-ThinkPad-X13-Yoga.md', desc:'Panduan optimasi Hackintosh ThinkPad X13 Yoga.', tags:['Hackintosh','OpenCore','macOS','Guide'], date:'7 Mei 2026' },
+        { icon:'⊞', name:'Windows 11 Optimasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/Optimasi-Windows11-ThinkPad-X13.md', desc:'Panduan optimasi Windows 11 ThinkPad X13 - debloat, registry, power plan.', tags:['Windows','Optimasi','Guide'], date:'7 Mei 2026' },
+        { icon:'⏣', name:'MySystem - Dokumentasi', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/Niumination/MySystem.md', desc:'Spesifikasi lengkap MacBook Pro dan perangkat lain.', tags:['Dokumentasi','Hardware','System'], date:'14 Mar 2026' },
+        { icon:'⌁', name:'OpenClaw - Setup Agent', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/git-clone/claw-code/', desc:'Setup OpenClaw AI agent untuk workflow coding.', tags:['AI','Agent','OpenClaw','Setup'], date:'26 Apr 2026' },
+        { icon:'⎔', name:'ASN Workspace - KB', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/ASN_Workspace_Knowledge_Base.xlsx', desc:'Basis pengetahuan ASN - aplikasi, regulasi, workflow.', tags:['ASN','KB','Excel'], date:'11 Mei 2026' },
+        { icon:'△', name:'OpenCore EFI Configs', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/efi/', desc:'Koleksi EFI OpenCore Hackintosh - BACKUP-1574, READY-TO-UPDATE.', tags:['Hackintosh','OpenCore','EFI','Bootloader'], date:'14 Mei 2026' },
+        { icon:'⌂', name:'Baca - Repo GitHub', path:'/Volumes/Niumination/Drive - ExFat/Mac-SebelumHapus/MyGit/Baca/', desc:'Repo pribadi ryu-id/Baca. Satu commit awal.', tags:['GitHub','Repo','Idea'], date:'2 Apr 2026' },
+        { icon:'☆', name:'roboto_origin', path:'https://github.com/Niumination/roboto_origin', desc:'Fully Open-Source DIY Humanoid Robot - 750MB. Skala penuh, bilingual EN/CN.', tags:['Robot','Hardware','DIY','Open-Source'], date:'2026' },
+        { icon:'☆', name:'lmarena.github.io', path:'https://github.com/Niumination/lmarena.github.io', desc:'GitHub Pages untuk LM Arena - 320MB.', tags:['Pages','LM','Arena'], date:'2026' },
+        { icon:'△', name:'Ultra Automation System', path:'/Users/zaryu/Documents/arena.ai/ultra-automation-system/', desc:'Node.js ultra automation system - arsitektur sistem otomatis.', tags:['Node.js','Automation','System'], date:'2026' },
+        { icon:'△', name:'obsidian-ai-os', path:'/Users/zaryu/Desktop/Niumination/labs/obsidian-ai-os/', desc:'Obsidian AI OS — vault template + OpenCode integration untuk AI-powered knowledge management. Sudah dipindah ke labs/.', tags:['Obsidian','AI','OS','Vault'], date:'11 Jun 2026' },
+        { icon:'△', name:'Flame-ADE-Desain', path:'/Users/zaryu/Desktop/Niumination/labs/flame-ade-desain/', desc:'Desain/template HTML untuk Flame ADE - mockup UI.', tags:['Design','HTML','Mockup','ADE'], date:'2026' },
+        { icon:'⎇', name:'komik-seksual', path:'/Users/zaryu/Desktop/Niumination/labs/komik-seksual/', desc:'Eksperimen HTML komik ASCII — creative coding.', tags:['HTML','ASCII','Creative','Eksperimen'], date:'2026' }  // NEW 2026,
+    ],
+    config: [
+        { icon:'☆', name:'ryu-dots', path:'https://github.com/Niumination/ryu-dots', desc:'Arch Linux config lengkap - Hyprland + Illogical Impulse.', tags:['Arch','Hyprland','Dotfiles','Linux'], date:'2026' },
+        { icon:'☆', name:'dotfiles (1.6GB)', path:'https://github.com/Niumination/dotfiles', desc:'My Arch Dotfiles - 1.64GB full Arch config collection.', tags:['Arch','Dotfiles','Config'], date:'2026' },
+        { icon:'☆', name:'Zaryu-HyDE (1.3GB)', path:'https://github.com/Niumination/Zaryu-HyDE', desc:'Portable re-work hyprdots. Aesthetic, dynamic, minimal - 1.3GB.', tags:['Hyprland','Dotfiles','Zaryu','Config'], date:'2026' },
+        { icon:'☆', name:'hyprdots', path:'https://github.com/Niumination/hyprdots', desc:'Aesthetic dynamic dots untuk Arch Hyprland - 1GB.', tags:['Hyprland','Dotfiles','Aesthetic'], date:'2026' },
+        { icon:'☆', name:'ZaryuHive', path:'https://github.com/Niumination/ZaryuHive', desc:'Zaryu Hive - environment config.', tags:['Config','Zaryu','Hive'], date:'2026' },
+        { icon:'☆', name:'RyuDE', path:'https://github.com/Niumination/RyuDE', desc:'Personal Desktop Environment based on HyDE-Project - C++.', tags:['Hyprland','DE','C++','Ryu'], date:'2026' },
+        { icon:'☆', name:'ryuland', path:'https://github.com/Niumination/ryuland', desc:'Hyprland ecosystem dots - modern, useful, halal.', tags:['Hyprland','Dotfiles','Islamic','Config'], date:'2026' },
+        { icon:'☆', name:'ryuland-dotfiles', path:'https://github.com/Niumination/ryuland-dotfiles', desc:'Rice built for usability - Hyprland config.', tags:['Hyprland','Rice','Dotfiles'], date:'2026' },
+        { icon:'☆', name:'ryushell', path:'https://github.com/Niumination/ryushell', desc:'Shell config - No waybar here! - GPL-3.0.', tags:['Shell','Config','Waybar'], date:'2026' },
+        { icon:'☆', name:'AnachonisticHypr', path:'https://github.com/Niumination/AnachonisticHypr', desc:'Anachronistic Hyprland config - Shell.', tags:['Hyprland','Shell','Config'], date:'2026' },
+        { icon:'☆', name:'hive-dotfiles', path:'https://github.com/Niumination/hive-dotfiles', desc:'Hive dotfiles - CSS config.', tags:['Dotfiles','CSS','Config'], date:'2026' },
+        { icon:'☆', name:'Axenide-Dotfiles', path:'https://github.com/Niumination/Axenide-Dotfiles', desc:'Axenide dotfiles - 450MB.', tags:['Dotfiles','Config','Fork'], date:'2026' },
+        { icon:'☆', name:'Hyde-cli', path:'https://github.com/Niumination/Hyde-cli', desc:'HyDE CLI wrapper, tweaks, workarounds.', tags:['HyDE','CLI','Wrapper'], date:'2026' },
+        { icon:'☆', name:'hyprfloat', path:'https://github.com/Niumination/hyprfloat', desc:'Hyprland floating WM + workspace overview utility.', tags:['Hyprland','Floating','WM'], date:'2026' },
+        { icon:'☆', name:'hyprnix', path:'https://github.com/Niumination/hyprnix', desc:'Hyprland Nix config - Nix language.', tags:['Nix','Hyprland','Config'], date:'2026' },
+        { icon:'☆', name:'kaizen', path:'https://github.com/Niumination/kaizen', desc:'Productive desktop environment setup.', tags:['Desktop','Productivity','Config'], date:'2026' },
+        { icon:'☆', name:'matt-dotfiles', path:'https://github.com/Niumination/matt-dotfiles', desc:'Yet another aesthetic Hyprland Config.', tags:['Hyprland','Aesthetic','Dotfiles'], date:'2026' },
+        { icon:'☆', name:'agsv1-hyprpanel', path:'https://github.com/Niumination/agsv1-hyprpanel', desc:'AGS v1 Hyprpanel - TypeScript.', tags:['AGS','Hyprpanel','TypeScript'], date:'2026' },
+        { icon:'☆', name:'win11-dotfiles', path:'https://github.com/Niumination/win11-dotfiles', desc:'Windows 11 dotfiles and config - CSS.', tags:['Windows','Dotfiles','Config'], date:'2026' },
+        { icon:'☆', name:'Windots', path:'https://github.com/Niumination/Windots', desc:'Koleksi Windows dotfiles and configs pribadi.', tags:['Windows','Dotfiles','Config'], date:'2026' },
+        { icon:'☆', name:'.local dotfiles', path:'/Users/zaryu/.local/src/dotfiles/', desc:'Dotfiles lokal - mirror config symlinked dari berbagai proyek.', tags:['Dotfiles','Local','Config'], date:'2026' },
+        { icon:'🧠', name:'Second Brain', path:'/Users/zaryu/Desktop/Niumination/brain/_index.md', desc:'Obsidian vault pribadi — daily capture, catatan proyek, riset. HEAD 9391ef5. 66 repositori di DOX.', tags:['Obsidian','Vault','Knowledge','SecondBrain','DOX'], date:'11 Jun 2026' },
+        { icon:'☆', name:'zaryu-terminal-dotfiles', path:'/Users/zaryu/Desktop/Niumination/rekap/zaryu-terminal-dotfiles/', desc:'Terminal dotfiles stow-managed — Zsh, Neovim, Tmux, Git, Starship, Node, Ruby, ASDF.', tags:['Terminal','Dotfiles','Zsh','Neovim','Stow'], date:'Jun 2026' },
+    ],
+    legacy: [
+        { icon:'◇', name:'Claude-Free-Project (LEAK)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECT\'S/Claude-Free-Project (LEAK)/', desc:'Static HTML website dari backup Windows - eksperimen Claude Free.', tags:['HTML','Backup','Legacy'], date:'2026' },
+        { icon:'◇', name:'Portal Pemdi (Desktop)', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECT\'S/Project PEMDI - Claude Desktop (FreeAccount)/Portal Pemdi/Portal-Pemdi/', desc:'Vite + React portal Pemdi versi awal - backup Windows.', tags:['React','Vite','Pemdi','Backup'], date:'2026' },
+        { icon:'◇', name:'DropBeam Flutter', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECT\'S/Project DropBeam - Claude/dropbeam-production/dropbeam-flutter/', desc:'Flutter mobile app - project DropBeam (backup Windows).', tags:['Flutter','Mobile','Backup'], date:'2026' },
+        { icon:'◇', name:'DropBeam Server', path:'/Volumes/Niumination/BACKUP/WINDOWS11/PROJECT\'S/Project DropBeam - Claude/dropbeam-production/dropbeam-server/', desc:'Node.js backend untuk DropBeam (backup Windows).', tags:['Node.js','Backend','Backup'], date:'2026' },
+        { icon:'◇', name:'jcode-docs', path:'/Users/zaryu/Desktop/Niumination/archive/jcode-docs/', desc:'Dokumentasi JCode - referensi coding agent framework.', tags:['Docs','JCode','Reference'], date:'2026' },
+        { icon:'◇', name:'Hermes-USB-Portable', path:'/Users/zaryu/Music/Devs/Hermes-USB-Portable-main/', desc:'Dokumentasi portable Hermes Agent USB.', tags:['Docs','Hermes','Portable'], date:'2026' },
+        { icon:'◇', name:'xero-dotfiles-docs', path:'/Users/zaryu/Desktop/Niumination/archive/xero-dotfiles-docs/', desc:'Dokumentasi Xero dotfiles - referensi tema/ricing.', tags:['Docs','Dotfiles','Xero','Reference'], date:'2026' },
+    ]
+};
+
+// ===== DEV META — rich data (history, plan, recommendations) from dev-tracker =====
+const DEV_META = {
+    'Flame-ADE':{
+        status:'active',
+        history:[
+            {date:'2026 — Q1',text:'Konsep awal: AI-native terminal emulator sub-10MB. Ide dari frustrasi dengan bloat IDE modern.'},
+            {date:'2026 — Q2',text:'Prototype Tauri 2 + Rust + React 19. BYOK AI, OS keychain, zero telemetry. Target macOS Tahoe 26.5.'},
+            {date:'2026 — Current',text:'Pengembangan core terminal emulator. Integrasi multi-provider LLM (OpenAI, Anthropic, OpenRouter).'},
+        ],
+        plan:['Selesaikan core terminal rendering (Rust + webview)','Plugin system untuk ekstensi AI custom','Multi-session tabs + session persistence','Package manager built-in (niupkg?)','Rilis alpha — public beta di GitHub Releases'],
+        recommendations:[
+            {text:'Fokus konsolidasi: Flame-ADE dan terax-ai punya overlap ~70%. Gabung atau bedakan use case secara tegas.',priority:'high'},
+            {text:'Gunakan GitHub Projects / Milestones untuk tracking progress publik — biar kontributor tertarik.',priority:'high'},
+            {text:'Siapkan documentation-first approach: ARCHITECTURE.md + CONTRIBUTING.md sebelum rilis publik.',priority:'mid'},
+            {text:'Benchmark performa vs Warp, Hyper, iTerm2 — publikasikan hasilnya sebagai blog post / dev.to.',priority:'low'},
+        ]
+    },
+    'terax-ai':{
+        status:'paused',
+        history:[
+            {date:'2026 — Q1',text:'Terinspirasi dari proyek ADE open-source. Mulai sebagai eksperimen lightweight terminal.'},
+            {date:'2026 — Q2',text:'Berhasil mencapai ~7MB binary size. Stack Rust + Tauri + React. Fitur dasar typing + output rendering.'},
+            {date:'2026 — Current',text:'Ditunda — fokus dialihkan ke Flame-ADE yang lebih mature secara arsitektur.'},
+        ],
+        plan:['Keputusan: merge ke Flame-ADE atau jalan sendiri sebagai minimal edition','Jika jalan sendiri: fokus sebagai lightweight demo / POC untuk ADE concept','Jika merge: port fitur unik (jika ada) ke Flame-ADE'],
+        recommendations:[
+            {text:'Evaluasi make-or-break: 2 proyek ADE parallel menghabiskan energi. Dokumentasi perbedaan teknis, lalu ambil keputusan.',priority:'high'},
+            {text:'Jika dipertahankan, positioning sebagai "ADE lite" untuk resource-constrained environment (VPS, Raspberry Pi).',priority:'mid'}
+        ]
+    },
+    'flame-code':{
+        status:'active',
+        history:[
+            {date:'2026 — Q1',text:'"My First Build, Using AI" — proyek pertama yang fully dibangun dengan bantuan AI coding agent.'},
+            {date:'2026 — Q2',text:'Eksperimen dengan Cursor, Claude Code, dan ContinueDev. Belajar pattern AI-assisted development.'},
+            {date:'2026 — Current',text:'Iterasi cepat: terus bereksperimen dengan berbagai pendekatan AI coding.'},
+        ],
+        plan:['Dokumentasi perjalanan: write-up tentang apa yang berhasil vs tidak dalam AI-assisted coding','Template boilerplate untuk rapid prototyping dengan AI','Benchmark berbagai AI coding tools (Cursor, Claude Code, Copilot, Continue)'],
+        recommendations:[
+            {text:'Transformasi menjadi blog/series: "My First Build" punya nilai storytelling tinggi. Publikasikan sebagai artikel dev.to, Twitter thread.',priority:'high'},
+            {text:'Buat repo template dari hasil eksperimen — biar orang lain bisa reproduce learning path yang sama.',priority:'mid'}
+        ]
+    },
+    'jcode':{
+        status:'active',
+        history:[
+            {date:'2026 — Q1',text:'Ide Coding Agent Harness — framework untuk orchestrasi AI coding agents.'},
+            {date:'2026 — Q2',text:'Prototyping multi-agent workflow. Integrasi dengan local LLM + cloud API.'},
+        ],
+        plan:['Definisi API: agent input/output protocol','Plugin system untuk custom tools & MCP server integration','Integrasi langsung dengan Flame-ADE sebagai agent engine'],
+        recommendations:[
+            {text:'Aliansi dengan ClaudeCode/claw-code — jangan buat ulang yang sudah ada. Fork dan extend.',priority:'high'},
+            {text:'Gunakan MCP (Model Context Protocol) sebagai standard agent-tool communication.',priority:'mid'}
+        ]
+    },
+    'skills':{
+        status:'active',
+        history:[{date:'2026 — Q2',text:'Direktori skills Claude Code dari .claude — dibagikan sebagai open-source. Skills for Real Engineers.'}],
+        plan:['Kurasi skills yang benar-benar reusable','Dokumentasi cara pakai setiap skill','Integrasi dengan jcode sebagai skill registry default','Community contributions via PR'],
+        recommendations:[
+            {text:'Buat skill template + validator agar kontribusi community terstandarisasi.',priority:'high'},
+            {text:'Host GitHub Pages sebagai skill marketplace / searchable registry.',priority:'mid'}
+        ]
+    },
+    'ClaudeCode / claw-code':{
+        status:'staging',
+        history:[
+            {date:'26 Apr 2026',text:'Fork pertama dari claudecode (soongenwong) — eksplorasi multi-agent system.'},
+            {date:'2026 — Mei',text:'Clone kedua dari ultraworkers/claw-code — pendekatan berbeda, Rust-based.'},
+            {date:'2026 — Current',text:'Dua fork berbeda sumber. Eksplorasi multi-provider LLM, multi-agent Python.'},
+        ],
+        plan:['Pilih satu fork sebagai base code — atau merge feature dari keduanya','Dockerize untuk portabilitas lintas OS','Integrasi dengan disunday (Discord controller) untuk remote agent management'],
+        recommendations:[
+            {text:'Konsolidasi: dua fork claudecode/claw-code membingungkan. Pilih satu primary, archive yang lain.',priority:'high'},
+            {text:'Containerize + publish ke Docker Hub — biar bisa run di VPS / server manapun.',priority:'high'},
+            {text:'Integrasi dengan Niumination Portal sebagai backend agent manager.',priority:'mid'}
+        ]
+    },
+    'disunday':{
+        status:'active',
+        history:[{date:'2026 — Q2',text:'Fork dari disunday — Discord bridge untuk opencode. Kontrol AI coding via Discord.'}],
+        plan:['Bridge ke semua AI coding tool yang dipakai (Claude Code, Codex, OpenCode)','Multi-channel support untuk multi-project','Persistent session management'],
+        recommendations:[
+            {text:'Killer feature: jadwalkan AI task via Discord command + cron. "disunday run task-123 at 9am"',priority:'high'},
+            {text:'Integrasi dengan cron/automation sistem Hermes Agent untuk scheduled AI tasks.',priority:'mid'}
+        ]
+    },
+    'G0DM0D3':{
+        status:'active',
+        history:[{date:'2026',text:'Fork project — "LIBERATED AI CHAT". Eksperimen dengan mode AI chat unrestricted.'}],
+        plan:['Self-host option dengan local LLM (llama.cpp, Ollama)','Multi-model routing: uncensored local + censored cloud'],
+        recommendations:[{text:'Bedakan positioning dari AI chat mainstream — fokus ke developer use case (code generation tanpa filter).',priority:'mid'}]
+    },
+    'free-vps':{
+        status:'active',
+        history:[{date:'2026',text:'Project setup VPS menggunakan free tier cloud providers.'}],
+        plan:['Dokumentasi lengkap free tier: Oracle, GCP, AWS, Azure','Automation script provisioning (Terraform/Ansible)','Use case: hosting AI agents, Discord bots, portal apps'],
+        recommendations:[
+            {text:'Buat satu-click deployment script — siapa pun bisa deploy AI stack di free VPS dalam 5 menit.',priority:'high'},
+            {text:'Integrasi dengan jcode/ClaudeCode untuk remote agent hosting.',priority:'mid'}
+        ]
+    },
+    'Free-Claude-Opus':{
+        status:'paused',
+        history:[{date:'2026',text:'Fork — eksperimen akses gratis ke Claude Opus. Metode bypass / free tier.'}],
+        plan:['Evaluasi legalitas & sustainability metode','Alternatif: gunakan OpenRouter / API proxy yang legitimate'],
+        recommendations:[
+            {text:'Risiko tinggi — metode bypass API rentan terminator akun. Migrasi ke solusi legitimate (OpenRouter, self-host).',priority:'high'},
+            {text:'Dokumentasi sebagai "AI cost optimization guide" daripada "free hack".',priority:'mid'}
+        ]
+    },
+    'Continue-Agent':{
+        status:'paused',
+        history:[{date:'2026',text:'Project kosong (0KB) — ide awal untuk integrasi Continue agent.'}],
+        plan:['Definisi use case: Continue sebagai local AI coding assistant','Integrasi dengan custom MCP servers'],
+        recommendations:[{text:'Butuh kickstart — define satu use case konkret dulu sebelum scale.',priority:'high'}]
+    },
+    'cursor-free-vip':{
+        status:'active',
+        history:[{date:'2026',text:'Fork — tool reset MachineID Cursor AI. Bypass trial limit.'}],
+        plan:['Auto-update untuk mendeteksi versi Cursor terbaru','GUI wrapper (opsional) untuk non-tech users'],
+        recommendations:[
+            {text:'High risk — melanggar ToS Cursor. Dokumentasi sebagai "educational purposes only" jelas.',priority:'high'},
+            {text:'Buat alternatif legitimate: gunakan VSCode + Continue plugin sebagai free alternative.',priority:'mid'}
+        ]
+    },
+    'unlimited-claude-AI':{
+        status:'active',
+        history:[{date:'2026',text:'Fork — "Claude AI unlimited, no backend, no server costs, 100% free".'}],
+        plan:['Evaluasi metode yang digunakan (frontend-only bypass?)','Dokumentasi limitations & risks'],
+        recommendations:[{text:'Sama dengan Free-Claude-Opus — risiko terminator akun. Dokumentasi transparan.',priority:'high'}]
+    },
+    'Activate-Office-365':{
+        status:'active',
+        history:[{date:'2026',text:'Fork — aktivasi Office 365 di Windows. Tool utility.'}],
+        plan:['Update untuk Office 2026 compatibility','Auto-detection Office version + recommended activation method'],
+        recommendations:[{text:'Untuk penggunaan personal saja — tidak direkomendasikan untuk production/enterprise.',priority:'mid'}]
+    },
+    'docker-mcp-tutorial':{
+        status:'active',
+        history:[{date:'2026',text:'Fork tutorial membangun MCP server dengan Docker — dari NetworkChuck.'}],
+        plan:['Translate/Praktik langsung semua contoh','Buat versi yang sudah teruji + catatan pribadi','Kustomisasi: MCP server untuk Niumination stack'],
+        recommendations:[
+            {text:'Dokumentasi pengalaman belajar MCP — "My MCP Journey" jadi konten bagus untuk dev.to.',priority:'mid'},
+            {text:'Implementasi MCP nyata untuk project lain (jcode, Flame-ADE) sebagai use case konkret.',priority:'high'}
+        ]
+    },
+    'mcp-for-beginners':{
+        status:'active',
+        history:[{date:'2026',text:'Fork — open-source curriculum MCP fundamentals dari Microsoft. ~2GB full materials.'}],
+        plan:['Studi kurikulum secara sistematis — module per module','Implementasi output: MCP server untuk tools lokal','Integrasi dengan Hermes Agent MCP client'],
+        recommendations:[
+            {text:'Prioritas tinggi: MCP adalah standard masa depan AI-tool integration. Kuasai ini dan implementasi di project lain.',priority:'high'},
+            {text:'Buat ringkasan eksekutif dari kurikulum ini — biar bisa dipahami tanpa baca semua 2GB.',priority:'mid'}
+        ]
+    },
+    'Gayo Mengaji':{
+        status:'active',
+        history:[
+            {date:'5 Apr 2026',text:'Project dimulai. Dokumentasi resmi sistem dibuat.'},
+            {date:'14 Apr 2026',text:'Roadmap lengkap: Gayo Mengaji Roadmap — 4 Section.'},
+            {date:'20 Apr 2026',text:'Implementation plan selesai. Design screens di Figma.'},
+            {date:'Apr 2026',text:'Section 1 selesai: landing page, login, dan fitur dasar. Hosting di Vercel + Railway.'},
+            {date:'Mei 2026',text:'Workflow tracking aktif — development berjalan. Target: ASN Aceh Tengah sebagai user base.'},
+        ],
+        plan:[
+            'Section 2: Dashboard utama + tilawah harian + setoran hafalan',
+            'Section 3: Fitur peringkat, laporan, notifikasi',
+            'Section 4: Admin dashboard, monitoring, ekspor data',
+            'Integrasi dengan SPBE Aceh Tengah (SSO, data ASN)',
+            'Deploy ke Play Store + App Store untuk ASN',
+            'Mode offline untuk daerah tanpa sinyal'
+        ],
+        recommendations:[
+            {text:'Prioritas #1: ini project paling konkret dengan user real (ASN Aceh Tengah). Alokasi waktu terbanyak.',priority:'high'},
+            {text:'Integrasi SPBE SSO harus dari awal — jangan retrofit. Biar terintegrasi dengan ekosistem Diskominfo.',priority:'high'},
+            {text:'Flutter untuk cross-platform (Android+iOS) — pastikan build untuk dua platform sekaligus.',priority:'high'},
+            {text:'Gamification: leaderboard ASN, badge tilawah, streak — boost engagement.',priority:'mid'},
+            {text:'Backup data offline dengan SQLite sync ke PostgreSQL — untuk daerah pelosok Aceh Tengah.',priority:'high'},
+        ]
+    },
+    'Niumination Portal (Fullstack)':{
+        status:'active',
+        history:[
+            {date:'28 Apr 2026',text:'Project dimulai. Frontend React+Vite, backend Node.js/Express.'},
+            {date:'Apr-Mei 2026',text:'Dashboard IPD, task tracker, SPBE module. NiuDesign system (DESIGN-linear.app.md).'},
+            {date:'Current',text:'Lanjut development — perlu penyelesaian fitur core.'},
+        ],
+        plan:[
+            'Complete dashboard IPD dengan real data',
+            'User management + role-based access control (RBAC)',
+            'Task management dengan assignee + deadline',
+            'SPBE module: evaluasi, rekap, laporan',
+            'Arsip dokumen + search',
+            'Responsive untuk mobile'
+        ],
+        recommendations:[
+            {text:'Prioritas #2: portal ini jadi wajah digital Diskominfo. Selesaikan fitur inti sebelum tambah fitur baru.',priority:'high'},
+            {text:'Gunakan React Query / TanStack Query untuk state management — kurangi boilerplate.',priority:'mid'},
+            {text:'Implementasi role-based access (Admin, OPD, ASN) dari awal — retrofit RBAC itu sakit.',priority:'high'},
+            {text:'Dockerize untuk deployment mudah ke VPS / server Diskominfo.',priority:'mid'}
+        ]
+    },
+    'kms-spbe':{
+        status:'active',
+        history:[{date:'2026',text:'Knowledge Management System untuk SPBE. TypeScript + React.'}],
+        plan:['Knowledge base artikel & dokumentasi SPBE','Search full-text dengan tagging system','Version control untuk dokumen kebijakan','Integrasi dengan Niumination Portal'],
+        recommendations:[
+            {text:'Gunakan dokumentasi dari ASN Workspace Knowledge Base.xlsx sebagai seed data.',priority:'high'},
+            {text:'Integrasi SSO dengan portal utama — satu login untuk semua.',priority:'high'}
+        ]
+    },
+    'SPBE-DevOps-Academy':{
+        status:'paused',
+        history:[{date:'2026',text:'Akademi DevOps untuk implementasi SPBE. Materi pembelajaran.'}],
+        plan:['Kurikulum DevOps untuk instansi pemerintah','Panduan praktis: Git, CI/CD, Docker, monitoring','Integrasi dengan kms-spbe sebagai LMS'],
+        recommendations:[
+            {text:'Konten bagus untuk capacity building ASN. Kolaborasi dengan Diskominfo untuk internal training.',priority:'mid'},
+            {text:'Buat module singkat (30 menit per module) — ASN sibuk, waktu belajar terbatas.',priority:'mid'}
+        ]
+    },
+    'Diskominfo-Web':{
+        status:'paused',
+        history:[{date:'2026',text:'Alternatif website Diskominfo Aceh Tengah. HTML + CSS.'}],
+        plan:['Keputusan: lanjut sebagai redesign atau merge ke Niumination Portal','Jika lanjut: modern UI, informasi publik, berita, layanan'],
+        recommendations:[
+            {text:'Konsolidasi dengan Niumination Portal — jangan duplikasi effort. Portal bisa serve sebagai dashboard internal sekaligus public website.',priority:'high'}
+        ]
+    },
+    'Devs-Niu':{
+        status:'active',
+        history:[{date:'2026',text:'Developer portfolio hub untuk semua project Niumination. Mulai dari 0KB.'}],
+        plan:['Landing page untuk portfolio developer','Showcase semua project dari dashboard Niu-Dash','Integrasi GitHub API untuk live stats'],
+        recommendations:[
+            {text:'Ini bisa jadi "front door" untuk semua project — yang nge-link ke Niu-Dash, Portal, Gayo Mengaji, dll.',priority:'high'},
+            {text:'Gunakan data dari Niu-Dash sebagai CMS — jangan duplikasi data manual.',priority:'mid'}
+        ]
+    },
+    'Automata':{
+        status:'active',
+        history:[{date:'2026',text:'Website Otomisasi Manajemen Talenta — Pranata Komputer Terampil Diskominfo.'}],
+        plan:['Sistem manajemen talenta ASN Pranata Komputer','Tracking kompetensi, sertifikasi, dan pengembangan karir','Integrasi dengan portal SPBE'],
+        recommendations:[
+            {text:'Beda dari Niu-LKH: ini untuk talent management, bukan daily report. Jelas bedakan scope.',priority:'high'},
+            {text:'Kolaborasi dengan BKPSDM Aceh Tengah untuk data riil kebutuhan ASN.',priority:'high'}
+        ]
+    },
+    'Niu-Dash':{
+        status:'active',
+        history:[
+            {date:'3 Jun 2026',text:'Proyek dimulai: dashboard dark web glitch theme untuk inventarisasi 75+ project Niumination.'},
+            {date:'3 Jun 2026',text:'DEV TRACKER dibuat — history, plan, rekomendasi untuk 25 project dev.'},
+            {date:'Current',text:'Three-panel nexus v2.0 — redesign total jadi 3 panel (sidebar | feed | detail).'},
+        ],
+        plan:[
+            'Hosting di GitHub Pages untuk akses online',
+            'Integrasi GitHub API untuk live stats repo (star, fork, last commit)',
+            'Auto-update project list dari GitHub API secara real-time',
+            'Filter & sort: by status, tech stack, tanggal',
+            'Mobile responsive — dashboard harus nyaman di layar HP',
+            'Search & filter: tambah filter tech stack dan status'
+        ],
+        recommendations:[
+            {text:'Integrasi GitHub API agar project list auto-sync dengan repo — tidak perlu update manual tiap tambah repo.',priority:'high'},
+            {text:'Mobile responsive — dashboard harus nyaman di layar HP karena user akses via Telegram.',priority:'high'},
+            {text:'Search & filter: tambah filter tech stack dan status — biar cepat nemu project spesifik.',priority:'mid'},
+            {text:'Animation performance: optimasi particle canvas untuk device dengan GPU lemah.',priority:'low'}
+        ]
+    },
+    'TEDEO':{
+        status:'active',
+        history:[
+            {date:'Jun 2026',text:'Delivery Service lokal Aceh Tengah — Expo monorepo dimulai. Backend Prisma, mobile Expo, web Vite.'},
+            {date:'Current',text:'Pengembangan aktif: multi-role system (konsumen, kurir, admin), real-time tracking, pembayaran.'},
+        ],
+        plan:[
+            'Selesaikan MVP: multi-delivery (makanan, dokumen, paket, belanja)',
+            'Integrasi payment gateway untuk transaksi',
+            'Real-time tracking kurir dengan WebSocket/Map',
+            'Admin dashboard dengan laporan revenue',
+            'Deploy ke Play Store + App Store',
+            'Integrasi dengan SPBE Aceh Tengah SSO'
+        ],
+        recommendations:[
+            {text:'Prioritas tinggi — ini project real dengan target ASN/lokal Aceh Tengah. Selesaikan MVP sebelum scale.',priority:'high'},
+            {text:'Gunakan Expo EAS untuk CI/CD build mobile — automate release ke Play Store.',priority:'high'},
+            {text:'Multi-role system harus solid dari awal: konsumen, kurir, admin — bedain akses dan view.',priority:'mid'},
+            {text:'Fitur offline mode penting — daerah Aceh Tengah banyak blank spot sinyal.',priority:'high'},
+        ]
+    },
+    'TEDEO-Kanban':{
+        status:'active',
+        history:[
+            {date:'Jun 2026',text:'Kanban Board untuk tracking development TEDEO — Next.js PWA, drag-and-drop dengan @dnd-kit.'},
+        ],
+        plan:[
+            'Integrasi real-time sync dengan GitHub Projects / Issues',
+            'Export/Import board sebagai backup',
+            'Multi-board support untuk multi-project',
+            'Kolaborasi: share board dengan tim'
+        ],
+        recommendations:[
+            {text:'Gunakan sebagai tool utama tracking TEDEO development — lebih visual daripada GitHub Projects.',priority:'high'},
+            {text:'Integrasi webhook: update otomatis saat ada push/PR ke repo TEDEO.',priority:'mid'},
+        ]
+    },
+    'kune-ya.com':{
+        status:'active',
+        history:[
+            {date:'6 Jun 2026',text:'Project dimulai — Next.js 15 full-stack dengan Prisma + PostgreSQL. Fitur auth (next-auth), middleware routing, dan landing page.'},
+            {date:'Current',text:'Pengembangan aktif: roadmap (00-ROADMAP.md), multi-page app structure, database schema dengan Prisma.'},
+        ],
+        plan:[
+            'Selesaikan fitur inti: authentication, user profiles, content management',
+            'Integrasi dengan domain kune-ya.com — deployment ke Vercel / Railway',
+            'Mobile responsive design — PWA support',
+            'SEO optimization + Open Graph metadata'
+        ],
+        recommendations:[
+            {text:'Prioritas #1: fitur auth + database harus solid sebelum deploy publik. Keamanan data user adalah fondasi.',priority:'high'},
+            {text:'Gunakan Prisma migration untuk version control database — jangan edit schema manual.',priority:'high'},
+            {text:'Dokumentasi struktur app dan architecture decision records (ADR) di repo README.',priority:'mid'},
+            {text:'Roadmap sudah bagus — maintain transparansi progress lewat GitHub Projects.',priority:'mid'}
+        ]
+    },
+    'niu-private':{
+        status:'active',
+        history:[
+            {date:'6 Jun 2026',text:'Project dimulai — document vault & kanban project board untuk dokumentasi pribadi. TypeScript, deployment GH Pages.'},
+        ],
+        plan:[
+            'Dokumentasi vault: struktur folder, template, workflow untuk semua project Niumination',
+            'Kanban board: tracking task & progress per project',
+            'Integrasi dengan Niu-Dash sebagai data source',
+            'Search + tagging system untuk dokumentasi'
+        ],
+        recommendations:[
+            {text:'Jadikan sebagai single source of truth untuk dokumentasi — semua project punya entry di sini.',priority:'high'},
+            {text:'Kanban bisa integrasi dengan GitHub Projects via API — auto-sync task dari repo.',priority:'mid'}
+        ]
+    },
+};
+
+// ===== CONFIG & STATE =====
+const LOCAL_BASE = '/Volumes/Niumination';
+let currentFilter = 'all';
+let currentStatus = 'all';
+let selectedIndex = -1;
+let flatProjects = [];
+let currentSort = 'newest';
+let activeTag = null;
+let _cardCache = {};
+let _lastSort = 'newest';
+let _dataVersion = 0;
+let _lastDataVersion = -1;
+let githubData = {};
+let unlistedRepos = [];
+let tagCounts = {};
+let lastSyncTime = null;
+
+// ===== RELEASED PROJECTS STATE =====
+let releasedProjects = [];
+let _releasedPushBusy = false;
+let releasedSuggestions = [];
+let releasedFilter = 'all';
+let currentView = 'categories';
+
+// ===== RELEASED — GITHUB SYNC CONFIG =====
+var RELEASED_GH_OWNER='Niumination';
+var RELEASED_GH_REPO='niu-dash';
+var RELEASED_GH_PATH='data/released.json';
+var releasedGitSha=null;
+var releasedSyncTimer=null;
+var KANBAN_API_URL='http://localhost:5199/api/ecosystem';
+// Obfuscated token (charCode array) to avoid GitHub secret detection
+/* 🔴 KEAMANAN: Token GitHub tidak boleh di-hardcode di kode sumber.
+   Pengguna dapat menyetel token via localStorage:
+     localStorage.setItem('niu_gh_token', 'ghp_xxx...')
+   Jika tidak disetel, fitur Released berjalan read-only (baca dari GitHub).
+   Lihat SECURITY.md untuk informasi lebih lanjut. */
+/* Token dibaca dari localStorage — lihat SECURITY.md */
+
+// ===== INDEXEDDB CACHE — offline-first data layer =====
+const IDB_NAME='niu-dash-cache',IDB_VER=1;var idb=null;
+function idbOpen(){return new Promise(function(r){if(idb)return r(idb);var req=indexedDB.open(IDB_NAME,IDB_VER);req.onupgradeneeded=function(e){var d=e.target.result;if(!d.objectStoreNames.contains('cache'))d.createObjectStore('cache',{keyPath:'key'});};req.onsuccess=function(e){idb=e.target.result;r(idb);};req.onerror=function(){r(null);};});}
+function idbGet(key){try{return idbOpen().then(function(db){if(!db)return null;return new Promise(function(r){try{var tx=db.transaction('cache','readonly');var req=tx.objectStore('cache').get(key);req.onsuccess=function(){r(req.result?req.result.val:null);};req.onerror=function(){r(null);};}catch(e){r(null);}});});}catch(e){return Promise.resolve(null);}}
+function idbSet(key,val){try{return idbOpen().then(function(db){if(!db)return false;return new Promise(function(r){try{var tx=db.transaction('cache','readwrite');tx.objectStore('cache').put({key:key,val:val,ts:Date.now()});tx.oncomplete=function(){r(true);};tx.onerror=function(){r(false);};}catch(e){r(false);}});});}catch(e){return Promise.resolve(false);}}
+
+// ===== BUILD FLAT LIST =====
+function buildFlatList() {
+    flatProjects = [];
+    const order = ['ready','dev','ideas','config','legacy'];
+    const labels = {ready:'Ready',dev:'Development',ideas:'Ideas/Planning',config:'Config/Dotfiles',legacy:'Legacy/Arsip'};
+    order.forEach(cat => {
+        PROJECTS[cat].forEach(p => {
+            const meta = DEV_META[p.name];
+            let repoName = null;
+            if (p.path && p.path.startsWith('https://github.com/')) {
+                const m = p.path.match(/github\.com\/[^\/]+\/([^\/#?]+)/);
+                if (m) repoName = m[1].replace(/\.git$/, '');
+            }
+            flatProjects.push({
+                ...p,
+                path: p.path && p.path.startsWith('/Volumes/Niumination/') ? p.path.replace('/Volumes/Niumination/', LOCAL_BASE + '/') : p.path,
+                category: cat,
+                categoryLabel: labels[cat],
+                status: meta ? meta.status : null,
+                history: meta ? meta.history : null,
+                plan: meta ? meta.plan : null,
+                recommendations: meta ? meta.recommendations : null,
+                repoName: repoName,
+            });
+        });
+    });
+    buildTagCounts();
+    _dataVersion++;
+    return flatProjects;
+}
+
+// ===== RENDER FEED =====
+function getSortFn(mode) {
+    var m = {
+        newest: function(a,b){ return getRepoDateValue(b)-getRepoDateValue(a); },
+        oldest: function(a,b){ return getRepoDateValue(a)-getRepoDateValue(b); },
+        az: function(a,b){ return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); },
+        za: function(a,b){ return b.name.toLowerCase().localeCompare(a.name.toLowerCase()); },
+        status: function(a,b){
+            var o={active:0,staging:1,paused:2};
+            var sa=(a.category==='dev'&&a.status)?a.status:'zzz';
+            var sb=(b.category==='dev'&&b.status)?b.status:'zzz';
+            return (o[sa]||3)-(o[sb]||3);
+        }
+    };
+    return m[mode]||m.newest;
+}
+function parseSmart(str) {
+    if(!str)return new Date(0);
+    var mn={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+    var p=str.split(' ');
+    if(p.length>=3){var d=parseInt(p[0]),mo=p[1]?.toLowerCase().substring(0,3),y=parseInt(p[2]);if(!isNaN(d)&&mn[mo]!==undefined&&!isNaN(y))return new Date(y,mn[mo],d);}
+    if(p.length>=2){var y=parseInt(p[0]);if(!isNaN(y))return new Date(y,0,1);}
+    return new Date(0);
+}
+function renderFeed(filter,statusFilter,searchText){
+    // Hide skeleton when first render happens
+    var skel=document.getElementById('skeleton-grid');if(skel)skel.style.display='none';
+    try {
+    var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
+    filter=filter||currentFilter;statusFilter=statusFilter||currentStatus;
+    var items=flatProjects.slice();
+    if(filter!=='all')items=items.filter(function(p){return p.category===filter;});
+    if(statusFilter!=='all')items=items.filter(function(p){return p.category==='dev'&&p.status===statusFilter;});
+    if(activeTag){var t=activeTag.toLowerCase();items=items.filter(function(p){return p.tags&&p.tags.some(function(x){return x.toLowerCase()===t;});});}
+    if(searchText){var q=searchText.toLowerCase();items=items.filter(function(p){return p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)||(p.tags&&p.tags.some(function(x){return x.toLowerCase().includes(q);}));});}
+    items.sort(getSortFn(currentSort));
+    var tl=activeTag?' &middot; tagged <em>'+activeTag+'</em>':'';
+    fi.innerHTML=statusFilter!=='all'?'⟐ <em>'+statusFilter+'</em> &middot; <em>'+filter+'</em>'+tl:'◈ <em>'+filter+'</em> projects'+tl;
+    statsEl.innerHTML='<span class="fs-item"><strong style="color:var(--cyan)">'+items.length+'</strong> visible</span><span class="fs-item">of <strong style="color:var(--text-secondary)">'+flatProjects.length+'</strong> total</span>';
+    if(!items.length){list.innerHTML='';noRes.style.display='block';return;}
+    noRes.style.display='none';
+    var needsRebuild=!list.children.length||_lastDataVersion!==_dataVersion||_lastSort!==currentSort;
+    _lastSort=currentSort;_lastDataVersion=_dataVersion;
+    if(needsRebuild){
+        var frag=document.createDocumentFragment();
+        items.forEach(function(p,i){
+            try {
+            var idx=flatProjects.indexOf(p);
+            var cardHtml=_cardCache[idx];
+            if(!cardHtml){
+                var sh='';
+                if(p.category==='dev'&&p.status){var st=p.status==='active'?'▶ ACTIVE':p.status==='staging'?'⟐ STAGING':'◌ PAUSED';var sc=p.status==='active'?'color:var(--green);border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.12)':p.status==='staging'?'color:var(--cyan);border-color:rgba(0,255,242,.2);background:rgba(0,255,242,.12)':'color:#ffd000;border-color:rgba(255,208,0,.15);background:rgba(255,255,0,.08)';sh='<span class="fc-status" style="'+sc+'">'+st+'</span>';}
+                var gh='';
+                if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];var pts=[];if(g.language)pts.push('<span class="lang" style="background:'+langColor(g.language)+'"></span> '+g.language);if(g.stars>0)pts.push('<span class="star">★</span> '+g.stars);if(g.forks>0)pts.push('<span class="fork">₂</span> '+g.forks);if(pts.length)gh='<div class="fc-meta"><span class="fc-gh">'+pts.join(' · ')+'</span></div>';}
+                var th='';if(p.tags&&p.tags.length){for(var ti=0;ti<p.tags.length;ti++){var t=p.tags[ti];th+='<span class="tag'+(activeTag===t?' active-tag':'')+'" data-tag="'+t.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+t+'</span>';}}if(p._ghTopics){for(var gi=0;gi<p._ghTopics.length;gi++){var gt=p._ghTopics[gi];th+='<span class="tag gh-topic" data-tag="'+gt.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();filterByTag(this.dataset.tag)">'+gt+'</span>';}}
+                cardHtml='<div class="fc-strip"></div><div class="fc-icon">'+p.icon+'</div><div class="fc-body"><h3>'+p.name+(getRepoDate(p)?'<span class="fc-date">'+getRepoDate(p)+'</span>':'')+'</h3><div class="fc-desc">'+(p._ghDesc||p.desc)+'</div><div class="fc-tags">'+th+'</div>'+gh+'</div>'+sh;
+                _cardCache[idx]=cardHtml;
+            }
+            var card=document.createElement('div');
+            card.className='feed-card '+p.category+(selectedIndex===idx?' selected':'')+' card-hover';
+            // Featured cards — active/ready projects with GitHub stars
+            var isFeatured=(p.category==='dev'&&p.status==='active')||p.category==='ready'||(p.repoName&&githubData[p.repoName.toLowerCase()]&&githubData[p.repoName.toLowerCase()].stargazers_count>0);
+            if(isFeatured)card.classList.add('featured-card');
+            card.setAttribute('onclick',"selectProject("+idx+")");
+            card.setAttribute('onkeydown',"if(event.key==='Enter'||event.key===' '){event.preventDefault();selectProject("+idx+")}");
+            card.setAttribute('tabindex','0');
+            card.setAttribute('role','button');
+            card.style.animationDelay=(i*0.03)+'s';
+            card.dataset.index=idx;
+            card.innerHTML=cardHtml;
+            frag.appendChild(card);
+        }catch(e){console.warn('[Niu-Dash] Skipped project render:',p&&p.name,e);}
+        });
+        list.innerHTML='';
+        list.appendChild(frag);
+    }else{
+        var matched={};
+        items.forEach(function(p){matched[flatProjects.indexOf(p)]=true;});
+        var vi=0;
+        Array.from(list.children).forEach(function(card){
+            var idx=parseInt(card.dataset.index);
+            if(matched[idx]){
+                card.style.display='';
+                card.style.animationDelay=(vi*0.03)+'s';
+                card.classList.toggle('selected',selectedIndex===idx);
+                vi++;
+            }else{
+                card.style.display='none';
+            }
+        });
+    }
+    }catch(e){console.error('[Niu-Dash] renderFeed error:',e);_niuLog(e);showToast('Render error: '+e.message,'error');}
+}
+function langColor(lang){var cc={'JavaScript':'#f1e05a','TypeScript':'#3178c6','Python':'#3572a5','Rust':'#dea584','HTML':'#e34c26','CSS':'#563d7c','Shell':'#89e051','C++':'#f34b7d','C':'#555555','Nix':'#7e7eff','Kotlin':'#A97BFF','Dart':'#00b4ab','Vue':'#41b883','Svelte':'#ff3e00','Ruby':'#701516','Swift':'#ffac45','Java':'#b07219','Go':'#00add8','MDX':'#fcb32c','SCSS':'#c6538c','Less':'#1d365d','TeX':'#3d6117','Perl':'#0298c3','Lua':'#000080','Dockerfile':'#384d54','Makefile':'#427819'};return cc[lang]||'#8b8b8b';}
+function getRepoDate(p){
+    if(p.repoName&&githubData[p.repoName.toLowerCase()]&&githubData[p.repoName.toLowerCase()].updated_at){
+        try{var d=new Date(githubData[p.repoName.toLowerCase()].updated_at);return d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear();}catch(e){}
+    }
+    return p.date||'';
+}
+function getRepoDateValue(p){
+    if(p.repoName&&githubData[p.repoName.toLowerCase()]&&githubData[p.repoName.toLowerCase()].updated_at){
+        try{return new Date(githubData[p.repoName.toLowerCase()].updated_at).getTime();}catch(e){}
+    }
+    return parseSmart(p.date).getTime();
+}
+// ===== SELECT PROJECT =====
+var commitCache={};
+function fetchCommitData(repoName, attempt){
+    if(!repoName)return;
+    attempt=attempt||1;
+    var key=repoName.toLowerCase();
+    // Check in-memory cache first
+    if(commitCache[key]&&Date.now()-commitCache[key].ts<1800000){
+        var el=document.getElementById('dp-commit-data');
+        if(el&&commitCache[key].data)el.innerHTML=buildCommitHtml(commitCache[key].data,repoName);
+        return;
+    }
+    // Try localStorage cache (cross-session)
+    try{var lc=localStorage.getItem('niu-commit-cache-'+key);if(lc){var p=JSON.parse(lc);if(Date.now()-p.ts<1800000){commitCache[key]=p;if(p.data){var el2=document.getElementById('dp-commit-data');if(el2)el2.innerHTML=buildCommitHtml(p.data,repoName);}return;}}localStorage.removeItem('niu-commit-cache-'+key);}catch(e){}
+    var ghToken=getReleasedToken();
+    var fetchOpts={};
+    if(ghToken) fetchOpts.headers={'Authorization':'token '+ghToken};
+    fetch('https://api.github.com/repos/Niumination/'+key+'/commits?per_page=5',fetchOpts).then(function(r){return r.json();}).then(function(data){
+        if(!Array.isArray(data)){
+            var el=document.getElementById('dp-commit-data');
+            if(el)el.innerHTML='<div class="dp-loading-cmt" style="color:rgba(255,100,100,.5)">⚠ '+(data&&data.message&&data.message.includes('API rate limit')?'GitHub API rate limited — commit data unavailable':data.message||'failed to load commits')+'</div>';
+            return;
+        }
+        commitCache[key]={data:data,ts:Date.now()};
+        try{localStorage.setItem('niu-commit-cache-'+key,JSON.stringify(commitCache[key]));}catch(e){}
+        var p2=flatProjects[selectedIndex];
+        if(p2&&p2.repoName&&p2.repoName.toLowerCase()===key){
+            var el=document.getElementById('dp-commit-data');
+            if(el)el.innerHTML=buildCommitHtml(data,repoName);
+        }
+    }).catch(function(e){
+        if(attempt<3){setTimeout(function(){fetchCommitData(repoName,attempt+1);},1000*attempt);return;}
+        var el=document.getElementById('dp-commit-data');
+        if(el)el.innerHTML='<div class="dp-loading-cmt" style="color:rgba(255,100,100,.5)">⚠ network error — commits unavailable</div>';
+    });
+}
+function buildCommitHtml(commits,name){
+    if(!commits||!commits.length)return'';
+    var c=commits[0];
+    var sha=c.sha?c.sha.slice(0,7):'—';
+    var msg=c.commit?((c.commit.message||'').split('\\n')[0]||'—'):'—';
+    var author=c.commit&&c.commit.author?c.commit.author.name:'—';
+    var date=c.commit&&c.commit.committer?c.commit.committer.date:null;
+    var ago='';
+    if(date){var diff=Date.now()-new Date(date).getTime();if(diff<3600000)ago=Math.floor(diff/60000)+'m ago';else if(diff<86400000)ago=Math.floor(diff/3600000)+'h ago';else ago=Math.floor(diff/86400000)+'d ago';}
+    var html='<div class="dp-last-commit"><span class="lc-label">← LATEST COMMIT</span><div class="lc-sha">#'+sha+'</div><div class="lc-msg">'+escapeHtml(msg)+'</div><div class="lc-meta"><span class="lc-author">by '+escapeHtml(author)+'</span><span class="lc-time">'+ago+'</span></div></div>';
+    // Also build recent activity from last 5 commits
+    if(commits.length>1){
+        html+='<div class="dp-section"><h4><span class="hl hl-cyan"></span>RECENT ACTIVITY</h4><div class="dp-timeline dp-commit-tl">';
+        for(var i=0;i<Math.min(commits.length,5);i++){
+            var ci=commits[i];
+            var si=ci.sha?ci.sha.slice(0,7):'—';
+            var mi=ci.commit?((ci.commit.message||'').split('\\n')[0]||'—'):'—';
+            var di=ci.commit&&ci.commit.committer?ci.commit.committer.date:null;
+            var ai='';
+            if(di){var df=Date.now()-new Date(di).getTime();if(df<3600000)ai=Math.floor(df/60000)+'m';else if(df<86400000)ai=Math.floor(df/3600000)+'h';else ai=Math.floor(df/86400000)+'d';}
+            html+='<div class="dp-tl-item"><div class="tl-date">'+ai+' ago</div><div class="tl-text"><span class="tl-sha">#'+si+'</span> '+escapeHtml(mi)+'</div></div>';
+        }
+        html+='</div></div>';
+    }
+    return html;
+}
+function escapeHtml(s){
+    if(!s)return'';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function selectProject(idx) {
+    selectedIndex = idx;
+    // Highlight card
+    document.querySelectorAll('.feed-card').forEach(c => c.classList.remove('selected'));
+    const card = document.querySelector(`.feed-card[data-index="${idx}"]`);
+    if (card) card.classList.add('selected');
+    
+    const p = flatProjects[idx];
+    if (!p) return;
+    
+    const panel = document.getElementById('detail-panel');
+    const content = document.getElementById('dp-content');
+    let catColor = 'cyan';
+    if (p.category === 'ready') catColor = 'green';
+    else if (p.category === 'ideas') catColor = 'amber';
+    else if (p.category === 'config') catColor = 'magenta';
+    else if (p.category === 'legacy') catColor = 'dim';
+    
+    // Status badge
+    let statusBadge = '';
+    if (p.category === 'dev' && p.status) {
+        const stCls = p.status === 'active' ? 'dp-status-active' : p.status === 'staging' ? 'dp-status-staging' : 'dp-status-paused';
+        const stLbl = p.status === 'active' ? '▶ ACTIVE' : p.status === 'staging' ? '⟐ STAGING' : '◌ PAUSED';
+        statusBadge = `<span class="dp-status ${stCls}">${stLbl}</span>`;
+    }
+    
+    // Detail sections
+    let sectionsHtml = '';
+    
+    // Description — with GitHub update context
+    var ghUpdated='';
+    if(p.repoName&&githubData[p.repoName.toLowerCase()]){
+        var gx=githubData[p.repoName.toLowerCase()];
+        if(gx.updated_at){var ux=Date.now()-new Date(gx.updated_at).getTime();ghUpdated='<div class="dp-desc-meta">Last updated '+Math.floor(ux/2592000000)+'mo ago on GitHub</div>';}
+    }
+    sectionsHtml+=`<div class="dp-section"><h4><span class="hl hl-cyan"></span>DESKRIPSI</h4><p>${p._ghDesc||p.desc}</p>${ghUpdated}</div>`;
+    sectionsHtml+='<div id="dp-commit-data"><div class="dp-loading-cmt">⟐ fetching latest commits...</div></div>';
+    
+    // Tags
+    if (p.tags && p.tags.length) {
+        sectionsHtml += `<div class="dp-tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>`;
+    }
+    if (p._ghTopics && p._ghTopics.length) {
+        sectionsHtml += `<div class="dp-tags" style="margin-top:-12px">${p._ghTopics.map(t => `<span class="gh-topic" title="GitHub topic">⌘ ${t}</span>`).join('')}</div>`;
+    }
+
+    // Tech stack badges
+    if (p.repoName && githubData[p.repoName.toLowerCase()]) {
+        var gg=githubData[p.repoName.toLowerCase()];
+        var stackLangs=[];
+        if(gg.language)stackLangs.push(gg.language);
+        sectionsHtml+=`<div class="dp-section"><div class="dp-section-title">⚙ TECH STACK</div><div class="dp-stack">${stackLangs.map(function(l){return `<span class="dp-stack-badge">${l}</span>`;}).join('')}</div></div>`;
+    }
+    // Health indicator
+    var gh=g;
+    var healthHtml='';
+    if(gh){var score=0;if(gh.description)score+=20;if(gh.stargazers_count>0)score+=15;if(gh.forks_count>0)score+=10;if(gh.open_issues_count===0)score+=15;if(gh.has_wiki)score+=10;score+=Math.min(gh.stargazers_count*2,15);score+=Math.min(gh.forks_count*3,10);var ud=(Date.now()-new Date(gh.updated_at).getTime())/86400000;if(ud<30)score+=20;else if(ud<90)score+=10;var rk=score>=80?'healthy':score>=50?'fair':'stale';var pct=Math.min(score,100);var hc=rk==='healthy'?'var(--green)':rk==='fair'?'var(--amber)':'var(--red)';healthHtml=`<div class="dp-section"><div class="dp-section-title">♥ HEALTH</div><div class="dp-health"><div class="dp-health-bar"><div class="dp-health-fill" style="width:${pct}%;background:${hc}"></div></div><span class="dp-health-label" style="color:${hc}">${rk==='healthy'?'Healthy':rk==='fair'?'Fair':'Stale'}</span></div></div>`;sectionsHtml+=healthHtml;}
+    
+    // History
+    if (p.history && p.history.length) {
+        let tlHtml = '<div class="dp-section"><h4><span class="hl hl-cyan"></span>HISTORY</h4><div class="dp-timeline">';
+        p.history.forEach(h => {
+            tlHtml += `<div class="dp-tl-item"><div class="tl-date">${h.date}</div><div class="tl-text">${h.text}</div></div>`;
+        });
+        tlHtml += '</div></div>';
+        sectionsHtml += tlHtml;
+    }
+    
+    // Plan
+    if (p.plan && p.plan.length) {
+        let planHtml = '<div class="dp-section"><h4><span class="hl hl-green"></span>PLAN / ROADMAP</h4><ul>';
+        p.plan.forEach(pl => { planHtml += `<li>${pl}</li>`; });
+        planHtml += '</ul></div>';
+        sectionsHtml += planHtml;
+    }
+    
+    // Recommendations — hardcoded + auto-generated health check
+    var recs=(p.recommendations&&p.recommendations.length)?p.recommendations.slice():[];
+    var g=p.repoName?githubData[p.repoName.toLowerCase()]:null;
+    // Auto-generate health recommendations from GitHub
+    if(g){
+        if(!g.description&&!p.desc&&!p._ghDesc)recs.push({text:'Repository tidak memiliki deskripsi GitHub — tambahkan README dengan deskripsi yang jelas.',priority:'mid'});
+        if(!g.topics||!g.topics.length)recs.push({text:'Tidak ada GitHub topics — tambahkan topics untuk kategorisasi otomatis yang lebih akurat.',priority:'low'});
+        if(g.archived)recs.push({text:'Repository telah diarsipkan. Pertimbangkan untuk membuat rilis final sebelum archive permanen.',priority:'high'});
+        if(g.updated_at){var mGap=(Date.now()-new Date(g.updated_at).getTime())/2592000000;if(mGap>6)recs.push({text:'Tidak ada aktivitas dalam '+Math.floor(mGap)+' bulan — repo membutuhkan perhatian atau pertimbangkan untuk arsipkan.',priority:'mid'});if(mGap>12)recs.push({text:'Repo tidak diupdate lebih dari 1 tahun — evaluasi apakah masih relevan atau needs final release.',priority:'high'});}
+        if(g.has_pages&&!p.website&&!p._ghPages)recs.push({text:'GitHub Pages tersedia tapi belum terdaftar — tambahkan link website untuk kemudahan akses.',priority:'low'});
+    }
+    if(!recs.length)recs.push({text:'Proyek dalam kondisi baik — pertahankan!',priority:'low'});
+    if(recs.length){
+        var recHtml='<div class="dp-section"><h4><span class="hl hl-red"></span>REKOMENDASI</h4><div class="dp-rec-grid">';
+        recs.forEach(function(r){
+            var prio=r.priority==='high'?'prio-high':r.priority==='mid'?'prio-mid':'prio-low';
+            var prioLabel=r.priority==='high'?'⚠ PRIORITAS':r.priority==='mid'?'◆ PENTING':'▸ SARAN';
+            recHtml+='<div class="dp-rec-item '+prio+'"><div class="rec-prio">'+prioLabel+'</div>'+r.text+'</div>';
+        });
+        recHtml+='</div></div>';
+        sectionsHtml+=recHtml;
+    }
+    
+    var ghStatsHtml = '';
+    if (p.repoName && githubData[p.repoName.toLowerCase()]) {
+        var g=githubData[p.repoName.toLowerCase()];var items=[];
+        if(g.stars>0)items.push('<span class="dp-gh-item">★ <span class="num">'+g.stars+'</span> stars</span>');
+        if(g.forks>0)items.push('<span class="dp-gh-item">₂ <span class="num">'+g.forks+'</span> forks</span>');
+        if(g.language)items.push('<span class="dp-gh-item"><span class="gl" style="background:'+langColor(g.language)+'"></span> '+g.language+'</span>');
+        if(g.updated_at){var d=new Date(g.updated_at);items.push('<span class="dp-gh-item dp-gh-commit">⟐ Updated '+d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})+'</span>');}
+        if(g.has_pages&&!p.website)p.website='https://niumination.github.io/'+p.repoName;
+        if(items.length)ghStatsHtml='<div class="dp-gh">'+items.join('')+'</div>';
+    }
+    // Path/button
+    const path = p.path || (p.repoName ? 'https://github.com/Niumination/'+p.repoName : (p.repo || '#'));
+    const isRepo = path.startsWith('http');
+    
+    let buttonsHtml = `<a href="${path}" target="_blank" class="dp-open-btn spring-btn">↗ ${isRepo ? 'OPEN REPO' : 'OPEN'}</a>`;
+    if (p.website) {
+        buttonsHtml += ` <a href="${p.website}" target="_blank" class="dp-open-btn spring-btn" style="border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.08);color:var(--green)">🌐 VISIT WEBSITE</a>`;
+    }
+    // Quick actions
+    let qaHtml = '<div class="dp-quick-actions">';
+    qaHtml += `<button class="dp-action-btn" onclick="navigator.clipboard.writeText('${path}').then(()=>showToast('Copied','info',1500)).catch(()=>{})" title="Copy URL"><span class="dp-btn-arrow">⊞</span>Copy</button>`;
+    if(isRepo)qaHtml += `<a href="${path}" target="_blank" class="dp-action-btn" title="Open in GitHub"><span class="dp-btn-arrow">↗</span>GitHub</a>`;
+    qaHtml += '</div>';
+    
+    content.innerHTML = `
+        <div class="dp-item">
+            <div class="dp-top">
+                <div class="dp-icon" style="background:rgba(0,255,242,.12)">${p.icon}</div>
+                <div class="dp-info">
+                    <h2>${p.name}</h2>
+                    <div class="dp-sub">${p.categoryLabel}${p._autoCat?' <span class="dp-auto-badge">auto</span>':''}${getRepoDate(p) ? ' · ' + getRepoDate(p) : ''}${p._archived ? '<span class="dp-archived-badge">📦 Archived</span>' : ''}</div>
+                </div>
+                ${statusBadge}
+            </div>
+            <div class="dp-path">${path}</div>
+            ${sectionsHtml}
+            <hr class="dp-divider">
+            ${buttonsHtml}
+            ${qaHtml}
+        </div>
+    `;
+    
+    // Fetch latest commits (async, updates dp-commit-data when done)
+    if(p.repoName)fetchCommitData(p.repoName);
+    
+    // Open panel on mobile/tablet
+    if (window.innerWidth <= 1024) {
+        panel.classList.add('open');
+    }
+}
+
+
+// ===== SYNC STATUS =====
+function updateSyncStatus(){
+    var el=document.getElementById('sync-status');
+    if(!lastSyncTime){
+        el.innerHTML='<span class="dot syncing"></span> sync...';
+        return;
+    }
+    var diff=Date.now()-lastSyncTime;
+    var mins=Math.floor(diff/60000);
+    var secs=Math.floor(diff/1000);
+    var txt=mins>0?mins+'m ago':secs+'s ago';
+    var stale=mins>15;
+    el.innerHTML='<span class="dot '+(stale?'stale':'ok')+'"></span>'+txt;
+}
+function showToast(msg,type,dur){
+    var c=document.getElementById('toast-container');
+    if(!c)return;
+    type=type||'info';dur=dur||4000;
+    var t=document.createElement('div');
+    t.className='toast toast-'+type;
+    t.textContent=msg;
+    c.appendChild(t);
+    setTimeout(function(){t.classList.add('toast-hide');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},300);},dur);
+}
+function setVersionDisplay(){
+    var el=document.getElementById('sb-version');
+    if(!el)return;
+    var ver=(window.NIU_VERSION&&window.NIU_VERSION.v)||'—';
+    var txt='dark nexus '+ver;
+    if(window.NIU_VERSION&&window.NIU_VERSION.hash)txt+=' ('+window.NIU_VERSION.hash.slice(0,7)+')';
+    el.textContent=txt;
+    el.title=window.NIU_VERSION?window.NIU_VERSION.msg||'':'';
+}
+function manualRefresh(){
+    commitCache={};
+    // Clear localStorage commit cache keys
+    try{for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i);if(k&&k.indexOf('niu-commit-cache-')===0)localStorage.removeItem(k);}}catch(e){}
+    localStorage.removeItem('niu-gh-cache');
+    var btn=document.getElementById('refresh-btn');
+    btn.classList.add('loading');
+    var el=document.getElementById('sync-status');
+    el.innerHTML='<span class="dot syncing"></span> sync...';
+    fetchGitHubData(true);
+}
+function updateTokenStatus(){
+    var dot=document.getElementById('gts-dot');
+    if(!dot)return;
+    var tk=getReleasedToken();
+    if(tk&&tk.length>10){dot.className='gts-indicator ok';dot.title='Token active — 5000 req/h';}
+    else{dot.className='gts-indicator missing';dot.title='No token — 60 req/h';}
+}
+
+// ===== GITHUB API =====
+async function fetchGitHubData(isManual, attempt){
+    attempt=attempt||1;
+    // Stale-while-revalidate: load cache from IndexedDB first, then localStorage
+    idbGet('github-repos').then(function(cached){
+      if(cached&&cached.data&&Object.keys(githubData).length===0){
+        githubData=cached.data;lastSyncTime=cached.ts||Date.now();updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();
+      }
+    });
+    var c2=localStorage.getItem('niu-gh-cache');
+    if(c2){try{var p=JSON.parse(c2);if(Date.now()-p.ts<3600000){githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');if(selectedIndex>=0&&flatProjects[selectedIndex]&&flatProjects[selectedIndex].repoName)fetchCommitData(flatProjects[selectedIndex].repoName);return;}}catch(e){}}
+    try{
+        var ghToken=getReleasedToken();
+        var fetchOpts={};
+        if(ghToken) fetchOpts.headers={'Authorization':'token '+ghToken};
+        // Paginated fetch — handle repos > 100 (max 10 pages)
+        var allRepos=[];
+        for(var pg=1;pg<=10;pg++){
+            var r=await fetch('https://api.github.com/users/Niumination/repos?per_page=100&sort=updated&page='+pg,fetchOpts);
+            if(pg===1){
+                var rl=r.headers&&r.headers.get('X-RateLimit-Remaining');
+                if(r.status===403&&rl==='0'){
+                    var reset=r.headers.get('X-RateLimit-Reset');
+                    var wait=reset?Math.ceil((reset*1000-Date.now())/60000):'?';
+                    showToast('⚠ GitHub API rate limited. Reset in '+wait+'m','error',6000);
+                    var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);}catch(_){}}if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;
+                }
+            }
+            var repos=await r.json();
+            if(Array.isArray(repos)){
+                allRepos=allRepos.concat(repos);
+                var link=r.headers&&r.headers.get('Link');
+                if(!link||link.indexOf('rel="next"')===-1)break;
+            }else break;
+        }
+        if(allRepos.length>0){
+            allRepos.forEach(function(rr){githubData[rr.name.toLowerCase()]={stars:rr.stargazers_count||0,forks:rr.forks_count||0,language:rr.language,updated_at:rr.updated_at,has_pages:rr.has_pages||false,homepage:rr.homepage||null,description:rr.description||'',topics:rr.topics||[],archived:rr.archived||false,pushed_at:rr.pushed_at||null,created_at:rr.created_at||null};});
+            var ts=Date.now();localStorage.setItem('niu-gh-cache',JSON.stringify({data:githubData,ts:ts}));idbSet('github-repos',{data:githubData,ts:ts});lastSyncTime=ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);if(isManual)showToast('✅ GitHub data refreshed','success',2500);
+        }else showToast('⚠ GitHub API returned unexpected data','warn',5000);
+    }catch(e){
+        if(attempt<3){showToast('⚠ GitHub API error — retrying ('+attempt+'/3)','warn',3000);setTimeout(function(){fetchGitHubData(isManual,attempt+1);},1500*attempt);if(isManual)document.getElementById('refresh-btn').classList.remove('loading');return;}
+        showToast('⚠ GitHub API error — using cached data','warn',5000);
+        var o=localStorage.getItem('niu-gh-cache');if(o){try{var p=JSON.parse(o);githubData=p.data;lastSyncTime=p.ts;updateSyncStatus();applyAutoPages();enrichFromGitHub();autoCategorize();updateStats();updateGitHubAggStats();buildActivityFeed();detectUnlistedRepos();detectReleasedFromGitHub();renderFeed(currentFilter,currentStatus);}catch(_){}}}
+    if(isManual)document.getElementById('refresh-btn').classList.remove('loading');
+    if(selectedIndex>=0&&flatProjects[selectedIndex]&&flatProjects[selectedIndex].repoName)fetchCommitData(flatProjects[selectedIndex].repoName);
+}
+function applyAutoPages(){flatProjects.forEach(function(p){if(p.repoName&&githubData[p.repoName.toLowerCase()]){var g=githubData[p.repoName.toLowerCase()];if(g.has_pages&&!p.website)p.website='https://niumination.github.io/'+p.repoName;}});}
+function updateGitHubAggStats(){
+    var el=document.getElementById('gh-aggregate');
+    if(!el)return;
+    var keys=Object.keys(githubData);
+    if(!keys.length){el.innerHTML='';return;}
+    var stars=0,forks=0,langs={};
+    keys.forEach(function(k){
+        var g=githubData[k];
+        if(!g)return;
+        stars+=g.stars||0;forks+=g.forks||0;
+        if(g.language){langs[g.language]=(langs[g.language]||0)+1;}
+    });
+    var parts=[];
+    if(stars>0)parts.push('<span class="gh-agg-item">★ <span class="num">'+stars+'</span> stars</span>');
+    if(forks>0)parts.push('<span class="gh-agg-item">₂ <span class="num">'+forks+'</span> forks</span>');
+    var langArr=Object.keys(langs).sort(function(a,b){return langs[b]-langs[a];});
+    if(langArr.length>0){
+        var langParts=langArr.slice(0,5).map(function(l){return '<span class="gl" style="background:'+langColor(l)+'"></span>'+l;});
+        parts.push('<span class="gh-agg-item">'+langParts.join(' ')+'</span>');
+        if(langArr.length>5)parts[parts.length-1]+=' <span style="opacity:.6">+'+ (langArr.length-5) +'</span>';
+    }
+    el.innerHTML=parts.join('<span style="opacity:.2;margin:0 2px">·</span>')||'';
+}
+function toggleActivity(){
+    var b=document.getElementById('act-body'),t=document.getElementById('act-toggle');
+    if(!b||!t)return;
+    var c=b.classList.toggle('hidden');
+    t.classList.toggle('collapsed',c);
+    localStorage.setItem('niu-act-collapsed',c?'1':'');
+}
+function buildActivityFeed(){
+    var el=document.getElementById('act-body'),info=document.getElementById('act-info'),toggle=document.getElementById('act-toggle');
+    if(!el)return;
+    var now=Date.now(),DAY=86400000,WEEK=7*DAY,MONTH=30*DAY;
+    var MIN_GAP=60000; // 1 minute — ignore sub-minute differences
+    var items=[];
+    flatProjects.forEach(function(p){
+        if(p.category==='unlisted'||p.category==='config')return;
+        var g=p.repoName?githubData[p.repoName.toLowerCase()]:null;
+        if(!g||!p._pushedAt)return;
+        var age=now-p._pushedAt;
+        if(age>MONTH)return; // only show repos active in last 30 days
+        var type='🔄',label='pushed';
+        // Check if it's a new repo (created < 7 days)
+        if(p._createdAt&&(now-p._createdAt)<WEEK){type='🆕';label='new repo';}
+        items.push({name:p.name,type:type,label:label,time:p._pushedAt,age:age,new:p._autoCat==='new'});
+    });
+    // Also add released activity entries
+    loadReleasedActivityLog();
+    var TWO_MONTHS=60*DAY;
+    releasedActivityLog.forEach(function(r){
+        var age=now-r.timestamp;
+        if(age>TWO_MONTHS)return;
+        var type='✅',label='→ completed';
+        if(r.status==='production'){type='🚀';label='→ production ready';}
+        else if(r.method==='suggestion-bulk'){type='📦';label='→ bulk import';}
+        if(r.method==='suggestion')label+=' (auto)';
+        items.push({name:r.projectName,type:type,label:label,time:r.timestamp,age:age,new:false});
+    });
+    // Sort by time descending
+    items.sort(function(a,b){return b.time-a.time;});
+    // Limit to 20 items
+    items=items.slice(0,20);
+    if(!items.length){
+        el.innerHTML='<div class="act-empty">no recent activity</div>';
+        if(info)info.textContent='—';
+        return;
+    }
+    info.textContent=items.length+' item'+(items.length!==1?'s':'')+' • latest activity';
+    var html='',lastGroup='';
+    items.forEach(function(it){
+        var group;
+        if(it.age<DAY)group='today';
+        else if(it.age<WEEK)group='this week';
+        else group='this month';
+        if(group!==lastGroup){html+='<div class="act-group">▸ '+group+'</div>';lastGroup=group;}
+        var timeAgo;
+        if(it.age<60000)timeAgo='now';
+        else if(it.age<3600000)timeAgo=Math.floor(it.age/60000)+'m';
+        else if(it.age<DAY)timeAgo=Math.floor(it.age/3600000)+'h';
+        else timeAgo=Math.floor(it.age/DAY)+'d';
+        html+='<div class="act-item"><span class="act-icon">'+it.type+'</span><span class="act-name">'+it.name+'</span><span class="act-action">'+it.label+'</span>'+(it.new?'<span class="act-badge-new">NEW</span>':'')+'<span class="act-time">'+timeAgo+' ago</span></div>';
+    });
+    el.innerHTML=html;
+    // Restore collapse state
+    if(localStorage.getItem('niu-act-collapsed')){
+        el.classList.add('hidden');
+        if(toggle)toggle.classList.add('collapsed');
+    }
+}
+function autoCategorize(){
+    var labels={ready:'Ready',dev:'Development',ideas:'Ideas/Planning',config:'Config/Dotfiles',legacy:'Legacy/Arsip'};
+    var now=Date.now(),THREE=90*86400000,SIX=180*86400000;
+    flatProjects.forEach(function(p){
+        if(!p.repoName||p.category==='config'||p.category==='unlisted')return;
+        // Skip curated PROJECTS items — only auto-categorize dynamically added (_added) repos
+        if(!p._added)return;
+        var g=githubData[p.repoName.toLowerCase()];
+        if(!g)return;
+        var t=new Date(g.updated_at).getTime();
+        if(isNaN(t))return;
+        var age=now-t,newCat;
+        if(g.archived)newCat='legacy';
+        else if(g.has_pages&&age<THREE)newCat='ready';
+        else if(age<THREE)newCat='dev';
+        else if(age>SIX)newCat='ideas';
+        else newCat='dev';
+        if(newCat!==p.category){
+            p._prevCategory=p.category;
+            p._prevCategoryLabel=p.categoryLabel;
+            p.category=newCat;
+            p.categoryLabel=labels[newCat];
+            p._autoCat=true;
+        }
+    });
+}
+function enrichFromGitHub(){
+    flatProjects.forEach(function(p){
+        if(!p.repoName)return;
+        var g=githubData[p.repoName.toLowerCase()];
+        if(!g)return;
+        if(g.description)p._ghDesc=g.description;
+        if(g.topics&&g.topics.length){
+            var ex=new Set((p.tags||[]).map(function(x){return x.toLowerCase();}));
+            var gt=g.topics.filter(function(t){return!ex.has(t.toLowerCase());});
+            if(gt.length)p._ghTopics=gt;
+        }
+        if(g.homepage&&!p.website)p.website=g.homepage;
+        if(g.archived)p._archived=true;
+        p._pushedAt=g.pushed_at?new Date(g.pushed_at).getTime():0;
+        p._createdAt=g.created_at?new Date(g.created_at).getTime():0;
+    });
+}
+
+// ===== UNLISTED REPO DETECTION =====
+function detectUnlistedRepos(){
+    unlistedRepos=[];
+    var listed=new Set();
+    // Load dismissed unlisted repos
+    var dismissed={};
+    try{var du=localStorage.getItem('niu-dismissed-unlisted');if(du){var arr=JSON.parse(du);if(Array.isArray(arr))arr.forEach(function(k){if(k)dismissed[k.toLowerCase()]=true;});}}catch(_){}
+    flatProjects.forEach(function(p){if(p.repoName)listed.add(p.repoName.toLowerCase());});
+    Object.keys(githubData).forEach(function(key){
+        if(listed.has(key)||dismissed[key])return;
+        var r=githubData[key];
+        // Double-check by trying name match (some paths aren't standard GitHub URLs)
+        var nameMatch=flatProjects.some(function(p){return p.name.toLowerCase().replace(/[^a-z0-9-]/g,'')===key;});
+        if(nameMatch)return;
+        // Skip archived repos
+        if(r.archived)return;
+        unlistedRepos.push({
+            icon:'△',
+            name:key.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();}),
+            path:'https://github.com/Niumination/'+key,
+            desc:r.description||'Repo terdeteksi dari GitHub — belum terdaftar di PROJECTS.',
+            tags:r.topics&&r.topics.length?r.topics.slice(0,5):['new'],
+            date:r.created_at?function(){try{return new Date(r.created_at).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});}catch(e){return '2026';}}():'2026',
+            category:'unlisted',
+            categoryLabel:'Unlisted',
+            repoName:key,
+            stars:r.stars||0,
+            forks:r.forks||0,
+            language:r.language||null,
+            ghUpdated:r.updated_at||null,
+            isUnlisted:true,
+        });
+    });
+    var sec=document.getElementById('sb-unlisted-section');
+    var countEl=document.getElementById('sb-unlisted-count');
+    if(unlistedRepos.length){
+        sec.style.display='';
+        countEl.textContent=unlistedRepos.length;
+    }else{
+        sec.style.display='none';
+    }
+}
+
+function showUnlisted(){
+    if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open'),document.getElementById('sb-overlay').classList.remove('show');
+    currentFilter='unlisted';
+    renderUnlisted();
+}
+function renderUnlisted(){
+    var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
+    if(!unlistedRepos.length){
+        fi.innerHTML='⟐ <em>unlisted</em> — tidak ada repo baru';
+        list.innerHTML='';noRes.style.display='block';noRes.innerHTML='<div class="emoji">✓</div><p>Semua repo GitHub sudah terdaftar di PROJECTS!</p>';return;
+    }
+    fi.innerHTML='🚀 <em>'+unlistedRepos.length+'</em> repo baru terdeteksi';
+    statsEl.innerHTML='<span class="fs-item"><strong style="color:var(--amber)">'+unlistedRepos.length+'</strong> unlisted</span><span class="fs-item">dari GitHub API</span>';
+    noRes.style.display='none';
+    var html='<div style="margin-bottom:12px;font-family:\'JetBrains Mono\',monospace;font-size:10px;color:var(--text-muted)">Repositori ini ada di GitHub tapi belum terdaftar di PROJECTS. Klik <strong style="color:var(--green)">+ ADD</strong> untuk menambahkannya.</div>';
+    html+='<div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap"><button class="sort-btn" onclick="addAllUnlisted()">+ ADD ALL ('+unlistedRepos.length+')</button></div>';
+    unlistedRepos.forEach(function(p,i){
+        var gh='';
+        if(p.stars>0||p.forks>0||p.language){
+            var pts=[];
+            if(p.language)pts.push('<span class="lang" style="background:'+langColor(p.language)+'"></span> '+p.language);
+            if(p.stars>0)pts.push('<span class="star">★</span> '+p.stars);
+            if(p.forks>0)pts.push('<span class="fork">₂</span> '+p.forks);
+            if(pts.length)gh='<div class="fc-meta"><span class="fc-gh">'+pts.join(' · ')+'</span></div>';
+        }
+        html+='<div class="feed-card unlisted"><div class="fc-strip"></div><div class="fc-icon">△</div><div class="fc-body"><h3>'+p.name+(p.date?'<span class="fc-date"> '+p.date+'</span>':'')+'</h3><div class="fc-desc">'+p.desc+'</div>'+gh+'<div class="ul-actions"><a class="ul-action-btn" href="'+p.path+'" target="_blank">↗ Buka Repo</a><button class="ul-action-btn add-btn" onclick="addUnlistedRepo('+i+')">+ ADD ke PROJECTS</button><button class="ul-action-btn dismiss-btn" onclick="dismissUnlistedRepo('+i+')">✕ Dismiss</button></div></div><span class="ul-badge">NEW</span></div>';
+    });
+    list.innerHTML=html;
+}
+
+var EMOJI_MAP={flutter:'📱',dart:'🎯',rust:'🦀',python:'🐍',html:'🌐',css:'🎨',javascript:'📜',typescript:'📘',react:'⚛️',nodejs:'🟢',docker:'🐳',discord:'🤖',ai:'🧠',cli:'💻',terminal:'⌨️',game:'🎮',hackintosh:'🍎',linux:'🐧',windows:'🪟',dotfiles:'🔧',macos:'💻',nix:'❄️',go:'🔵',ruby:'💎',swift:'🍎',kotlin:'🟣',vue:'💚',svelte:'🧡',android:'📱',default:'⚡'};
+function getEmojiForRepo(r){
+    if(!r||!r.topics)return EMOJI_MAP.default;
+    for(var i=0;i<r.topics.length;i++){var t=r.topics[i].toLowerCase();if(EMOJI_MAP[t])return EMOJI_MAP[t];}
+    if(r.language&&EMOJI_MAP[r.language.toLowerCase()])return EMOJI_MAP[r.language.toLowerCase()];
+    return EMOJI_MAP.default;
+}
+function generateSmartEntry(r){
+    var g=r.repoName?githubData[r.repoName.toLowerCase()]:null;
+    if(!g)g=r._ghRaw||null;
+    var tags=r.tags&&r.tags.length&&r.tags[0]!=='new'?r.tags.slice(0,4):[];
+    if(g&&g.topics&&g.topics.length){g.topics.forEach(function(t){if(tags.length>=4)return;if(tags.indexOf(t)===-1)tags.push(t);});}
+    if(g&&g.language&&tags.indexOf(g.language)===-1)tags.push(g.language);
+    if(!tags.length)tags=['new'];
+    var desc=(g&&g.description)||r.desc||'Repo dari GitHub.';
+    var hasPages=g&&g.has_pages;
+    var path=hasPages?'https://niumination.github.io/'+r.repoName:r.path||'https://github.com/Niumination/'+r.repoName;
+    var icon=r.icon&&r.icon!=='△'?r.icon:getEmojiForRepo(g||r);
+    var cat='dev';
+    if(g&&g.archived)cat='legacy';
+    else if(hasPages)cat='ready';
+    return {icon:icon,name:r.name,path:path,desc:desc,tags:tags,date:r.date||'',repoName:r.repoName||'',category:cat};
+}
+function loadPendingAdds(){
+    var d=localStorage.getItem('niu-added-repos');
+    if(!d)return;
+    try{
+        var adds=JSON.parse(d);
+        if(!Array.isArray(adds)||!adds.length)return;
+        var existing=new Set();
+        Object.keys(PROJECTS).forEach(function(cat){if(Array.isArray(PROJECTS[cat]))PROJECTS[cat].forEach(function(p){if(p.repoName)existing.add(p.repoName.toLowerCase());});});
+        adds.forEach(function(r){
+            if(existing.has((r.repoName||'').toLowerCase()))return;
+            var cat=r.category||'dev';
+            if(!PROJECTS[cat])PROJECTS[cat]=[];
+            var entry=generateSmartEntry(r);
+            entry.icon=r.icon||entry.icon;
+            entry.name=r.name||entry.name;
+            entry.desc=r.desc||entry.desc;
+            entry.tags=r.tags&&r.tags[0]!=='new'?r.tags:entry.tags;
+            entry.date=r.date||entry.date;
+            entry.repoName=r.repoName||entry.repoName;
+            entry.category=cat;
+            entry._added=true;
+            PROJECTS[cat].push(entry);
+        });
+    }catch(e){localStorage.removeItem('niu-added-repos');}
+}
+function savePendingAdds(){
+    var added=[];
+    Object.keys(PROJECTS).forEach(function(cat){if(Array.isArray(PROJECTS[cat]))PROJECTS[cat].forEach(function(p){if(p._added)added.push(p);});});
+    localStorage.setItem('niu-added-repos',JSON.stringify(added));
+}
+function addUnlistedRepo(idx){
+    var r=unlistedRepos[idx];
+    if(!r)return;
+    var smart=generateSmartEntry(r);
+    smart._added=true;
+    var cat=smart.category||'dev';
+    if(!PROJECTS[cat])PROJECTS[cat]=[];
+    PROJECTS[cat].push(smart);
+    unlistedRepos.splice(idx,1);
+    savePendingAdds();
+    // Also push to released + GitHub for cross-session persistence
+    var rn=(r.repoName||'').toLowerCase();
+    if(rn&&!releasedProjects.some(function(p){return(p.repoName||'').toLowerCase()===rn;})){
+        releasedProjects.push({
+            repoName:rn,name:smart.name||rn,
+            status:cat==='legacy'?'completed':'production',
+            dateMarked:new Date().toISOString(),fromUnlisted:true
+        });
+        saveReleased(); // persists to GitHub (if token available) + localStorage
+    }
+    buildFlatList();buildTagFilterBar();updateStats();updateSyncStatus();
+    var sec=document.getElementById('sb-unlisted-section');
+    var countEl=document.getElementById('sb-unlisted-count');
+    if(unlistedRepos.length){
+        countEl.textContent=unlistedRepos.length;
+        renderUnlisted();
+    }else{
+        sec.style.display='none';
+        currentFilter='all';
+        renderFeed('all','all');
+    }
+    var btn=event&&event.target;if(btn){btn.textContent='✓ Added!';setTimeout(function(){btn.textContent='+ ADD ke PROJECTS';},2000);}
+}
+function addAllUnlisted(){
+    var count=0;
+    unlistedRepos.forEach(function(r){
+        var smart=generateSmartEntry(r);
+        smart._added=true;
+        var cat=smart.category||'dev';
+        if(!PROJECTS[cat])PROJECTS[cat]=[];
+        PROJECTS[cat].push(smart);
+        count++;
+        // Also push to released + GitHub
+        var rn=(r.repoName||'').toLowerCase();
+        if(rn&&!releasedProjects.some(function(p){return(p.repoName||'').toLowerCase()===rn;})){
+            releasedProjects.push({
+                repoName:rn,name:smart.name||rn,
+                status:cat==='legacy'?'completed':'production',
+                dateMarked:new Date().toISOString(),fromUnlisted:true
+            });
+        }
+    });
+    unlistedRepos=[];
+    savePendingAdds();
+    saveReleased(); // bulk push to GitHub
+    document.getElementById('sb-unlisted-section').style.display='none';
+    currentFilter='all';
+    buildFlatList();buildTagFilterBar();updateStats();updateSyncStatus();
+    renderFeed('all','all');
+    showToast('✅ '+count+' repos added with smart defaults','success',3000);
+}
+function dismissUnlistedRepo(idx){
+    var r=unlistedRepos[idx];
+    if(!r||!r.repoName)return;
+    try{
+        var arr=[];
+        var d=localStorage.getItem('niu-dismissed-unlisted');
+        if(d)arr=JSON.parse(d);
+        if(!Array.isArray(arr))arr=[];
+        if(arr.indexOf(r.repoName)===-1)arr.push(r.repoName);
+        localStorage.setItem('niu-dismissed-unlisted',JSON.stringify(arr));
+    }catch(_){}
+    unlistedRepos.splice(idx,1);
+    var sec=document.getElementById('sb-unlisted-section');
+    var countEl=document.getElementById('sb-unlisted-count');
+    if(unlistedRepos.length){
+        countEl.textContent=unlistedRepos.length;
+        renderUnlisted();
+    }else{
+        sec.style.display='none';
+        currentFilter='all';
+        renderFeed('all','all');
+    }
+    showToast('✕ Dismissed — tidak akan muncul lagi','info',2000);
+}
+
+// ===== RELEASED PROJECTS — DATA =====
+function loadReleased(){
+    try{var d=localStorage.getItem('niu-released');if(d)releasedProjects=JSON.parse(d);if(!Array.isArray(releasedProjects))releasedProjects=[];}catch(e){releasedProjects=[];}
+    // If localStorage is empty (e.g. after clearing cache), try GitHub
+    if(!releasedProjects.length)fetchReleasedFromGitHub();
+    else syncReleasedToProjects();
+}
+// Sync released projects (from GitHub) back into main PROJECTS
+// so entries added-from-unlisted survive cache clear
+function syncReleasedToProjects(){
+    var existing={};
+    Object.keys(PROJECTS).forEach(function(cat){
+        if(Array.isArray(PROJECTS[cat]))PROJECTS[cat].forEach(function(p){
+            if(p.repoName)existing[p.repoName.toLowerCase()]=true;
+        });
+    });
+    var added=0;
+    releasedProjects.forEach(function(rp){
+        var rn=(rp.repoName||'').toLowerCase();
+        if(!rn||existing[rn]||!rp.fromUnlisted)return;
+        var g=githubData[rn];
+        var entry={
+            icon:getEmojiForRepo(g||{}),name:rp.name||rn,
+            path:'https://github.com/Niumination/'+rn,
+            desc:(g&&g.description)||'Synced from released data.',
+            tags:['auto-sync'],date:'',repoName:rn,
+            category:rp.status==='completed'?'legacy':'ready',
+            _added:true
+        };
+        var cat=entry.category||'dev';
+        if(!PROJECTS[cat])PROJECTS[cat]=[];
+        PROJECTS[cat].push(entry);
+        existing[rn]=true;
+        added++;
+    });
+    if(added){savePendingAdds();buildFlatList();buildTagFilterBar();updateStats();renderFeed(currentFilter||'all',currentStatus||'all');}
+}
+function saveReleased(skipPush){
+    localStorage.setItem('niu-released',JSON.stringify(releasedProjects));
+    if(!skipPush)pushReleasedToGitHub();
+}
+function detectReleasedFromGitHub(){
+    releasedSuggestions=[];
+    var existing=new Set(releasedProjects.map(function(p){return(p.repoName||'').toLowerCase();}));
+    // Load dismissed suggestions so they don't reappear
+    var dismissed={};
+    try{var ds=localStorage.getItem('niu-dismissed-suggestions');if(ds){var arr=JSON.parse(ds);if(Array.isArray(arr))arr.forEach(function(k){if(k)dismissed[k.toLowerCase()]=true;});}}catch(_){}
+    var allProjs=flatProjects.concat(unlistedRepos);
+    allProjs.forEach(function(p){
+        var rn=(p.repoName||'').toLowerCase();
+        if(!rn||existing.has(rn)||dismissed[rn])return;
+        var g=githubData[rn];
+        if(!g)return;
+        if(g.has_pages&&g.homepage&&!existing.has(rn)){
+            releasedSuggestions.push({repoName:rn,name:p.name||rn,status:'production',autoDetected:true,reason:'GitHub Pages + homepage',source:p});
+            existing.add(rn);
+        }else if(g.archived&&!existing.has(rn)){
+            releasedSuggestions.push({repoName:rn,name:p.name||rn,status:'completed',autoDetected:true,reason:'Archived repository',source:p});
+            existing.add(rn);
+        }
+    });
+    updateReleasedBadge();
+}
+function updateReleasedBadge(){
+    var el=document.getElementById('sb-released');
+    if(!el)return;
+    var count=releasedProjects.length;
+    el.textContent=count;
+    if(releasedSuggestions.length)el.className='sb-badge amber';
+    else el.className='sb-badge '+(count>0?'green':'dim');
+}
+// ===== RELEASED PROJECTS — VIEW =====
+// ===== ECOSYSTEM VIEW =====
+let ecosystemData = null;
+let ecosystemLoaded = false;
+function showEcosystem(){
+    currentView='ecosystem';
+    document.querySelectorAll('#sb-nav button').forEach(function(b){b.classList.remove('active');});
+    var btn=document.getElementById('sb-eco-btn');
+    if(btn)btn.classList.add('active');
+    // Hide normal feed controls
+    var sb=document.getElementById('sort-bar');
+    if(sb)sb.style.display='none';
+    var tb=document.getElementById('tag-filter-bar');
+    if(tb)tb.style.display='none';
+    var si=document.getElementById('search-input');
+    if(si)si.parentElement.style.display='none';
+    var af=document.getElementById('activity-feed');
+    if(af)af.style.display='none';
+    if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open'),document.getElementById('sb-overlay').classList.remove('show');
+    renderEcosystem();
+}
+function renderEcosystem(){
+    var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
+    var ecoCount=(ecosystemData&&ecosystemData.projects)?ecosystemData.projects.length:'—';
+    fi.innerHTML='⊞ <em>Ecosystem</em> — '+ecoCount+' projects'+(ecosystemLoaded&&ecosystemData?' · synced':'');
+    if(!ecosystemLoaded&&!ecosystemData){
+        statsEl.innerHTML='<span class="fs-item" style="color:var(--amber)">⟳ Fetching ecosystem data...</span>';
+        list.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--text-muted)"><div style="font-size:32px;margin-bottom:12px">⟳</div><p>Memuat data ekosistem...</p></div>';
+        noRes.style.display='none';
+        fetchEcosystemData();
+        return;
+    }
+    if(!ecosystemData){
+        statsEl.innerHTML='<span class="fs-item">No ecosystem data available</span>';
+        list.innerHTML='';
+        noRes.style.display='block';
+        noRes.innerHTML='<div class="emoji">⊞</div><p>Ecosystem data sedang tidak tersedia. Jalankan Kanban server atau refresh halaman.</p>';
+        return;
+    }
+    var data=ecosystemData;
+    var total=data.projects?data.projects.length:0;
+    var gitCount=data.git||(data.summary&&data.summary.gitRepos)||0;
+    var doxCount=data.dox||(data.summary&&data.summary.withDox)||0;
+    var cronCount=data.crons||data.cronCount||0;
+    var taskCount=data.tasks||(data.summary&&data.summary.totalTasks)||0;
+    statsEl.innerHTML='<span class="fs-item"><strong style="color:var(--cyan)">'+total+'</strong> projects</span><span class="fs-item"><strong style="color:var(--green)">'+gitCount+'</strong> git</span><span class="fs-item"><strong style="color:var(--amber)">'+doxCount+'</strong> DOX</span><span class="fs-item"><strong style="color:var(--neon-purple)">'+cronCount+'</strong> cron</span><span class="fs-item"><strong style="color:var(--text-secondary)">'+taskCount+'</strong> tasks</span>';
+    noRes.style.display='none';
+    var html='';
+    // Tier legend
+    html+='<div style="display:flex;gap:12px;margin-bottom:16px;font-size:11px;flex-wrap:wrap">';
+    html+='<span style="color:var(--red);font-weight:700">🔴 P1 Critical</span>';
+    html+='<span style="color:var(--amber)">🟡 P2 Active</span>';
+    html+='<span style="color:var(--text-muted)">⚪ P3 Minor</span>';
+    html+='</div>';
+    // Cards
+    (data.projects||[]).forEach(function(p,i){
+        var tierClass='';
+        var tierLabel='';
+        var priority=p.priority||(p.tier===1?'P1':p.tier===2?'P2':'P3');
+        if(priority==='P1'){tierClass='ec-p1';tierLabel='🔴 P1';}
+        else if(priority==='P2'){tierClass='ec-p2';tierLabel='🟡 P2';}
+        else {tierClass='ec-p3';tierLabel='⚪ P3';}
+        var statusSymbol='⬜';
+        if(p.status==='completed'||p.status==='done')statusSymbol='✅';
+        else if(p.status==='in_progress'||p.status==='active')statusSymbol='⟳';
+        else if(p.status==='paused'||p.status==='cancelled')statusSymbol='⏸';
+        html+='<div class="feed-card '+tierClass+'" style="cursor:default">';
+        html+='<div class="fc-strip"></div>';
+        html+='<div class="fc-icon">'+tierLabel+'</div>';
+        html+='<div class="fc-body">';
+        html+='<h3>'+p.name+' <span class="fc-date">'+statusSymbol+' '+(p.status||'pending')+'</span></h3>';
+        html+='<div class="fc-desc">'+(p.desc||p.description||'')+'</div>';
+        html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">';
+        if(p.git)html+='<span class="tag gh-topic">'+p.git+'</span>';
+        if(p.dox)html+='<span class="tag" style="background:rgba(255,170,0,.1);color:var(--amber)">📄 DOX</span>';
+        if(p.cron)html+='<span class="tag" style="background:rgba(0,255,242,.1);color:var(--cyan)">⏱ cron</span>';
+        if(p.deployUrl)html+='<a class="tag" href="'+p.deployUrl+'" target="_blank" style="background:rgba(0,255,136,.1);color:var(--green);text-decoration:none">↗ deploy</a>';
+        html+='</div></div></div>';
+    });
+    list.innerHTML=html;
+}
+function fetchEcosystemData(){
+    // Coba ambil dari Kanban API
+    fetch(KANBAN_API_URL)
+        .then(function(r){return r.json();})
+        .then(function(d){
+            ecosystemData=d;
+            ecosystemLoaded=true;
+            renderEcosystem();
+            document.getElementById('sb-eco-count').textContent=(d.projects?d.projects.length:0);
+        })
+        .catch(function(){
+            // Fallback: build from local flatProjects (tersedia tanpa API)
+            var fbProjects=(typeof flatProjects!=='undefined'?flatProjects:[]).map(function(p){
+                return {
+                    name:p.name,
+                    desc:p.desc||'',
+                    status:p.status||'pending',
+                    priority:'P3',
+                    tier:3,
+                    git:p.repoUrl||p.repoName?('github.com/Niumination/'+(p.repoName||'')):null,
+                    dox:false,
+                    cron:false,
+                    deployUrl:p.website||null
+                };
+            });
+            ecosystemData={projects:fbProjects,git:0,dox:0,crons:0,tasks:0};
+            ecosystemLoaded=true;
+            renderEcosystem();
+            document.getElementById('sb-eco-count').textContent=fbProjects.length;
+        });
+}
+
+function showReleased(){
+    currentView='released';
+    document.querySelectorAll('#sb-nav button').forEach(function(b){b.classList.remove('active');});
+    var btn=document.getElementById('sb-released-btn');
+    if(btn)btn.classList.add('active');
+    // Hide normal feed controls
+    var sb=document.getElementById('sort-bar');
+    if(sb)sb.style.display='none';
+    var tb=document.getElementById('tag-filter-bar');
+    if(tb)tb.style.display='none';
+    var si=document.getElementById('search-input');
+    if(si)si.parentElement.style.display='none';
+    var af=document.getElementById('activity-feed');
+    if(af)af.style.display='none';
+    if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open'),document.getElementById('sb-overlay').classList.remove('show');
+    renderReleased();
+}
+function renderReleased(){
+    var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
+    fi.innerHTML='🏁 <em>Released</em> projects';
+    var total=releasedProjects.length,prod=releasedProjects.filter(function(p){return p.status==='production';}).length,comp=releasedProjects.filter(function(p){return p.status==='completed';}).length;
+    statsEl.innerHTML='<span class="fs-item"><strong style="color:var(--green)">'+prod+'</strong> production</span><span class="fs-item"><strong style="color:var(--cyan)">'+comp+'</strong> completed</span><span class="fs-item">of <strong style="color:var(--text-secondary)">'+total+'</strong> total</span>';
+    // Always show action bar (even when empty)
+    var html='<div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
+    html+='<button class="sort-btn'+(releasedFilter==='all'?' active':'')+'" onclick="setReleasedFilter(\'all\')">◈ All</button>';
+    html+='<button class="sort-btn'+(releasedFilter==='production'?' active':'')+'" onclick="setReleasedFilter(\'production\')">🚀 Production</button>';
+    html+='<button class="sort-btn'+(releasedFilter==='completed'?' active':'')+'" onclick="setReleasedFilter(\'completed\')">✅ Completed</button>';
+    html+='<button class="sort-btn" style="margin-left:auto;border-color:rgba(0,255,242,.2);color:var(--cyan)" onclick="showAddReleasedForm()">+ Tambah</button>';
+    html+='<button class="sort-btn" style="border-color:rgba(255,255,255,.1);color:var(--text-muted)" onclick="showSyncConfig()" title="Konfigurasi GitHub Sync">⚙</button>';
+    if(releasedSuggestions.length){
+        html+='<button class="sort-btn" style="border-color:rgba(255,170,0,.2);color:var(--amber)" onclick="showReleasedSuggestions()">💡 '+releasedSuggestions.length+' saran</button>';
+    }
+    html+='</div>';
+    if(!releasedProjects.length){
+        list.innerHTML=html;noRes.style.display='block';
+        noRes.innerHTML='<div class="emoji">🏁</div><p>Belum ada project yang ditandai released.</p>';
+        return;
+    }
+    noRes.style.display='none';
+    var items=releasedProjects.slice();
+    items.sort(function(a,b){return new Date(b.dateMarked||0)-new Date(a.dateMarked||0);});
+    if(releasedFilter==='production')items=items.filter(function(p){return p.status==='production';});
+    else if(releasedFilter==='completed')items=items.filter(function(p){return p.status==='completed';});
+    var prodItems=items.filter(function(p){return p.status==='production';});
+    var compItems=items.filter(function(p){return p.status==='completed';});
+    if(prodItems.length){
+        html+='<div style="margin-bottom:12px;margin-top:4px"><span style="font-family:\'Orbitron\',sans-serif;font-size:18px;font-weight:800;color:var(--green)">🚀 Production Ready</span></div>';
+        prodItems.forEach(function(p){html+=renderReleasedCard(p);});
+    }
+    if(compItems.length){
+        html+='<div style="margin-bottom:12px;margin-top:20px"><span style="font-family:\'Orbitron\',sans-serif;font-size:18px;font-weight:800;color:var(--cyan)">✅ Completed</span></div>';
+        compItems.forEach(function(p){html+=renderReleasedCard(p);});
+    }
+    list.innerHTML=html;
+}
+function renderReleasedCard(p){
+    var g=p.repoName?githubData[p.repoName.toLowerCase()]:null;
+    var name=p.name||p.repoName||'Unknown';
+    var desc=p.notes||(g?g.description:'')||'Tidak ada deskripsi';
+    var dateStr=p.dateMarked?new Date(p.dateMarked).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}):'';
+    var isProd=p.status==='production';
+    var badgeClass=isProd?'rl-badge production':'rl-badge completed';
+    var badgeText=isProd?'🚀 PRODUCTION':'✅ COMPLETED';
+    var cardClass=isProd?'rl-card production':'rl-card completed';
+    var langHtml='';
+    if(g&&g.language)langHtml='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--text-muted)"><span style="width:7px;height:7px;border-radius:50%;background:'+langColor(g.language)+';display:inline-block;flex-shrink:0"></span> '+g.language+'</span>';
+    var versionHtml='';
+    if(p.version)versionHtml='<span style="font-size:10px;color:var(--cyan);font-family:\'JetBrains Mono\',monospace">v'+p.version+'</span>';
+    var autoTag=p._autoDetected?'<span style="font-size:8px;padding:1px 6px;border-radius:3px;background:rgba(255,170,0,.12);color:#ffbb33;border:1px solid rgba(255,170,0,.25);font-family:\'JetBrains Mono\',monospace;text-transform:uppercase;letter-spacing:.5px;font-weight:600">auto</span>':'';
+    var key=(p.repoName||p.name||'').replace(/'/g,"\\'");
+    return '<div class="'+cardClass+'">'+
+        '<div class="rl-body">'+
+        '<div class="rl-top">'+
+        '<h3>'+name+' '+autoTag+'</h3>'+
+        '<span class="'+badgeClass+'">'+badgeText+'</span>'+
+        '</div>'+
+        '<div class="rl-desc">'+escapeHtml(desc)+'</div>'+
+        '<div class="rl-meta">'+langHtml+versionHtml+(dateStr?'<span style="font-size:10px;color:var(--text-muted)">📅 '+dateStr+'</span>':'')+'</div>'+
+        '<div class="rl-actions">'+
+        '<button class="ul-action-btn" onclick="removeReleasedProject(\''+key+'\')" style="color:var(--red);border-color:rgba(255,0,64,.2)">✕ Remove</button>'+
+        (g?'<a class="ul-action-btn" href="https://github.com/Niumination/'+p.repoName+'" target="_blank" style="margin-left:auto">↗ Repo</a>':'')+
+        '</div>'+
+        '</div>'+
+        '</div>';
+}
+// ===== RELEASED PROJECTS — MANAGEMENT =====
+function showAddReleasedForm(){
+    var overlay=document.getElementById('rl-overlay');
+    var select=document.getElementById('rl-repo-select');
+    var used=new Set(releasedProjects.map(function(p){return(p.repoName||'').toLowerCase();}));
+    select.innerHTML='<option value="">— Pilih project —</option>';
+    // Add from flatProjects
+    flatProjects.forEach(function(p){
+        var rn=(p.repoName||'').toLowerCase();
+        if(!rn||used.has(rn))return;
+        var opt=document.createElement('option');
+        opt.value=rn;opt.textContent=p.name+' ('+p.categoryLabel+')';
+        select.appendChild(opt);
+    });
+    // Add from unlisted
+    unlistedRepos.forEach(function(p){
+        var rn=(p.repoName||'').toLowerCase();
+        if(!rn||used.has(rn))return;
+        var opt=document.createElement('option');
+        opt.value=rn;opt.textContent=p.name+' (unlisted)';
+        select.appendChild(opt);
+    });
+    document.getElementById('rl-version-input').value='';
+    document.getElementById('rl-notes-input').value='';
+    overlay.classList.add('show');
+}
+function closeReleasedForm(){document.getElementById('rl-overlay').classList.remove('show');}
+function saveReleasedForm(){
+    var select=document.getElementById('rl-repo-select');
+    var repoName=select.value;
+    if(!repoName||repoName===''){showToast('⚠ Pilih project terlebih dahulu','warn',3000);return;}
+    var status=document.getElementById('rl-status-select').value;
+    var version=document.getElementById('rl-version-input').value.trim();
+    var notes=document.getElementById('rl-notes-input').value.trim();
+    // Find project name from flatProjects or unlisted
+    var name='';
+    var allP=flatProjects.concat(unlistedRepos);
+    allP.forEach(function(p){
+        if((p.repoName||'').toLowerCase()===repoName&&!name)name=p.name;
+    });
+    releasedProjects.push({
+        repoName:repoName,
+        name:name||repoName,
+        status:status,
+        version:version,
+        notes:notes,
+        dateMarked:new Date().toISOString(),
+        _autoDetected:false
+    });
+    saveReleased();
+    addReleasedActivityLog(name||repoName,repoName,status,'manual');
+    closeReleasedForm();
+    updateReleasedBadge();
+    renderReleased();
+    showToast('✅ '+(name||repoName)+' ditandai sebagai '+(status==='production'?'Production Ready':'Completed'),'success',3000);
+}
+function removeReleasedProject(key){
+    if(!key)return;
+    var idx=-1;
+    releasedProjects.forEach(function(p,i){
+        if((p.repoName||'')===key||(p.name||'')===key)idx=i;
+    });
+    if(idx<0)return;
+    var name=releasedProjects[idx].name||releasedProjects[idx].repoName;
+    releasedProjects.splice(idx,1);
+    saveReleased();
+    updateReleasedBadge();
+    renderReleased();
+    showToast('🗑 '+name+' dihapus dari released','info',2500);
+}
+function setReleasedFilter(filter){
+    releasedFilter=filter;
+    renderReleased();
+}
+// ===== RELEASED PROJECTS — SUGGESTIONS =====
+function showReleasedSuggestions(){
+    var html='<div style="margin-bottom:12px"><span style="font-size:14px;font-weight:700;color:var(--amber)">💡 Saran Auto-Deteksi</span></div>';
+    html+='<div style="margin-bottom:12px;font-size:10px;color:var(--text-muted)">Project berikut terdeteksi sebagai production-ready atau completed berdasarkan data GitHub.</div>';
+    html+='<div style="margin-bottom:16px"><button class="sort-btn" style="border-color:rgba(0,255,242,.2);color:var(--cyan)" onclick="addAllReleasedSuggestions()">+ Tambah Semua ('+releasedSuggestions.length+')</button></div>';
+    releasedSuggestions.forEach(function(s,i){
+        html+='<div class="rl-suggestion-card">'+
+            '<span class="rl-sg-name">'+(s.name||s.repoName)+'</span>'+
+            '<span class="rl-sg-reason">'+(s.status==='production'?'🚀 ':'✅ ')+s.reason+'</span>'+
+            '<div class="rl-sg-actions">'+
+            '<button class="sg-add" onclick="addReleasedSuggestion('+i+')">+ Add</button>'+
+            '<button class="sg-dismiss" onclick="dismissReleasedSuggestion('+i+')">✕</button>'+
+            '</div></div>';
+    });
+    var list=document.getElementById('feed-list'),noRes=document.getElementById('no-results'),statsEl=document.getElementById('feed-stats'),fi=document.getElementById('filter-info');
+    fi.innerHTML='💡 <em>'+releasedSuggestions.length+'</em> saran released';
+    statsEl.innerHTML='<span class="fs-item">Dari GitHub auto-detection</span>';
+    noRes.style.display='none';
+    list.innerHTML=html;
+}
+function addReleasedSuggestion(idx){
+    var s=releasedSuggestions[idx];
+    if(!s)return;
+    // Check if already in releasedProjects
+    var exists=releasedProjects.some(function(p){return(p.repoName||'').toLowerCase()===s.repoName.toLowerCase();});
+    if(exists){
+        releasedSuggestions.splice(idx,1);
+        showToast('⚠ Project sudah ada di daftar','warn',2000);
+        if(releasedSuggestions.length)showReleasedSuggestions();else showReleased();
+        return;
+    }
+    releasedProjects.push({
+        repoName:s.repoName,
+        name:s.name||s.repoName,
+        status:s.status,
+        version:'',
+        notes:'Auto-detected: '+s.reason,
+        dateMarked:new Date().toISOString(),
+        _autoDetected:true
+    });
+    releasedSuggestions.splice(idx,1);
+    saveReleased();
+    addReleasedActivityLog(s.name||s.repoName,s.repoName,s.status,'suggestion');
+    updateReleasedBadge();
+    if(releasedSuggestions.length)showReleasedSuggestions();else showReleased();
+    showToast('✅ '+(s.name||s.repoName)+' ditambahkan','success',2000);
+}
+function dismissReleasedSuggestion(idx){
+    var s=releasedSuggestions[idx];
+    if(s&&s.repoName){
+        try{
+            var arr=[];
+            var d=localStorage.getItem('niu-dismissed-suggestions');
+            if(d)arr=JSON.parse(d);
+            if(!Array.isArray(arr))arr=[];
+            if(arr.indexOf(s.repoName)===-1)arr.push(s.repoName);
+            localStorage.setItem('niu-dismissed-suggestions',JSON.stringify(arr));
+        }catch(_){}
+    }
+    releasedSuggestions.splice(idx,1);
+    updateReleasedBadge();
+    if(releasedSuggestions.length)showReleasedSuggestions();else{
+        releasedFilter='all';showReleased();
+        showToast('💡 Semua saran sudah diproses','info',2000);
+    }
+}
+function addAllReleasedSuggestions(){
+    releasedSuggestions.forEach(function(s){
+        var exists=releasedProjects.some(function(p){return(p.repoName||'').toLowerCase()===s.repoName.toLowerCase();});
+        if(exists)return;
+        releasedProjects.push({
+            repoName:s.repoName,
+            name:s.name||s.repoName,
+            status:s.status,
+            version:'',
+            notes:'Auto-detected: '+s.reason,
+            dateMarked:new Date().toISOString(),
+            _autoDetected:true
+        });
+    });
+    releasedSuggestions=[];
+    saveReleased();
+    addReleasedActivityLog('Bulk import','','','suggestion-bulk');
+    updateReleasedBadge();
+    showReleased();
+    showToast('✅ Semua saran ditambahkan ke Released','success',3000);
+}
+
+// ===== RELEASED ACTIVITY LOG =====
+var releasedActivityLog=[];
+function loadReleasedActivityLog(){
+    releasedActivityLog=[];
+    try{
+        var d=localStorage.getItem('niu-released-activity');
+        if(d)releasedActivityLog=JSON.parse(d);
+    }catch(_){}
+}
+function saveReleasedActivityLog(){
+    try{localStorage.setItem('niu-released-activity',JSON.stringify(releasedActivityLog));}catch(_){}
+}
+function addReleasedActivityLog(projectName,repoName,status,method){
+    releasedActivityLog.push({
+        projectName:projectName,
+        repoName:repoName,
+        status:status,
+        method:method,
+        timestamp:Date.now()
+    });
+    // Keep last 100 entries max
+    if(releasedActivityLog.length>100)releasedActivityLog=releasedActivityLog.slice(-100);
+    saveReleasedActivityLog();
+}
+
+// ===== RELEASED — GITHUB SYNC =====
+function fetchReleasedFromGitHub(){
+    return fetch('https://raw.githubusercontent.com/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/main/'+RELEASED_GH_PATH)
+        .then(function(r){
+            if(!r.ok)throw new Error('Not found (file may be empty)');
+            return r.json();
+        })
+        .then(function(data){
+            if(data&&Array.isArray(data.projects)){
+                // Merge: keep existing entries, add from GitHub that don't exist locally
+                var existingMap={};
+                releasedProjects.forEach(function(p){
+                    var key=(p.repoName||'').toLowerCase();
+                    if(key)existingMap[key]=true;
+                });
+                data.projects.forEach(function(p){
+                    var key=(p.repoName||'').toLowerCase();
+                    if(key&&!existingMap[key]){
+                        releasedProjects.push(p);
+                        existingMap[key]=true;
+                    }
+                });
+                releasedActivityLog=data.activityLog||releasedActivityLog||[];
+                saveReleased(true);
+                saveReleasedActivityLog();
+                updateReleasedBadge();
+                // Restore released entries back into main PROJECTS
+                syncReleasedToProjects();
+                if(typeof renderReleased==='function'&&currentView==='released')renderReleased();
+                return true;
+            }
+            throw new Error('Invalid data format');
+        })
+        .catch(function(e){
+            // Fallback: localStorage already has the data from loadReleased()
+                console.warn('[Released] GitHub sync fetch:',e.message);
+            return false;
+        });
+}
+function pushReleasedToGitHub(){
+    if(releasedSyncTimer)clearTimeout(releasedSyncTimer);
+    releasedSyncTimer=setTimeout(function(){
+        releasedSyncTimer=null;
+        _doPushReleased();
+    },2000); // debounce 2s
+}
+function getReleasedToken(){
+    // Cek localStorage dulu — user bisa set token sendiri
+    var userToken=localStorage.getItem('niu_gh_token');
+    if(userToken&&userToken.length>10)return userToken;
+    return null;
+}
+async function _doPushReleased(attempt){
+    attempt=attempt||1;
+    if(_releasedPushBusy){
+        await new Promise(function(r){setTimeout(r,3000);});
+        return _doPushReleased(attempt);
+    }
+    _releasedPushBusy=true;
+    try{
+        var token=getReleasedToken();
+        if(!token){console.warn('[Released] No GitHub token');showToast('⚠ Token GitHub tidak tersedia','error',5000);return;}
+        var content=JSON.stringify({projects:releasedProjects,activityLog:releasedActivityLog,updatedAt:new Date().toISOString()},null,2);
+        var base64=btoa(unescape(encodeURIComponent(content)));
+        // Get SHA first
+        var r=await fetch('https://api.github.com/repos/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/contents/'+RELEASED_GH_PATH,{
+            headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
+        });
+        var sha=null;
+        if(r.status===404){sha=null;}
+        else if(!r.ok){throw new Error('GET SHA gagal (HTTP '+r.status+')');}
+        else{var d=await r.json();sha=d.sha;}
+        // PUT content
+        r=await fetch('https://api.github.com/repos/'+RELEASED_GH_OWNER+'/'+RELEASED_GH_REPO+'/contents/'+RELEASED_GH_PATH,{
+            method:'PUT',
+            headers:{
+                'Authorization':'token '+token,
+                'Content-Type':'application/json',
+                'Accept':'application/vnd.github.v3+json'
+            },
+            body:JSON.stringify({
+                message:'sync released data [auto]',
+                content:base64,
+                sha:sha
+            })
+        });
+        // 409 SHA conflict → retry with fresh SHA (max 3 attempts)
+        if(r.status===409&&attempt<3){
+            console.log('[Released] SHA conflict (attempt '+attempt+'), retrying in 2s...');
+            await new Promise(function(r2){setTimeout(r2,2000);});
+            _releasedPushBusy=false;
+            return _doPushReleased(attempt+1);
+        }
+        if(!r.ok){
+            var e=await r.json();
+            throw new Error('Push ditolak GitHub (HTTP '+r.status+'): '+(e.message||'unknown'));
+        }
+        var data=await r.json();
+        if(data&&data.content&&data.content.sha)releasedGitSha=data.content.sha;
+        showToast('✅ Data tersimpan ke GitHub','success',2000);
+    }catch(e){
+        console.error('[Released] GitHub sync push error:',e);
+        showToast('⚠ Gagal sync ke GitHub: '+e.message,'error',5000);
+    }finally{
+        _releasedPushBusy=false;
+    }
+}
+function showSyncConfig(){
+    var token=getReleasedToken();
+    if(token){
+        showToast('✅ Sync aktif — token tersimpan. Push ke GitHub berjalan otomatis.','success',3000);
+    }else{
+        var overlay=document.createElement('div');
+        overlay.id='sync-overlay';
+        overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:var(--z-modal);display:flex;align-items:center;justify-content:center;';
+        overlay.innerHTML=
+            '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:480px;width:90%">'+
+            '<h3 style="margin:0 0 12px;color:var(--amber)">🔑 Token GitHub</h3>'+
+            '<p style="margin:0 0 16px;color:var(--text-secondary);font-size:13px">Set token untuk sync data ke GitHub. Token disimpan di localStorage browser.</p>'+
+            '<input id="token-input" type="password" placeholder="ghp_..." style="width:100%;padding:10px 14px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:monospace;font-size:13px;margin-bottom:12px">'+
+            '<div style="display:flex;gap:8px;justify-content:flex-end">'+
+            '<button class="sort-btn" id="sync-btn-batal">Batal</button>'+
+            '<button class="sort-btn" id="sync-btn-simpan" style="border-color:var(--cyan);color:var(--cyan)">Simpan</button>'+
+            '</div></div>';
+        document.body.appendChild(overlay);
+        document.getElementById('sync-btn-batal').onclick=function(){document.getElementById('sync-overlay').remove();};
+        document.getElementById('sync-btn-simpan').onclick=function(){
+            var t=document.getElementById('token-input').value;
+            if(t&&t.length>10){
+                localStorage.setItem('niu_gh_token',t);
+                document.getElementById('sync-overlay').remove();
+                showToast('✅ Token tersimpan — sync aktif','success',3000);
+                updateTokenStatus();
+            }else{showToast('⚠ Token tidak valid (min 10 karakter)','error',3000);}
+        };
+        setTimeout(function(){var inp=document.getElementById('token-input');if(inp)inp.focus();},100);
+    }
+}
+
+function filterByTag(tag){activeTag=(activeTag===tag)?null:tag;document.querySelectorAll('.tag-filter').forEach(function(el){el.classList.toggle('active',el.dataset.tag===activeTag);});renderFeed(currentFilter,currentStatus,document.getElementById('search-input').value);}
+function buildTagCounts(){tagCounts={};flatProjects.forEach(function(p){if(p.tags)p.tags.forEach(function(t){tagCounts[t]=(tagCounts[t]||0)+1;});});}
+function buildTagFilterBar(){var b=document.getElementById('tag-filter-bar');if(!b)return;var s=Object.entries(tagCounts).sort(function(a,b){return b[1]-a[1];}).slice(0,15);if(!s.length){b.innerHTML='';return;}var h='<span class="tag-filter'+(!activeTag?' active':'')+'" onclick="filterByTag(null)" style="cursor:pointer">\u25c8 All</span>';s.forEach(function(e){var t=e[0],c=e[1];h+='<span class="tag-filter'+(activeTag===t?' active':'')+'" data-tag="'+t.replace(/"/g,'&quot;')+'" onclick="filterByTag(this.dataset.tag)">'+t+'<span class="count">'+c+'</span></span>';});b.innerHTML=h;}
+function setSort(mode){currentSort=mode;document.querySelectorAll('.sort-btn').forEach(function(el){var oc=el.getAttribute('onclick'),ds=el.getAttribute('data-sort');el.classList.toggle('active',(oc?oc.includes("'"+mode+"'"):false)||ds===mode);});renderFeed(currentFilter,currentStatus,document.getElementById('search-input').value);}
+function navigateProject(dir){if(selectedIndex===-1){var f1=document.querySelector('.feed-card');if(f1)selectProject(parseInt(f1.dataset.index));return;}var cards=Array.from(document.querySelectorAll('.feed-card')).filter(function(c2){return c2.style.display!=='none';});var pos=-1;cards.forEach(function(c2,i){if(parseInt(c2.dataset.index)===selectedIndex)pos=i;});var np=pos+dir;if(np<0)np=cards.length-1;if(np>=cards.length)np=0;if(cards[np]){selectProject(parseInt(cards[np].dataset.index));cards[np].scrollIntoView({behavior:'smooth',block:'nearest'});}}
+function showKbHelp(){
+    var o=document.createElement('div');
+    o.id='kb-help-overlay';
+    o.style.cssText='position:fixed;inset:0;z-index:'+(parseInt(getComputedStyle(document.documentElement).getPropertyValue('--z-modal-backdrop').trim())+1)+';background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+    o.innerHTML='<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:28px;max-width:400px;width:90%;font-family:\'JetBrains Mono\',monospace">'+
+        '<h3 style="margin:0 0 16px;color:var(--cyan);font-family:\'Orbitron\',sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:1.5px">⌨ Keyboard Shortcuts</h3>'+
+        '<div style="display:grid;grid-template-columns:auto 1fr;gap:8px 12px;font-size:11px;color:var(--text-detail);line-height:1.8">'+
+        '<kbd style="background:rgba(255,255,242,.07);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:9px;color:var(--text-secondary);text-align:center">S</kbd><span>Focus search</span>'+
+        '<kbd style="background:rgba(255,255,242,.07);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:9px;color:var(--text-secondary);text-align:center">Esc</kbd><span>Tutup detail / blur search</span>'+
+        '<kbd style="background:rgba(255,255,242,.07);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:9px;color:var(--text-secondary);text-align:center">1–6</kbd><span>Filter kategori</span>'+
+        '<kbd style="background:rgba(255,255,242,.07);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:9px;color:var(--text-secondary);text-align:center">← →</kbd><span>Navigasi project</span>'+
+        '<kbd style="background:rgba(255,255,242,.07);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:9px;color:var(--text-secondary);text-align:center">?</kbd><span>Bantuan keyboard</span>'+
+        '</div>'+
+        '<button onclick="document.getElementById(\'kb-help-overlay\').remove()" style="margin-top:16px;width:100%;padding:8px;background:rgba(0,255,242,.08);border:1px solid rgba(0,255,242,.25);border-radius:6px;color:var(--cyan);font-family:\'JetBrains Mono\',monospace;font-size:10px;font-weight:700;cursor:pointer">Tutup</button>'+
+        '</div>';
+    o.addEventListener('click',function(e){if(e.target===o)o.remove();});
+    document.body.appendChild(o);
+}
+function initKeyboardShortcuts(){document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'){if(e.key==='Escape'){e.target.blur();closeDetail();}return;}switch(e.key.toLowerCase()){case's':e.preventDefault();document.getElementById('search-input').focus();break;case'escape':closeDetail();document.getElementById('search-input').blur();break;case'?':e.preventDefault();showKbHelp();break;case'1':setFilter('all');break;case'2':setFilter('ready');break;case'3':setFilter('dev');break;case'4':setFilter('ideas');break;case'5':setFilter('config');break;case'6':setFilter('legacy');break;case'arrowleft':e.preventDefault();navigateProject(-1);break;case'arrowright':e.preventDefault();navigateProject(1);break;}});document.addEventListener('focusin',function(e){var card=e.target.closest('.feed-card');if(card&&card.dataset.index){var idx=parseInt(card.dataset.index);if(idx!==selectedIndex)selectProject(idx);}});}
+
+// ===== CLOSE DETAIL =====
+function closeDetail() {
+    document.getElementById('detail-panel').classList.remove('open');
+    document.querySelectorAll('.feed-card').forEach(c => c.classList.remove('selected'));
+    selectedIndex = -1;
+}
+
+// ===== SIDEBAR TOGGLE =====
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sb-overlay').classList.toggle('show');
+}
+
+// ===== FILTERS =====
+function setFilter(filter) {
+    currentFilter = filter;
+    currentView = 'categories'; // Exit released/ecosystem view
+    _lastDataVersion = -1; // Force full rebuild from released DOM corruption
+    // Restore normal feed controls (in case returning from released view)
+    var sb=document.getElementById('sort-bar');if(sb)sb.style.display='';
+    var tb=document.getElementById('tag-filter-bar');if(tb)tb.style.display='';
+    var si=document.getElementById('search-input');if(si)si.parentElement.style.display='';
+    var af=document.getElementById('activity-feed');if(af)af.style.display='';
+    document.querySelectorAll('#sb-nav button').forEach(b => b.classList.remove('active'));
+    document.querySelector(`#sb-nav button[data-filter="${filter}"]`).classList.add('active');
+    if (window.innerWidth <= 768) toggleSidebar();
+    renderFeed(filter, currentStatus);
+    updateStats();
+}
+
+function setStatusFilter(status) {
+    currentStatus = status;
+    document.querySelectorAll('#sb-status button').forEach(b => b.classList.remove('active'));
+    document.querySelector(`#sb-status button[data-status="${status}"]`).classList.add('active');
+    renderFeed(currentFilter, status);
+}
+
+function filterProjects() {
+    renderFeed(currentFilter, currentStatus, document.getElementById('search-input').value);
+}
+
+// ===== STATS =====
+function updateStats() {
+    const cats = ['ready','dev','ideas','config','legacy'];
+    const total = flatProjects.length;
+    cats.forEach(cat => {
+        var count=flatProjects.filter(function(p){return p.category===cat;}).length;
+        var el1=document.getElementById('sb-'+cat),el2=document.getElementById('sb-st-'+cat);
+        if(el1)el1.textContent=count;if(el2)el2.textContent=count;
+    });
+    var el3=document.getElementById('sb-total'),el4=document.getElementById('sb-st-total'),el5=document.getElementById('total-projects');
+    if(el3)el3.textContent=total;if(el4)el4.textContent=total;if(el5)el5.textContent=total;
+}
+
+// ===== PARTICLES =====
+function initParticles() {
+    const canvas = document.getElementById('particle-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, particles = [];
+    // Reduce particle count on mobile for performance
+    var isMobile = window.innerWidth <= 768;
+    var COUNT = isMobile ? 20 : 50;
+    function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+    var mouse={x:-9999,y:-9999};
+    canvas.addEventListener('mousemove',function(e){mouse.x=e.clientX;mouse.y=e.clientY;});
+    canvas.addEventListener('mouseleave',function(){mouse.x=-9999;mouse.y=-9999;});
+    class Particle {
+        constructor() { this.reset(); }
+        reset() { this.x = Math.random() * w; this.y = Math.random() * h; this.vx = (Math.random() - 0.5) * 0.4; this.vy = (Math.random() - 0.5) * 0.4; this.r = Math.random() * 2 + 0.5; this.alpha = Math.random() * 0.5 + 0.2; }
+        update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > w) this.vx *= -1; if (this.y < 0 || this.y > h) this.vy *= -1; }
+        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(0,255,242,${this.alpha * 0.5})`; ctx.fill(); }
+    }
+    for (let i = 0; i < COUNT; i++) particles.push(new Particle());
+    function drawLines() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 180) {
+                    // Brighten edges near mouse cursor
+                    const mx=(particles[i].x+particles[j].x)/2, my=(particles[i].y+particles[j].y)/2;
+                    const md=Math.sqrt((mx-mouse.x)*(mx-mouse.x)+(my-mouse.y)*(my-mouse.y));
+                    const edgeOnlyDistance=70;
+                    const alpha=md<edgeOnlyDistance?(1-dist/180)*0.25:(1-dist/180)*0.06;
+                    ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle=`rgba(0,255,242,${alpha})`; ctx.lineWidth=md<edgeOnlyDistance?1.0:0.4; ctx.stroke();
+                }
+            }
+        }
+    }
+    function animate() { if(!_particleRunning)return; ctx.clearRect(0, 0, w, h); particles.forEach(p => { p.update(); p.draw(); }); drawLines(); _particleFrame=requestAnimationFrame(animate); }
+    animate();
+    // Pause/resume on tab visibility change
+    var _particleRunning=true,_particleFrame=null;
+    document.addEventListener('visibilitychange',function(){
+        if(document.hidden){_particleRunning=false;if(_particleFrame)cancelAnimationFrame(_particleFrame);}
+        else{_particleRunning=true;animate();}
+    });
+}
+
+// ===== CLOCK =====
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ===== THEME TOGGLE (Dark ⇄ Cyber Dim) =====
+function toggleTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById('theme-btn');
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (html.getAttribute('data-theme') === 'dim') {
+        html.removeAttribute('data-theme');
+        btn.textContent = '⦿';
+        btn.title = 'Cyber Dim mode';
+        btn.setAttribute('aria-label','Ganti ke Cyber Dim');
+        if(meta)meta.setAttribute('content','#050508');
+        localStorage.setItem('niu-dash-theme', 'dark');
+    } else {
+        html.setAttribute('data-theme', 'dim');
+        btn.textContent = '⬟';
+        btn.title = 'Deep Dark mode';
+        btn.setAttribute('aria-label','Ganti ke Deep Dark');
+        if(meta)meta.setAttribute('content','#12121e');
+        localStorage.setItem('niu-dash-theme', 'dim');
+    }
+}
+// Restore saved theme
+(function() {
+    const saved = localStorage.getItem('niu-dash-theme');
+    if (saved === 'dim') {
+        document.documentElement.setAttribute('data-theme', 'dim');
+        document.getElementById('theme-btn').textContent = '⬟';
+        document.getElementById('theme-btn').title = 'Deep Dark mode';
+        document.getElementById('theme-btn').setAttribute('aria-label','Ganti ke Deep Dark');
+        var mt=document.querySelector('meta[name="theme-color"]');if(mt)mt.setAttribute('content','#12121e');
+    }
+})();
+
+// ===== BOOT =====
+  // ===== BOOT =====
+  function runBoot() {
+  const start = Date.now();
+  const overlay = document.getElementById('boot-overlay');
+  const bar = document.getElementById('boot-bar');
+  const status = document.getElementById('boot-status');
+
+  // Skip boot if visited before
+  if (localStorage.getItem('niu-visited')) {
+    status.textContent = 'restoring session...';
+    bar.style.width = '80%';
+    setTimeout(() => {
+      bar.style.width = '100%';
+      setTimeout(() => {
+        overlay.classList.add('boot-done');
+        overlay.style.display = 'none';
+      }, 300);
+    }, 100);
+    return;
+  }
+
+  const minDuration = 2500;
+  const messages = ['initializing...','loading nexus...','connecting to github...','preparing dashboard...','dark nexus online.'];
+  var msgIdx = 0;
+  function tick(ts) {
+    if (msgIdx < messages.length && ts - start >= 600 * msgIdx) {
+      status.textContent = messages[msgIdx];
+      bar.style.width = ((msgIdx + 1) / messages.length * 100) + '%';
+      msgIdx++;
+    }
+    if (msgIdx >= messages.length) {
+      if (Date.now() - start >= minDuration) {
+        localStorage.setItem('niu-visited', '1');
+        overlay.classList.add('boot-done');
+        setTimeout(() => overlay.style.display = 'none', 600);
+        return;
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  }
+
+// ===== AUDIO =====
+let audioCtx = null;
+function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function playClick() { try { initAudio(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.frequency.value = 800; o.type = 'square'; g.gain.setValueAtTime(0.04, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06); o.start(audioCtx.currentTime); o.stop(audioCtx.currentTime + 0.06); } catch(_){} }
+function playHover() { try { initAudio(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.frequency.value = 1200; o.type = 'sine'; g.gain.setValueAtTime(0.015, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04); o.start(audioCtx.currentTime); o.stop(audioCtx.currentTime + 0.04); } catch(_){} }
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', () => {
+    loadPendingAdds();
+    loadReleased();
+    buildFlatList();
+    renderFeed('all', 'all');
+    updateStats();
+    initParticles();
+    runBoot();
+    buildTagFilterBar();
+    initKeyboardShortcuts();
+    // Retry sync from GitHub in case async fetch failed or was slow
+    setTimeout(function(){
+        if(!releasedProjects.length){
+            fetchReleasedFromGitHub();
+        }
+    },3000);
+    document.querySelectorAll('button, .dp-open-btn, .sidebar-toggle').forEach(el => {
+        el.addEventListener('click', () => playClick());
+        el.addEventListener('mouseenter', () => playHover());
+    });
+    document.addEventListener('click', () => initAudio(), { once: true });
+    document.querySelectorAll('.sidebar-toggle, .sb-nav button, .sb-status button, .dp-close, .dp-open-btn').forEach(el => el.classList.add('spring-btn'));
+    fetchGitHubData();
+    buildActivityFeed();
+    updateSyncStatus();
+    updateTokenStatus();
+    setInterval(updateSyncStatus, 30000);
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(function(e){console.warn('[Niu-Dash] SW failed:',e);});
+    }
+    setVersionDisplay();
+    
+    // ===== SEARCH INPUT LISTENER =====
+    document.getElementById('search-input').addEventListener('input', function(){
+        renderFeed(currentFilter, currentStatus, this.value);
+    });
+    
+    // ===== MOBILE SWIPE: swipe right to close detail panel, swipe left to open sidebar =====
+    (function(){
+        var dp=document.getElementById('detail-panel'),sx=0,ex=0,fx=0,feed=document.querySelector('.feed-body'),sidebar=document.getElementById('sidebar');
+        dp.addEventListener('touchstart',function(e){sx=e.changedTouches[0].screenX;},{passive:true});
+        dp.addEventListener('touchend',function(e){
+            ex=e.changedTouches[0].screenX;
+            if(ex-sx>80&&dp.classList.contains('open'))closeDetail();
+        },{passive:true});
+        if(feed){feed.addEventListener('touchstart',function(e){fx=e.changedTouches[0].screenX;},{passive:true});
+        feed.addEventListener('touchend',function(e){
+            var ex2=e.changedTouches[0].screenX;
+            if(fx-ex2>80&&!sidebar.classList.contains('open')){sidebar.classList.add('open');document.getElementById('sb-overlay').classList.add('show');}
+        },{passive:true});}
+    })();
+
+    // Fix #17: Delegated event handlers (replaces static inline onclick)
+    document.addEventListener('click', function(e){
+        var el=e.target.closest('[data-action]');
+        if(!el) return;
+        var a=el.getAttribute('data-action');
+        switch(a){
+            case 'toggle-sidebar': toggleSidebar(); break;
+            case 'close-detail': closeDetail(); break;
+            case 'manual-refresh': manualRefresh(); break;
+            case 'toggle-theme': toggleTheme(); break;
+            case 'toggle-activity': toggleActivity(); break;
+            case 'show-released': showReleased(); break;
+            case 'show-ecosystem': showEcosystem(); break;
+            case 'show-unlisted': showUnlisted(); break;
+            case 'set-filter': setFilter(el.getAttribute('data-filter')||'all'); break;
+            case 'set-status': setStatusFilter(el.getAttribute('data-status')||'all'); break;
+            case 'set-sort': setSort(el.getAttribute('data-sort')||'newest'); break;
+        }
+    }, {passive:true});
+});
