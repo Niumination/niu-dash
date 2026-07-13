@@ -2083,9 +2083,8 @@ function toggleTheme() {
 })();
 
 // ===== BOOT =====
-  // ===== BOOT =====
-  function runBoot() {
-  const start = Date.now();
+function runBoot() {
+const start = Date.now();
   const overlay = document.getElementById('boot-overlay');
   const bar = document.getElementById('boot-bar');
   const status = document.getElementById('boot-status');
@@ -2108,7 +2107,7 @@ function toggleTheme() {
   const messages = ['initializing...','loading nexus...','connecting to github...','preparing dashboard...','dark nexus online.'];
   var msgIdx = 0;
   function tick(ts) {
-    if (msgIdx < messages.length && ts - start >= 600 * msgIdx) {
+    if (msgIdx < messages.length && Date.now() - start >= 600 * msgIdx) {
       status.textContent = messages[msgIdx];
       bar.style.width = ((msgIdx + 1) / messages.length * 100) + '%';
       msgIdx++;
