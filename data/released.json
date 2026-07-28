@@ -51,6 +51,150 @@
       "status": "production",
       "dateMarked": "2026-06-19T17:40:16.098Z",
       "fromUnlisted": true
+    },
+    {
+      "repoName": "spatial-vision",
+      "name": "Spatial Vision",
+      "status": "prototype",
+      "version": "",
+      "notes": "Rust/WASM full-stack spatial UI prototype",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "Ultra",
+      "name": "Ultra",
+      "status": "in_progress",
+      "version": "",
+      "notes": "Automation/Orchestrator tools \u2014 private",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "cc-acehtengah",
+      "name": "cc-acehtengah",
+      "status": "in_progress",
+      "version": "",
+      "notes": "CC Aceh Tengah main dashboard \u2014 Vercel deploy",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "didong-code",
+      "name": "didong-code",
+      "status": "in_progress",
+      "version": "",
+      "notes": "Electron+Rust+TS AI coding agent \u2014 Gayo Aceh spirit",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "joy-connect-for-mac",
+      "name": "joy-connect-for-mac",
+      "status": "in_progress",
+      "version": "",
+      "notes": "Mac app \u2014 Joy Connect",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "Maze-3D-Game---Web-Based",
+      "name": "maze-3d",
+      "status": "in_progress",
+      "version": "",
+      "notes": "Web-based 3D Maze game",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "niu-dash-fullstack",
+      "name": "niu-dash-fullstack",
+      "status": "in_progress",
+      "version": "",
+      "notes": "Next.js 16 fullstack dashboard \u2014 Prisma, Three.js, TanStack",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "niu-mission-control",
+      "name": "niu-mission-control",
+      "status": "in_progress",
+      "version": "",
+      "notes": "Mission control dashboard for Niu ecosystem",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "aistudio-google",
+      "name": "aistudio-google",
+      "status": "prototype",
+      "version": "",
+      "notes": "Google AI Studio integration / experiment",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "arena.ai",
+      "name": "arena.ai",
+      "status": "prototype",
+      "version": "",
+      "notes": "Arena.ai experiment",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "niu-studio",
+      "name": "niu-studio",
+      "status": "in_progress",
+      "version": "",
+      "notes": "Niu Studio \u2014 creative workspace",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "niude",
+      "name": "niude",
+      "status": "in_progress",
+      "version": "",
+      "notes": "Niude \u2014 platform/agent",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "NiuTerm",
+      "name": "niuterm",
+      "status": "in_progress",
+      "version": "",
+      "notes": "NiuTerm terminal emulator",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "niutui",
+      "name": "niutui",
+      "status": "prototype",
+      "version": "",
+      "notes": "NiuTUI \u2014 terminal UI framework",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "x-downloader",
+      "name": "x-downloader-backup",
+      "status": "prototype",
+      "version": "",
+      "notes": "X Downloader backup/experiment",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
+    },
+    {
+      "repoName": "zen",
+      "name": "zen",
+      "status": "prototype",
+      "version": "",
+      "notes": "Zen \u2014 personal workspace/concept",
+      "dateMarked": "2026-07-22T00:00:00.000Z",
+      "_autoDetected": false
     }
   ],
   "activityLog": [
@@ -88,7 +232,119 @@
       "status": "production",
       "method": "suggestion",
       "timestamp": 1781002684519
+    },
+    {
+      "projectName": "Spatial Vision",
+      "repoName": "spatial-vision",
+      "status": "prototype",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "Ultra",
+      "repoName": "Ultra",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "cc-acehtengah",
+      "repoName": "cc-acehtengah",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "didong-code",
+      "repoName": "didong-code",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "joy-connect-for-mac",
+      "repoName": "joy-connect-for-mac",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "maze-3d",
+      "repoName": "Maze-3D-Game---Web-Based",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "niu-dash-fullstack",
+      "repoName": "niu-dash-fullstack",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "niu-mission-control",
+      "repoName": "niu-mission-control",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "aistudio-google",
+      "repoName": "aistudio-google",
+      "status": "prototype",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "arena.ai",
+      "repoName": "arena.ai",
+      "status": "prototype",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "niu-studio",
+      "repoName": "niu-studio",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "niude",
+      "repoName": "niude",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "niuterm",
+      "repoName": "NiuTerm",
+      "status": "in_progress",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "niutui",
+      "repoName": "niutui",
+      "status": "prototype",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "x-downloader-backup",
+      "repoName": "x-downloader",
+      "status": "prototype",
+      "method": "manual",
+      "timestamp": 1753209600000
+    },
+    {
+      "projectName": "zen",
+      "repoName": "zen",
+      "status": "prototype",
+      "method": "manual",
+      "timestamp": 1753209600000
     }
   ],
-  "updatedAt": "2026-06-19T17:40:18.102Z"
+  "updatedAt": "2026-07-22T00:00:00.000Z"
 }

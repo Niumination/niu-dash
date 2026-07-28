@@ -4,7 +4,7 @@
 
 [![Version](https://img.shields.io/badge/version-2.16.9-00fff2?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
 [![License](https://img.shields.io/badge/license-MIT-ff00ff?style=flat&labelColor=050508)](LICENSE)
-[![Projects](https://img.shields.io/badge/projects-105+-ffaa00?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
+[![Projects](https://img.shields.io/badge/projects-112-ffaa00?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
 
 > *// teknologi tidak pernah berhenti — semakin cepat, semakin dalam //*
 >
@@ -13,7 +13,7 @@
 ![NIU-DASH Dashboard Preview](screenshots/dashboard-full.png)
 > *Tampilan three-panel dashboard — sidebar navigasi, feed proyek, detail panel*
 
-Dashboard three-panel **dark cyber** untuk menginventarisasi dan memonitoring seluruh proyek — dari aplikasi web, AI tools, config dotfiles, hingga GovTech SPBE. Dibangun dengan vanilla HTML/CSS/JS, 100% client-side, di-deploy via GitHub Pages.
+Dashboard three-panel **dark cyber** untuk menginventarisasi dan memonitoring seluruh proyek — dari aplikasi web, AI tools, config dotfiles, hingga GovTech SPBE. Dilengkapi **Ecosystem page**, **Kanban API** local integration, dan live GitHub stats. Dibangun dengan vanilla HTML/CSS/JS, 100% client-side, di-deploy via GitHub Pages.
 
 ---
 
@@ -22,8 +22,10 @@ Dashboard three-panel **dark cyber** untuk menginventarisasi dan memonitoring se
 | Fitur | Status |
 |-------|--------|
 | **Three-Panel Layout** — Sidebar navigasi + Feed cards + Detail panel | ✅ |
-| **105+ Proyek Terinventarisasi** — 5 kategori (Ready, Dev, Ideas, Config, Legacy) | ✅ |
+| **112 Proyek Terinventarisasi** — 5 kategori (Ready, Dev, Ideas, Config, Legacy) | ✅ |
 | **DEV TRACKER** — Status tiap proyek (Active / Staging / Paused) + history timeline | ✅ |
+| **Ecosystem Page** — Tampilan ringkas seluruh ekosistem Niumination (44+ item: 35 git + 9 non-git) | ✅ v2.16 |
+| **Kanban API Integration** — Sinkronisasi data proyek via `localhost:5199` untuk live feed | ✅ v2.16 |
 | **Live Sorting & Filter** — Sort by newest, oldest, A-Z, Z-A, status | ✅ |
 | **Tag Filter Bar** — Filter proyek berdasarkan tag (Top 15) | ✅ |
 | **Search** — Real-time pencarian nama, deskripsi, tag | ✅ |
@@ -33,7 +35,7 @@ Dashboard three-panel **dark cyber** untuk menginventarisasi dan memonitoring se
 | **Particle Network** — Animasi partikel neon di background | ✅ |
 | **Mobile Responsive** — Sidebar slide-in, swipe gesture, adaptive layout | ✅ |
 | **PWA Ready** — Service worker, manifest, installable | ✅ |
-| **🏁 Released Projects** — Halaman khusus proyek production-ready/completed + GitHub auto-sync + data persist online via GitHub API | ✅ **v2.14.x** |
+| **🏁 Released Projects** — Halaman khusus proyek production-ready/completed + GitHub auto-sync + data persist online via GitHub API + ecosystem dashboard | ✅ **v2.14.x** |
 | **Keyboard Shortcuts** — `S` search, `1-6` filter, `Esc` close, arrows navigate | ✅ |
 | **Boot Animation** — Immersive startup sequence | ✅ |
 
@@ -182,11 +184,12 @@ Niu-Dash bukan sekadar project tracker. Ini adalah **command center** visual unt
 
 ## 📊 Stats
 
-- **Total Projek:** 105+ (dan terus bertambah)
-- **GitHub Repos:** 58+ (auto-detected dari API)
+- **Total Projek:** 112
 - **Kategori:** 5 (Ready, Dev, Ideas, Config, Legacy)
 - **Released:** 🚀 Production + ✅ Completed (via GitHub API sync)
-- **File Size:** ~172KB (single HTML + inline CSS/JS)
+- **Ecosystem:** 44+ item (35 git + 9 non-git)
+- **File Size:** ~204KB (single HTML + inline CSS/JS)
+- **Versi:** v2.16.9 (hash `98d6b15`, 16 Jul 2026)
 
 ---
 
