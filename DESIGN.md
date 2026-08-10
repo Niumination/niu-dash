@@ -319,3 +319,42 @@ Sistem ini menggunakan pemisahan border ketimbang shadow untuk hierarki permukaa
 - **Don't** gunakan font display (Orbitron) untuk elemen UI fungsional — hanya untuk identitas (logo, page title).
 - **Don't** gunakan scrollbar non-default di luar yang sudah ditentukan — 4px cyan thumb saja.
 - **Don't** animasi layout properti (width, height, top, left) — gunakan transform/opacity untuk performa.
+
+---
+
+# Redesign v3 — "Neo-Nexus" (v2.17.0)
+
+Upgrade visual di atas fondasi **Dark Nexus Command Center** — identitas cyber dipertahankan, tapi lapisan interaksi & atmosphere dinaikkan ke standar dashboard modern dengan **referensi populer** yang diadaptasi secara selektif.
+
+## Referensi yang Diadaptasi
+
+| Referensi | Yang Diadaptasi |
+|-----------|-----------------|
+| **Vercel / Anthropic Console** | Aurora background — 3 gradient blob (cyan/magenta/blue) yang melayang lambat (transform-only, 36-54s) |
+| **shadcn/ui, Linear** | Card spotlight hover — radial highlight mengikuti kursor via `--mx/--my` CSS var |
+| **Framer Motion (Linear, Stripe)** | Magnetic micro-interaction — tombol tertarik halus ke kursor, release dengan spring `cubic-bezier(.175,.885,.32,1.275)` |
+| **Vercel Analytics, Raycast** | Count-up angka statistik dengan easing `easeOutCubic` (700ms) |
+| **Linear / Notion** | Scroll progress hairline di top + blur-reveal berbasis IntersectionObserver |
+| **Apple / Framer** | Reveal "blur → sharp" pada section (transform + filter, GPU-friendly) |
+
+## Animasi Baru (ringan, bukan sekadar fade)
+
+1. **Card Spotlight + 3D Tilt** — kursor memetakan posisi spotlight (`::after` radial) dan tilt perspektif ±3° (`--rx/--ry`), di-throttle rAF, reset saat pointer keluar.
+2. **Spring Entrance Card** — blur(8px) + scale(.96) + translateY(20px) → normal, staggered (30ms), drive via CSS transition lalu inline style dibersihkan agar hover tetap bekerja.
+3. **Magnetic Buttons** — nav sidebar, sort/tag filter, topbar toggle; translasi ≤6px dengan spring; event delegation supaya tombol dinamis (released/ecosystem) ikut ter-cover.
+4. **Count-up Numbers** — badge kategori, statistik sidebar, aggregate GitHub, feed-stats.
+5. **Boot Sequence** — status di-*type* per karakter + header/search/stats reveal ber-stagger (data-delay) setelah overlay fade.
+6. **Detail Panel Stagger** — section konten muncul berurutan (45ms interval).
+7. **Aurora Background** — 3 blob radial-gradient, drift & scale via transform, `mix-blend` tidak dipakai (perf), opacity .55.
+8. **Scroll Progress** — hairline gradient cyan→magenta di top viewport.
+9. **Nav Active Rail** — rail 2px glowing di sisi kiri tombol aktif + pulse.
+10. **Topbar Sheen** — garis bawah gradient bergeser (background-position loop).
+11. **Shimmer Logo** — sweep highlight pada logo topbar.
+12. **Selected Card Breathing** — ring glow cyan halus berdenyut.
+
+## Prinsip Performa
+
+- Semua animasi **transform/opacity/filter** only — tanpa animasi layout property.
+- Particle canvas tetap pause saat tab hidden; spotlight/magnetic di-throttle rAF.
+- `@media (prefers-reduced-motion: reduce)` mematikan seluruh efek v3 (spotlight, magnetic, aurora drift, shimmer, count-up, stagger) — konten langsung tampil.
+- Jumlah blob sengaja kecil (3), radius besar, tanpa `filter: blur()` CSS (radial-gradient sudah halus) agar hemat GPU.
