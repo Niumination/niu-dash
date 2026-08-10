@@ -2,7 +2,7 @@
 
 **Dark Nexus — Project Portfolio Dashboard**
 
-[![Version](https://img.shields.io/badge/version-2.16.9-00fff2?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
+[![Version](https://img.shields.io/badge/version-2.17.0-00fff2?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
 [![License](https://img.shields.io/badge/license-MIT-ff00ff?style=flat&labelColor=050508)](LICENSE)
 [![Projects](https://img.shields.io/badge/projects-112-ffaa00?style=flat&labelColor=050508)](https://niumination.github.io/niu-dash)
 
@@ -38,6 +38,7 @@ Dashboard three-panel **dark cyber** untuk menginventarisasi dan memonitoring se
 | **🏁 Released Projects** — Halaman khusus proyek production-ready/completed + GitHub auto-sync + data persist online via GitHub API + ecosystem dashboard | ✅ **v2.14.x** |
 | **Keyboard Shortcuts** — `S` search, `1-6` filter, `Esc` close, arrows navigate | ✅ |
 | **Boot Animation** — Immersive startup sequence | ✅ |
+| **🎨 Redesign v3 "Neo-Nexus"** — Aurora background, card spotlight + 3D tilt, magnetic buttons, count-up numbers, scroll progress, blur-reveal (adaptasi Vercel/Linear/shadcn) | ✅ **v2.17.0** |
 
 ---
 
@@ -189,7 +190,7 @@ Niu-Dash bukan sekadar project tracker. Ini adalah **command center** visual unt
 - **Released:** 🚀 Production + ✅ Completed (via GitHub API sync)
 - **Ecosystem:** 44+ item (35 git + 9 non-git)
 - **File Size:** ~204KB (single HTML + inline CSS/JS)
-- **Versi:** v2.16.9 (hash `98d6b15`, 16 Jul 2026)
+- **Versi:** v2.17.0 (hash `neonexus`, 10 Agu 2026) — Redesign v3 "Neo-Nexus"
 
 ---
 

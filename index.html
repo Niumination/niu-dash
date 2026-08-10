@@ -41,8 +41,8 @@
 
         /* ===== FULLSTACK LAYOUT UPGRADE ===== */
         .glass{border:1px solid var(--border);background:rgba(255,255,255,.03);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
-        .card-hover{transition:all .25s cubic-bezier(.23,1,.32,1)}
-        .card-hover:hover{transform:translateY(-4px)!important;box-shadow:0 20px 25px -5px rgba(0,0,0,.4),0 8px 10px -6px rgba(0,0,0,.3);border-color:var(--cyan)!important}
+        .card-hover{transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .3s ease,box-shadow .3s ease}
+        .card-hover:hover{box-shadow:0 20px 40px -16px rgba(0,0,0,.55),0 0 26px rgba(0,255,242,.08);border-color:rgba(0,255,242,.35)!important}
         .footer-bar{position:fixed;bottom:0;left:0;right:0;z-index:60;height:34px;background:rgba(5,5,8,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.06);display:none;align-items:center;padding:0 24px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.3);justify-content:space-between;letter-spacing:.5px}
         @media(min-width:768px){.footer-bar{display:flex}}
         .app-layout{padding-bottom:34px}
@@ -257,11 +257,13 @@
         .feed-card{
             background:linear-gradient(145deg,rgba(18,18,38,.92) 0%,rgba(12,12,28,.85) 100%);
             border:1px solid var(--border);border-radius:12px;padding:16px 20px;
-            transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;
-            cursor:pointer;display:flex;align-items:flex-start;gap:14px;
-            animation:cardFade .4s ease forwards;opacity:0;will-change:transform;
+            transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .3s ease,box-shadow .3s ease,background .3s ease,opacity .35s ease,filter .35s ease;
+            position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:flex-start;gap:14px;
+            transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));will-change:transform;
         }
-        .feed-card:hover{transform:translateY(-2px);border-color:rgba(0,255,242,.15);box-shadow:0 4px 24px rgba(0,0,0,.3)}
+        .feed-card::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s ease;background:radial-gradient(420px circle at var(--mx,50%) var(--my,35%),rgba(0,255,242,.14),transparent 45%)}
+        .feed-card:hover::after{opacity:1}
+        .feed-card:hover{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-3px);border-color:rgba(0,255,242,.35);box-shadow:0 20px 40px -16px rgba(0,0,0,.55),0 0 26px rgba(0,255,242,.08)}
         .feed-card.selected{background:rgba(0,255,242,.06);border-color:var(--cyan);box-shadow:0 0 20px rgba(0,255,242,.1);overflow-anchor:none}
         .feed-card .fc-icon{
             width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
@@ -438,13 +440,15 @@
         .rl-card{
             background:linear-gradient(145deg,rgba(18,18,38,.92) 0%,rgba(12,12,28,.85) 100%);
             border:1px solid var(--border);border-radius:12px;padding:16px 20px;
-            transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;
-            display:block;animation:cardFade .4s ease forwards;opacity:0;
-            margin-bottom:10px;
+            transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .3s ease,box-shadow .3s ease,opacity .35s ease,filter .35s ease;
+            position:relative;display:block;margin-bottom:10px;
+            transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));will-change:transform;
         }
+        .rl-card::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s ease;background:radial-gradient(420px circle at var(--mx,50%) var(--my,35%),rgba(0,255,242,.1),transparent 45%)}
+        .rl-card:hover::after{opacity:1}
         .rl-card.production{border-top:2px solid var(--green)}
         .rl-card.completed{border-top:2px solid var(--cyan)}
-        .rl-card:hover{transform:translateY(-2px);box-shadow:0 4px 24px rgba(0,0,0,.3)}
+        .rl-card:hover{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-3px);box-shadow:0 20px 40px -16px rgba(0,0,0,.55),0 0 26px rgba(0,255,242,.06)}
         .rl-card .rl-body{min-width:0}
         .rl-card .rl-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
         .rl-card .rl-top h3{font-size:14px;font-weight:700;color:var(--text-bright);display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0}
@@ -540,10 +544,7 @@
         ::-webkit-scrollbar-thumb{background:rgba(0,255,242,.15);border-radius:2px}
         ::-webkit-scrollbar-thumb:hover{background:rgba(0,255,242,.3)}
 
-        /* SPRING BUTTON UTILITY */
-        .spring-btn{transition:transform .35s cubic-bezier(.175,.885,.32,1.275)!important;will-change:transform}
-        .spring-btn:hover{transform:scale(1.05)!important}
-        .spring-btn:active{transform:scale(.95)!important}
+        /* SPRING BUTTON UTILITY — digantikan sistem .magnetic (redesign v3) */
         .sb-unlisted{border-top:1px solid var(--border);padding:12px 20px}
         .sb-unlisted-btn{width:100%;background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.2);border-radius:var(--rad);padding:8px 12px;color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.5px}
         .sb-unlisted-btn:hover{background:rgba(255,170,0,.15);border-color:var(--amber);box-shadow:0 0 15px rgba(255,170,0,.1)}
@@ -564,6 +565,73 @@
             .ul-actions{flex-direction:column}
             .ul-actions .ul-action-btn{width:100%;justify-content:center}
         }
+
+        /* ============================================================
+           REDESIGN v3 — NEO-NEXUS
+           Adaptasi referensi populer: aurora bg (Vercel/Anthropic
+           Console), card spotlight (shadcn/ui, Linear), magnetic
+           micro-interaction (Framer Motion), count-up (Vercel
+           Analytics), scroll progress (Linear/Notion), blur-reveal
+           (Apple/Linear). Semua animasi transform/opacity-only.
+           ============================================================ */
+
+        /* ---- Aurora gradient background ---- */
+        .aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;opacity:.55;will-change:transform}
+        .aurora .a-blob{position:absolute;border-radius:50%;will-change:transform}
+        .aurora .a1{width:52vw;height:52vw;left:-14vw;top:-18vh;background:radial-gradient(circle at 50% 50%,rgba(0,255,242,.13),transparent 62%);animation:aur-drift1 36s ease-in-out infinite alternate}
+        .aurora .a2{width:46vw;height:46vw;right:-12vw;top:2vh;background:radial-gradient(circle at 50% 50%,rgba(176,0,255,.11),transparent 62%);animation:aur-drift2 46s ease-in-out infinite alternate}
+        .aurora .a3{width:40vw;height:40vw;left:30vw;bottom:-20vh;background:radial-gradient(circle at 50% 50%,rgba(0,102,255,.1),transparent 62%);animation:aur-drift3 54s ease-in-out infinite alternate}
+        @keyframes aur-drift1{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(11vw,9vh,0) scale(1.16)}}
+        @keyframes aur-drift2{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(-10vw,-8vh,0) scale(1.14)}}
+        @keyframes aur-drift3{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(-7vw,-9vh,0) scale(1.22)}}
+
+        /* ---- Scroll progress (top hairline) ---- */
+        .scroll-progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:var(--z-sidebar);transform:scaleX(0);transform-origin:0 50%;background:linear-gradient(90deg,var(--cyan),var(--magenta));box-shadow:0 0 14px rgba(0,255,242,.45);pointer-events:none;will-change:transform}
+
+        /* ---- Magnetic micro-interaction ---- */
+        .magnetic{transition:transform .35s cubic-bezier(.175,.885,.32,1.275)!important;will-change:transform}
+        .magnetic:active{transform:scale(.96)!important}
+
+        /* ---- Stagger reveal (boot + scroll; dulu .stagger-in tanpa CSS) ---- */
+        .stagger-in{opacity:0;transform:translateY(18px);filter:blur(6px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1),filter .6s ease}
+        .stagger-in.visible{opacity:1;transform:none;filter:none}
+
+        /* ---- Reveal-on-scroll ---- */
+        .rv{opacity:0;transform:translateY(18px) scale(.99);filter:blur(5px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1),filter .7s ease}
+        .rv.in{opacity:1;transform:none;filter:none}
+
+        /* ---- Shimmer sweep on logo / headline ---- */
+        .shimmer{position:relative;overflow:hidden}
+        .shimmer::after{content:'';position:absolute;top:0;left:-80%;height:100%;width:45%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.22),transparent);animation:shimmer-sweep 4.5s ease-in-out infinite;pointer-events:none}
+        @keyframes shimmer-sweep{0%,55%{left:-80%}85%,100%{left:160%}}
+
+        /* ---- Active nav glow rail ---- */
+        .sb-nav button.active{position:relative}
+        .sb-nav button.active::before{content:'';position:absolute;left:0;top:30%;bottom:30%;width:2px;background:var(--cyan);box-shadow:0 0 12px var(--cyan);border-radius:2px;animation:nav-pulse 2.2s ease-in-out infinite}
+        @keyframes nav-pulse{0%,100%{opacity:.45}50%{opacity:1}}
+
+        /* ---- Topbar bottom hairline shimmer ---- */
+        .feed .topbar::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,242,.4),var(--magenta),transparent);background-size:200% 100%;animation:topbar-sheen 7s linear infinite;opacity:.6;pointer-events:none}
+        @keyframes topbar-sheen{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+        /* ---- Category strip glow on hover ---- */
+        .feed-card:hover .fc-strip,.rl-card:hover .fc-strip{box-shadow:0 0 12px currentColor}
+
+        /* ---- Selected card breathing ring ---- */
+        .feed-card.selected{animation:sel-breathe 2.6s ease-in-out infinite}
+        @keyframes sel-breathe{0%,100%{box-shadow:0 0 20px rgba(0,255,242,.1)}50%{box-shadow:0 0 34px rgba(0,255,242,.2)}}
+
+        /* ---- Ecosystem tier dots pulse ---- */
+        .ec-p1 .fc-strip,.ec-p2 .fc-strip{animation:strip-pulse 2.4s ease-in-out infinite}
+        @keyframes strip-pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+        /* ---- Reduced motion: matikan semua efek v3 ---- */
+        @media(prefers-reduced-motion:reduce){
+            .aurora .a-blob,.scroll-progress,.shimmer::after,.sb-nav button.active::before,.feed .topbar::after,.feed-card.selected{animation:none!important}
+            .stagger-in,.rv{opacity:1!important;transform:none!important;filter:none!important}
+            .magnetic{transition:none!important}
+            .feed-card::after,.rl-card::after{opacity:0!important}
+        }
     </style>
 </head>
 <body>
@@ -582,6 +650,8 @@
 </div>
 
 <div class="glitch-overlay"></div>
+<div class="aurora" aria-hidden="true"><div class="a-blob a1"></div><div class="a-blob a2"></div><div class="a-blob a3"></div></div>
+<div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 <canvas id="particle-canvas"></canvas>
 <div class="grid-overlay"></div>
 
@@ -642,12 +712,12 @@
     <main class="feed" id="feed" role="main">
         <div class="topbar">
             <button data-action="toggle-sidebar" class="sidebar-toggle" aria-label="Buka/tutup sidebar navigasi">☰</button>
-            <span class="logo-text">NIU<span>⚡</span>DASH</span>
+            <span class="logo-text shimmer">NIU<span>⚡</span>DASH</span>
             <span class="filter-info" id="filter-info">◈ <em>all</em> projects</span>
             <div class="topbar-right">
                 <span class="sync-status" id="sync-status"></span>
-                <button data-action="manual-refresh" class="refresh-btn" id="refresh-btn" title="Refresh GitHub data" aria-label="Refresh data GitHub">⟳</button>
-                <button data-action="toggle-theme" class="theme-btn" id="theme-btn" title="Toggle theme" aria-label="Ganti tema tampilan">☀</button>
+                <button data-action="manual-refresh" class="refresh-btn magnetic" id="refresh-btn" title="Refresh GitHub data" aria-label="Refresh data GitHub">⟳</button>
+                <button data-action="toggle-theme" class="theme-btn magnetic" id="theme-btn" title="Toggle theme" aria-label="Ganti tema tampilan">☀</button>
             </div>
         </div>
         <div class="feed-body">
@@ -660,7 +730,7 @@
                 <span class="icon">⌕</span>
                 <input type="text" id="search-input" placeholder="Cari proyek..." autocomplete="off" aria-label="Cari proyek berdasarkan nama, deskripsi, atau tag">
             </div>
-            <div class="activity-feed" id="activity-feed">
+            <div class="activity-feed rv" id="activity-feed">
                 <div data-action="toggle-activity" class="act-header">
                     <span class="act-title">📰 Activity</span>
                     <span class="act-info" id="act-info">...</span>
@@ -668,14 +738,14 @@
                 </div>
                 <div class="act-body" id="act-body"></div>
             </div>
-            <div class="tag-filter-bar" id="tag-filter-bar"></div>
-            <div class="sort-bar" id="sort-bar">
+            <div class="tag-filter-bar rv" id="tag-filter-bar"></div>
+            <div class="sort-bar rv" id="sort-bar">
                 <span class="sort-label">Sort:</span>
-                <button data-action="set-sort" data-sort="newest" class="sort-btn active"><span class="sort-icon">⬇</span> Newest</button>
-                <button data-action="set-sort" data-sort="oldest" class="sort-btn"><span class="sort-icon">⬆</span> Oldest</button>
-                <button data-action="set-sort" data-sort="az" class="sort-btn"><span class="sort-icon">A</span> A–Z</button>
-                <button data-action="set-sort" data-sort="za" class="sort-btn"><span class="sort-icon">Z</span> Z–A</button>
-                <button data-action="set-sort" data-sort="status" class="sort-btn"><span class="sort-icon">◆</span> Status</button>
+                <button data-action="set-sort" data-sort="newest" class="sort-btn active magnetic"><span class="sort-icon">⬇</span> Newest</button>
+                <button data-action="set-sort" data-sort="oldest" class="sort-btn magnetic"><span class="sort-icon">⬆</span> Oldest</button>
+                <button data-action="set-sort" data-sort="az" class="sort-btn magnetic"><span class="sort-icon">A</span> A–Z</button>
+                <button data-action="set-sort" data-sort="za" class="sort-btn magnetic"><span class="sort-icon">Z</span> Z–A</button>
+                <button data-action="set-sort" data-sort="status" class="sort-btn magnetic"><span class="sort-icon">◆</span> Status</button>
             </div>
             <div class="feed-stats stagger-in" data-delay="3" id="feed-stats"></div>
             <div class="feed-cards" id="feed-list"></div>
@@ -701,14 +771,15 @@
 
 <!-- ===== FOOTER BAR ===== -->
 <div class="footer-bar">
-    <span>NIUMINATION • DARK NEXUS v16.9</span>
+    <span>NIUMINATION • DARK NEXUS v17.0</span>
     <span>ACEH TENGAH • <span id="footer-year">2026</span></span>
 </div>
 
 <script>
-var NIU_VERSION = {v:'2.16.9',hash:'9484640',date:'2026-07-18T11:42:00+07:00',msg:"chore: update ecosystem-status.json"};
-var NIU_VERSION = {v:'2.16.9',hash:'local',date:'2026-06-24T21:30:00+07:00',msg:"v2.16.9 — add arch-web-dashboard, mac-web-dashboard, AI-First-OS, ai-file-organizer-android, niu-cast; update GitHub URLs for JHermUSB-portable, TEDEO-Kanban, Niu-Dash + GH Pages"};
+var NIU_VERSION = {v:'2.17.0',hash:'neonexus',date:'2026-08-10T12:00:00+07:00',msg:"redesign v3 — neo-nexus: aurora bg, card spotlight + tilt, magnetic micro-interaction, count-up, scroll progress, blur-reveal"};
+var NIU_VERSION = {v:'2.17.0',hash:'local',date:'2026-08-10T12:00:00+07:00',msg:"redesign v3 — neo-nexus: aurora bg, card spotlight + tilt, magnetic micro-interaction, count-up, scroll progress, blur-reveal"};
 document.getElementById('bt-sub').textContent = 'Dark Nexus v' + NIU_VERSION.v + ' ▸ ' + NIU_VERSION.date.slice(0,10);
+var _bootPending=true;
 // Error capture for debugging
 var _niuErrors=[];
 function _niuLog(e){var msg=e.message||e||'?';_niuErrors.push(msg);try{var d=document.getElementById('_niuErr');if(d)d.textContent=_niuErrors.join(' | ');}catch(_){}}
@@ -1288,7 +1359,8 @@ function renderFeed(filter,statusFilter,searchText){
     items.sort(getSortFn(currentSort));
     var tl=activeTag?' &middot; tagged <em>'+activeTag+'</em>':'';
     fi.innerHTML=statusFilter!=='all'?'⟐ <em>'+statusFilter+'</em> &middot; <em>'+filter+'</em>'+tl:'◈ <em>'+filter+'</em> projects'+tl;
-    statsEl.innerHTML='<span class="fs-item"><strong style="color:var(--cyan)">'+items.length+'</strong> visible</span><span class="fs-item">of <strong style="color:var(--text-secondary)">'+flatProjects.length+'</strong> total</span>';
+    statsEl.innerHTML='<span class="fs-item"><strong class="num" style="color:var(--cyan)">'+items.length+'</strong> visible</span><span class="fs-item">of <strong class="num" style="color:var(--text-secondary)">'+flatProjects.length+'</strong> total</span>';
+    animateNumsIn(statsEl);
     if(!items.length){list.innerHTML='';noRes.style.display='block';return;}
     noRes.style.display='none';
     var needsRebuild=!list.children.length||_lastDataVersion!==_dataVersion||_lastSort!==currentSort;
@@ -1322,21 +1394,24 @@ function renderFeed(filter,statusFilter,searchText){
         });
         list.innerHTML='';
         list.appendChild(frag);
+        if(!_bootPending)enterCards(list, Array.prototype.slice.call(list.querySelectorAll('.feed-card,.rl-card')), 0.03);
     }else{
         var matched={};
         items.forEach(function(p){matched[flatProjects.indexOf(p)]=true;});
-        var vi=0;
+        var vi=0,shown=[];
         Array.from(list.children).forEach(function(card){
             var idx=parseInt(card.dataset.index);
             if(matched[idx]){
+                var wasHidden=card.style.display==='none';
                 card.style.display='';
-                card.style.animationDelay=(vi*0.03)+'s';
                 card.classList.toggle('selected',selectedIndex===idx);
+                if(wasHidden)shown.push(card);
                 vi++;
             }else{
                 card.style.display='none';
             }
         });
+        if(shown.length)enterCards(list,shown,0.02);
     }
     }catch(e){console.error('[Niu-Dash] renderFeed error:',e);_niuLog(e);showToast('Render error: '+e.message,'error');}
 }
@@ -1520,9 +1595,9 @@ function selectProject(idx) {
     const path = p.path || (p.repoName ? 'https://github.com/Niumination/'+p.repoName : (p.repo || '#'));
     const isRepo = path.startsWith('http');
     
-    let buttonsHtml = `<a href="${path}" target="_blank" class="dp-open-btn spring-btn">↗ ${isRepo ? 'OPEN REPO' : 'OPEN'}</a>`;
+    let buttonsHtml = `<a href="${path}" target="_blank" class="dp-open-btn magnetic">↗ ${isRepo ? 'OPEN REPO' : 'OPEN'}</a>`;
     if (p.website) {
-        buttonsHtml += ` <a href="${p.website}" target="_blank" class="dp-open-btn spring-btn" style="border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.08);color:var(--green)">🌐 VISIT WEBSITE</a>`;
+        buttonsHtml += ` <a href="${p.website}" target="_blank" class="dp-open-btn magnetic" style="border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.08);color:var(--green)">🌐 VISIT WEBSITE</a>`;
     }
     
     content.innerHTML = `
@@ -1544,6 +1619,9 @@ function selectProject(idx) {
     
     // Fetch latest commits (async, updates dp-commit-data when done)
     if(p.repoName)fetchCommitData(p.repoName);
+    
+    // Stagger reveal konten detail panel
+    staggerDetail();
     
     // Open panel on mobile/tablet
     if (window.innerWidth <= 1024) {
@@ -1667,6 +1745,7 @@ function updateGitHubAggStats(){
         if(langArr.length>5)parts[parts.length-1]+=' <span style="opacity:.6">+'+ (langArr.length-5) +'</span>';
     }
     el.innerHTML=parts.join('<span style="opacity:.2;margin:0 2px">·</span>')||'';
+    animateNumsIn(el);
 }
 function toggleActivity(){
     var b=document.getElementById('act-body'),t=document.getElementById('act-toggle');
@@ -2659,10 +2738,10 @@ function updateStats() {
     cats.forEach(cat => {
         var count=flatProjects.filter(function(p){return p.category===cat;}).length;
         var el1=document.getElementById('sb-'+cat),el2=document.getElementById('sb-st-'+cat);
-        if(el1)el1.textContent=count;if(el2)el2.textContent=count;
+        if(el1)animateNum(el1,count);if(el2)animateNum(el2,count);
     });
     var el3=document.getElementById('sb-total'),el4=document.getElementById('sb-st-total'),el5=document.getElementById('total-projects');
-    if(el3)el3.textContent=total;if(el4)el4.textContent=total;if(el5)el5.textContent=total;
+    if(el3)animateNum(el3,total);if(el4)animateNum(el4,total);if(el5)animateNum(el5,total);
 }
 
 // ===== PARTICLES =====
@@ -2700,6 +2779,150 @@ function initParticles() {
     document.addEventListener('visibilitychange',function(){
         if(document.hidden){_particleRunning=false;if(_particleFrame)cancelAnimationFrame(_particleFrame);}
         else{_particleRunning=true;animate();}
+    });
+}
+
+// ===== REDESIGN v3 — ANIMATION ENGINE =====
+var _prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function _easeOutCubic(t){return 1-Math.pow(1-t,3);}
+function _clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+// Count-up angka (adaptasi Vercel Analytics) — hanya untuk elemen tanpa markup kompleks
+function animateNum(el,to){
+    if(!el)return;
+    to=Math.round(to||0);
+    if(_prefersReduced){el.textContent=to;return;}
+    var from=parseInt(String(el.textContent).replace(/[^\d-]/g,''),10)||0;
+    if(from===to){el.textContent=to;return;}
+    if(el._numRaf)cancelAnimationFrame(el._numRaf);
+    var start=performance.now(),dur=700;
+    var frame=function(now){
+        var t=_clamp((now-start)/dur,0,1);
+        el.textContent=Math.round(from+(to-from)*_easeOutCubic(t));
+        if(t<1)el._numRaf=requestAnimationFrame(frame);else el.textContent=to;
+    };
+    el._numRaf=requestAnimationFrame(frame);
+}
+// Animasikan semua span .num di dalam container (untuk innerHTML yang sudah di-set)
+function animateNumsIn(container){
+    if(!container)return;
+    Array.prototype.forEach.call(container.querySelectorAll('.num'),function(n){
+        var to=parseInt(String(n.textContent).replace(/[^\d-]/g,''),10)||0;
+        animateNum(n,to);
+    });
+}
+
+// Spring entrance card (blur + scale + translate, stagger) — drive via transisi,
+// inline state dibersihkan setelah selesai agar hover transform tetap berfungsi.
+function enterCards(list,cards,step){
+    if(!list||!cards||!cards.length||_prefersReduced)return;
+    var i=0;
+    cards.forEach(function(c){
+        c.style.transition='none';c.style.opacity='0';c.style.transform='translateY(20px) scale(.96)';c.style.filter='blur(8px)';
+    });
+    void list.offsetWidth;
+    cards.forEach(function(c){
+        var d=(step||0.035)*i;i++;
+        c.style.transition='transform .5s cubic-bezier(.2,.7,.2,1) '+d+'s, opacity .45s ease '+d+'s, filter .5s ease '+d+'s';
+        c.style.opacity='1';c.style.transform='';c.style.filter='';
+        (function(card){
+            var onEnd=function(e){if(e.propertyName==='opacity'){card.style.transition='';card.removeEventListener('transitionend',onEnd);}};
+            card.addEventListener('transitionend',onEnd);
+        })(c);
+    });
+}
+
+// Card spotlight + subtle 3D tilt mengikuti kursor (shadcn/ui, Linear)
+function initSpotlight(){
+    var list=document.getElementById('feed-list');
+    if(!list||_prefersReduced)return;
+    var raf=null;
+    var track=function(e){
+        raf=null;
+        var card=e.target.closest('.feed-card,.rl-card');
+        if(!card)return;
+        var r=card.getBoundingClientRect();
+        var mx=e.clientX-r.left,my=e.clientY-r.top;
+        card.style.setProperty('--mx',mx.toFixed(1)+'px');
+        card.style.setProperty('--my',my.toFixed(1)+'px');
+        card.style.setProperty('--rx',(_clamp((my/r.height-0.5),-0.5,0.5)*-3).toFixed(2)+'deg');
+        card.style.setProperty('--ry',(_clamp((mx/r.width-0.5),-0.5,0.5)*3).toFixed(2)+'deg');
+    };
+    list.addEventListener('pointermove',function(e){if(!raf)raf=requestAnimationFrame(function(){track(e);});},{passive:true});
+    list.addEventListener('pointerout',function(e){
+        var card=e.target.closest('.feed-card,.rl-card');
+        if(card&&e.relatedTarget&&!card.contains(e.relatedTarget)){
+            card.style.setProperty('--rx','0deg');card.style.setProperty('--ry','0deg');
+        }
+    });
+}
+
+// Magnetic buttons (Framer Motion) — delegation biar dynamic button ikut kena
+var _magneticSel='.magnetic,.sort-btn,.tag-filter,.theme-btn,.refresh-btn,.sidebar-toggle,.sb-nav button,.sb-status button,.dp-close,.dp-open-btn,.ul-action-btn';
+function initMagnetic(){
+    if(_prefersReduced)return;
+    document.addEventListener('pointermove',function(e){
+        var el=e.target.closest(_magneticSel);
+        if(!el)return;
+        var r=el.getBoundingClientRect();
+        var dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+        el.style.transform='translate('+_clamp(dx*.25,-6,6).toFixed(1)+'px,'+_clamp(dy*.25,-6,6).toFixed(1)+'px)';
+    },{passive:true});
+    document.addEventListener('pointerout',function(e){
+        var el=e.target.closest(_magneticSel);
+        if(!el)return;
+        if(e.relatedTarget&&el.contains(e.relatedTarget))return;
+        el.style.transform='';
+    },{passive:true});
+}
+
+// Scroll progress bar (Linear/Notion)
+function initScrollProgress(){
+    var feed=document.getElementById('feed'),bar=document.getElementById('scroll-progress');
+    if(!feed||!bar)return;
+    var raf=null;
+    var update=function(){
+        raf=null;
+        var h=feed.scrollHeight-feed.clientHeight;
+        bar.style.transform='scaleX('+(h>0?feed.scrollTop/h:0).toFixed(4)+')';
+    };
+    feed.addEventListener('scroll',function(){if(!raf)raf=requestAnimationFrame(update);},{passive:true});
+    update();
+}
+
+// Reveal-on-scroll (IntersectionObserver) — hanya .rv (stagger-in ditangani boot)
+function initReveal(){
+    var els=document.querySelectorAll('.rv');
+    if(_prefersReduced||!els.length){
+        els.forEach(function(el){el.classList.add('in');});
+        return;
+    }
+    var feed=document.getElementById('feed');
+    var obs=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+            if(en.isIntersecting){en.target.classList.add('in');obs.unobserve(en.target);}
+        });
+    },{root:feed,rootMargin:'0px 0px -8% 0px',threshold:0.05});
+    els.forEach(function(el){obs.observe(el);});
+}
+
+// Stagger konten detail panel
+function staggerDetail(){
+    var content=document.getElementById('dp-content');
+    if(!content||_prefersReduced)return;
+    var item=content.querySelector('.dp-item');
+    if(!item)return;
+    var els=Array.prototype.slice.call(item.querySelectorAll('.dp-section,.dp-gh,.dp-tags,.dp-last-commit,.dp-open-btn,.dp-path'));
+    els.forEach(function(el){el.style.opacity='0';el.style.transform='translateY(10px)';el.style.transition='opacity .45s ease, transform .45s cubic-bezier(.2,.7,.2,1)';});
+    void item.offsetWidth;
+    var i=0;
+    els.forEach(function(el){
+        el.style.transitionDelay=(0.045*i)+'s';i++;
+        el.style.opacity='1';el.style.transform='';
+        (function(elm){
+            var h=function(e){if(e.propertyName==='opacity'){elm.style.transition='';elm.style.transitionDelay='';elm.removeEventListener('transitionend',h);}};
+            elm.addEventListener('transitionend',h);
+        })(el);
     });
 }
 
@@ -2751,21 +2974,37 @@ function runBoot() {
     const bar = document.getElementById('boot-bar');
     const status = document.getElementById('boot-status');
     let step = 0, lastT = 0;
+    function typeText(el, text) {
+        if(_prefersReduced){el.textContent=text;return;}
+        let i = 0;
+        el.textContent = '';
+        (function ty(){
+            if(i <= text.length){el.textContent = text.slice(0,i);i++;setTimeout(ty, 14);}
+        })();
+    }
     function tick(ts) {
         if (!lastT) lastT = ts;
         if (step < msgs.length) {
-            if (ts - lastT >= 180) {
+            if (ts - lastT >= 210) {
                 const [m, p] = msgs[step];
                 bar.style.transform = 'scaleX(' + (p / 100) + ')';
-                status.textContent = '[' + String(p).padStart(3) + '%] ' + m;
+                typeText(status, '[' + String(p).padStart(3) + '%] ' + m);
                 step++;
                 lastT = ts;
             }
             requestAnimationFrame(tick);
         } else {
             setTimeout(() => {
+                _bootPending=false;
                 overlay.classList.add('hidden');
-                document.querySelectorAll('.stagger-in').forEach(el => el.classList.add('visible'));
+                document.querySelectorAll('.stagger-in').forEach(el => {
+                    var d=parseInt(el.getAttribute('data-delay'))||1;
+                    el.style.transitionDelay=(d*0.1)+'s';
+                    el.classList.add('visible');
+                    (function(e){var h=function(ev){if(ev.propertyName==='opacity'){e.style.transitionDelay='';e.removeEventListener('transitionend',h);}};e.addEventListener('transitionend',h);})(el);
+                });
+                var feedList=document.getElementById('feed-list');
+                if(feedList)enterCards(feedList,Array.prototype.slice.call(feedList.querySelectorAll('.feed-card,.rl-card')),0.03);
             }, 400);
         }
     }
@@ -2800,7 +3039,10 @@ window.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('mouseenter', () => playHover());
     });
     document.addEventListener('click', () => initAudio(), { once: true });
-    document.querySelectorAll('.sidebar-toggle, .sb-nav button, .sb-status button, .dp-close, .dp-open-btn').forEach(el => el.classList.add('spring-btn'));
+    initSpotlight();
+    initMagnetic();
+    initScrollProgress();
+    initReveal();
     fetchGitHubData();
     buildActivityFeed();
     updateSyncStatus();
