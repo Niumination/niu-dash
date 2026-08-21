@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "generated_at": "2026-07-16T23:05:30+07:00",
-  "total_tasks": 56,
+  "generated_at": "2026-08-21T22:11:59+07:00",
+  "total_tasks": 0,
   "kanban": {
     "active": 0,
     "todo": 0,
-    "done": 24,
+    "done": 26,
     "archived": 0
   },
   "backlog": {
-    "total": 56,
+    "total": 0,
     "p1": 0,
     "p2": 0,
     "p3": 0
@@ -233,132 +233,6 @@
       "git": "Niumination/terax-ai",
       "dox": true,
       "desc": "Lightweight ADE fork (TS)"
-    },
-    {
-      "name": "Spatial Vision",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P3",
-      "git": "Niumination/spatial-vision",
-      "dox": false,
-      "desc": "Full-stack Rust/WASM spatial UI \u2014 Axum + wasm-bindgen + gesture/pinch + WebSocket"
-    },
-    {
-      "name": "cc-acehtengah",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P1",
-      "git": "Niumination/cc-acehtengah",
-      "dox": false,
-      "desc": "CC Aceh Tengah main dashboard \u2014 Vercel deploy"
-    },
-    {
-      "name": "didong-code",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P3",
-      "git": "Niumination/didong-code",
-      "dox": false,
-      "desc": "Electron+Rust+TS AI coding agent \u2014 Gayo Aceh spirit"
-    },
-    {
-      "name": "joy-connect-for-mac",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "Niumination/joy-connect-for-mac",
-      "dox": false,
-      "desc": "Mac app \u2014 Joy Connect"
-    },
-    {
-      "name": "maze-3d",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P3",
-      "git": "Niumination/Maze-3D-Game---Web-Based",
-      "dox": false,
-      "desc": "Web-based 3D Maze game"
-    },
-    {
-      "name": "niu-dash-fullstack",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "Niumination/niu-dash-fullstack",
-      "dox": false,
-      "desc": "Next.js 16 fullstack dashboard \u2014 Prisma, Three.js, TanStack"
-    },
-    {
-      "name": "niu-mission-control",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "Niumination/niu-mission-control",
-      "dox": false,
-      "desc": "Mission control dashboard for Niu ecosystem"
-    },
-    {
-      "name": "aistudio-google",
-      "tier": 3,
-      "status": "prototype",
-      "priority": "P3",
-      "git": "Niumination/aistudio-google",
-      "dox": false,
-      "desc": "Google AI Studio integration / experiment"
-    },
-    {
-      "name": "arena.ai",
-      "tier": 3,
-      "status": "prototype",
-      "priority": "P3",
-      "git": "Niumination/arena.ai",
-      "dox": false,
-      "desc": "Arena.ai experiment"
-    },
-    {
-      "name": "niu-studio",
-      "tier": 3,
-      "status": "in_progress",
-      "priority": "P3",
-      "git": "Niumination/niu-studio",
-      "dox": false,
-      "desc": "Niu Studio \u2014 creative workspace"
-    },
-    {
-      "name": "niude",
-      "tier": 3,
-      "status": "in_progress",
-      "priority": "P3",
-      "git": "Niumination/niude",
-      "dox": false,
-      "desc": "Niude \u2014 platform/agent"
-    },
-    {
-      "name": "niutui",
-      "tier": 3,
-      "status": "prototype",
-      "priority": "P3",
-      "git": "Niumination/niutui",
-      "dox": false,
-      "desc": "NiuTUI \u2014 terminal UI framework"
-    },
-    {
-      "name": "x-downloader-backup",
-      "tier": 3,
-      "status": "prototype",
-      "priority": "P3",
-      "git": "Niumination/x-downloader",
-      "dox": false,
-      "desc": "X Downloader backup/experiment"
-    },
-    {
-      "name": "zen",
-      "tier": 3,
-      "status": "prototype",
-      "priority": "P3",
-      "git": "Niumination/zen",
-      "dox": false,
-      "desc": "Zen \u2014 personal workspace/concept"
     }
   ]
 }
