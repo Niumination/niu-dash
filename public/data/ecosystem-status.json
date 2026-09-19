@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "generated_at": "2026-08-21T22:11:59+07:00",
+  "generated_at": "2026-09-19T16:48:03+07:00",
   "total_tasks": 0,
   "kanban": {
     "active": 0,
     "todo": 0,
-    "done": 26,
+    "done": 0,
     "archived": 0
   },
   "backlog": {
@@ -58,7 +58,7 @@
       "priority": "P2",
       "git": "Niumination/Niu-Flow",
       "dox": true,
-      "desc": "JCode bridge \u2014 pipeline paralel, 5 commits"
+      "desc": "Niumination ecosystem \u2014 parallel pipeline, 5 commits"
     },
     {
       "name": "niu-dash",
