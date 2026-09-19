@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-09-19T16:48:03+07:00",
+  "generated_at": "2026-09-19T16:49:13+07:00",
   "total_tasks": 0,
   "kanban": {
     "active": 0,
@@ -233,6 +233,15 @@
       "git": "Niumination/terax-ai",
       "dox": true,
       "desc": "Lightweight ADE fork (TS)"
+    },
+    {
+      "name": "Niu-OSS-Dashboard",
+      "tier": 2,
+      "status": "in_progress",
+      "priority": "P2",
+      "git": "Niumination/Niu-OSS-Dashboard",
+      "dox": true,
+      "desc": "Landing + dashboard OSS 91 repo (Next.js 15) \u2014 fase 4 go-live pending"
     }
   ]
 }
