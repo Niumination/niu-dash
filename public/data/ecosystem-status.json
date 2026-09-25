@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-09-20",
+  "generated_at": "2026-09-24T23:14:40+07:00",
   "total_tasks": 0,
   "kanban": {
     "active": 0,
@@ -22,7 +22,7 @@
       "priority": "P1",
       "git": "Niumination/TEDEO",
       "dox": true,
-      "desc": "Delivery Service — T1-T4 critical bugs fixed, butuh deploy test"
+      "desc": "Delivery Service \u2014 T1-T4 critical bugs fixed, butuh deploy test"
     },
     {
       "name": "kune-ya.com",
@@ -31,7 +31,7 @@
       "priority": "P1",
       "git": "Niumination/kune-ya.com",
       "dox": true,
-      "desc": "AI Chat RAG — analytics & rate limiting"
+      "desc": "AI Chat RAG \u2014 analytics & rate limiting"
     },
     {
       "name": "PemdiAcehTengah",
@@ -40,7 +40,7 @@
       "priority": "P1",
       "git": "Niumination/PemdiAcehTengah",
       "dox": true,
-      "desc": "Reposisi Opsi B — Kokpit Pemdi internal + Dasbor Transparansi"
+      "desc": "Portal Pemda Aceh Tengah \u2014 52 OPD, 67 pages"
     },
     {
       "name": "niu-vermilion",
@@ -49,7 +49,7 @@
       "priority": "P1",
       "git": "Niumination/Niu-Vermilion",
       "dox": true,
-      "desc": "Second Brain — V1-V5 auth fixed"
+      "desc": "Second Brain \u2014 V1-V5 auth fixed"
     },
     {
       "name": "Niu-Flow",
@@ -58,7 +58,7 @@
       "priority": "P2",
       "git": "Niumination/Niu-Flow",
       "dox": true,
-      "desc": "Niumination ecosystem — parallel pipeline, 5 commits"
+      "desc": "Niumination ecosystem \u2014 parallel pipeline, 5 commits"
     },
     {
       "name": "niu-dash",
@@ -68,7 +68,7 @@
       "git": "Niumination/niu-dash",
       "dox": true,
       "deployUrl": "https://niumination.github.io/niu-dash",
-      "desc": "Ecosystem dashboard — v2.16.8, 27/27 audit ✅"
+      "desc": "Ecosystem dashboard \u2014 v2.16.8, 27/27 audit \u2705"
     },
     {
       "name": "Niu-LKH",
@@ -78,7 +78,7 @@
       "git": "Niumination/Niu-LKH",
       "dox": true,
       "deployUrl": "https://niumination.github.io/Niu-LKH",
-      "desc": "Laporan Kegiatan Harian — v3.1.1 ✅ 100%"
+      "desc": "Laporan Kegiatan Harian \u2014 v3.1.1 \u2705 100%"
     },
     {
       "name": "Flame-ADE",
@@ -87,7 +87,7 @@
       "priority": "P2",
       "git": "Niumination/Flame-ADE",
       "dox": true,
-      "desc": "Tauri/Rust v1.3.0 — AI-native terminal"
+      "desc": "Tauri/Rust v1.3.0 \u2014 AI-native terminal"
     },
     {
       "name": "niu-cast",
@@ -105,7 +105,7 @@
       "priority": "P2",
       "git": "Niumination/brain",
       "dox": true,
-      "desc": "Obsidian Vault — 14 inbox daily"
+      "desc": "Obsidian Vault \u2014 14 inbox daily"
     },
     {
       "name": "niumination-workspace",
@@ -114,7 +114,7 @@
       "priority": "P3",
       "git": "Niumination/niumination-workspace",
       "dox": true,
-      "desc": "Next.js 16 workspace — 4 commits pushed, 110 proyek sync"
+      "desc": "Next.js 16 workspace \u2014 4 commits pushed, 110 proyek sync"
     },
     {
       "name": "niu-kanban-dash",
@@ -123,7 +123,7 @@
       "priority": "P3",
       "git": "Niumination/niu-kanban-dash",
       "dox": false,
-      "desc": "Vite/React kanban dashboard — pushed to GitHub"
+      "desc": "Vite/React kanban dashboard \u2014 pushed to GitHub"
     },
     {
       "name": "orchestrator",
@@ -132,7 +132,7 @@
       "priority": "P3",
       "git": "Niumination/orchestrator",
       "dox": false,
-      "desc": "Python multi-agent — pushed to GitHub"
+      "desc": "Python multi-agent \u2014 pushed to GitHub"
     },
     {
       "name": "Ultra",
@@ -141,7 +141,7 @@
       "priority": "P3",
       "git": "Niumination/ultra-automation",
       "dox": true,
-      "desc": "Puppeteer browser automation — pushed to GitHub"
+      "desc": "Puppeteer browser automation \u2014 pushed to GitHub"
     },
     {
       "name": "x-downloader",
@@ -150,7 +150,7 @@
       "priority": "P1",
       "git": "Niumination/x-downloader",
       "dox": true,
-      "desc": "v2.0 FastAPI+Next.js 16+Three.js+Tauri 2 — published to GitHub"
+      "desc": "v2.0 FastAPI+Next.js 16+Three.js+Tauri 2 \u2014 published to GitHub"
     },
     {
       "name": "mac-web-dashboard",
@@ -159,7 +159,7 @@
       "priority": "P2",
       "git": "Niumination/mac-web-dashboard",
       "dox": false,
-      "desc": "macOS Dashboard v1.0.0 — under development, 10 dirty"
+      "desc": "macOS Dashboard v1.0.0 \u2014 under development, 10 dirty"
     },
     {
       "name": "JHermUSB-portable",
@@ -168,7 +168,7 @@
       "priority": "P2",
       "git": "Niumination/JHermUSB-portable",
       "dox": false,
-      "desc": "Hermes Agent portable — 652K"
+      "desc": "Hermes Agent portable \u2014 652K"
     },
     {
       "name": "ai-first-os",
@@ -177,7 +177,7 @@
       "priority": "P3",
       "git": "Niumination/AI-First-OS",
       "dox": false,
-      "desc": "Arch Linux ISO builder — v1.0.0"
+      "desc": "Arch Linux ISO builder \u2014 v1.0.0"
     },
     {
       "name": "arch-web-dashboard",
@@ -195,7 +195,7 @@
       "priority": "P3",
       "git": "Niumination/ai-file-organizer-android",
       "dox": false,
-      "desc": "Android Kotlin — AI File Organizer, Gemini OCR"
+      "desc": "Android Kotlin \u2014 AI File Organizer, Gemini OCR"
     },
     {
       "name": "TEDEO-Kanban",
@@ -204,7 +204,7 @@
       "priority": "P2",
       "git": "Niumination/TEDEO-Kanban",
       "dox": false,
-      "desc": "Kanban board untuk TEDEO — pushed to GitHub"
+      "desc": "Kanban board untuk TEDEO \u2014 pushed to GitHub"
     },
     {
       "name": "AuditTI-AT",
@@ -214,7 +214,7 @@
       "git": "Niumination/AuditTI-AT",
       "dox": false,
       "deployUrl": "https://niumination.github.io/AuditTI-AT",
-      "desc": "Audit TI Aceh Tengah — GH Pages live"
+      "desc": "Audit TI Aceh Tengah \u2014 GH Pages live"
     },
     {
       "name": "niuterm",
@@ -241,70 +241,7 @@
       "priority": "P2",
       "git": "Niumination/Niu-OSS-Dashboard",
       "dox": true,
-      "desc": "Landing + dashboard OSS 91 repo (Next.js 15) — fase 4 go-live pending"
-    },
-    {
-      "name": "uacc",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "uacc",
-      "dox": true,
-      "desc": "Universal AI Computer Control — MCP server"
-    },
-    {
-      "name": "niu-mission-control",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "niu-mission-control",
-      "dox": true,
-      "desc": "Agent Swarm — FastAPI + WebSocket, redesign APEX-MC"
-    },
-    {
-      "name": "niumination-restore",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "niumination-restore",
-      "dox": true,
-      "desc": "DR restore penuh (Hermes + kredensial + ekosistem) — macOS drill 20/20"
-    },
-    {
-      "name": "pi-app-studio-mata",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "pi-app-studio-mata",
-      "dox": true,
-      "desc": "MATA Watchdog di Pi Network — Pi App Studio AI Beta"
-    },
-    {
-      "name": "niu-gayo-agroclimate",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "niu-gayo-agroclimate",
-      "dox": true,
-      "desc": "Agro-Climate Kopi Gayo & Mitigasi Bencana — React 19/Vite 6"
-    },
-    {
-      "name": "mata-aihackfest-2026",
-      "tier": 3,
-      "status": "in_progress",
-      "priority": "P3",
-      "git": "mata-aihackfest-2026",
-      "dox": true,
-      "desc": "MATA AIHackfest 2026 — labs"
-    },
-    {
-      "name": "Mobile-Harness",
-      "tier": 2,
-      "status": "in_progress",
-      "priority": "P2",
-      "git": "Mobile-Harness",
-      "dox": true,
-      "desc": "Hermes/Claude/DeepSeek on Android — mobile AI coding IDE"
+      "desc": "Landing + dashboard OSS 91 repo (Next.js 15) \u2014 fase 4 go-live pending"
     }
   ]
 }
