@@ -12,5 +12,15 @@
 
 ## 🟡 Monitoring
 
-- [o] **Health check** — Pantau GH Pages deployment — @niu-dash
-- [o] **User feedback** — Verifikasi overlay bug & unlisted persist — @niu-dash
+- [ ] **Health check** — Pantau GH Pages deployment — @niu-dash
+- [ ] **User feedback** — Verifikasi overlay bug & unlisted persist — @niu-dash
+
+## Recent Activity
+
+- [x] **Ecosystem status regen** — 25→32 proyek (`15110e7`) — @niu-dash
+- [x] **Released.json update** — ecosystem status (`5cb5009`) — @niu-dash
+- [x] **Pemdi 67 pages** — regenerate ecosystem-status (`604a764`) — @niu-dash
+
+---
+
+*Terakhir diperbarui: 6 Okt 2026 — v2.17.0 done, monitoring*
